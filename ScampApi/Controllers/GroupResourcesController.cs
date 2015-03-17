@@ -31,7 +31,7 @@ namespace ScampApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]GroupResource value)
         {
             // TODO implement updating a group resource
             throw new NotImplementedException();
