@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Routing;
 using Microsoft.Framework.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 
 namespace ScampApi
 {
@@ -18,6 +21,13 @@ namespace ScampApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.Configure<MvcOptions>(options=> {
+                var jsonFormatter = (JsonOutputFormatter)(options.OutputFormatters
+                    .First(formatter => formatter.Instance is JsonOutputFormatter)
+                    .Instance);
+                jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            });
         }
 
         // Configure is called after ConfigureServices is called.

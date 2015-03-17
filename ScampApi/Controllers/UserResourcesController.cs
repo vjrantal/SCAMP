@@ -21,7 +21,7 @@ namespace ScampApi.Controllers.Controllers
         [HttpPost("connect")]
         public string Get(string resourceId)
         {
-            return "rdpconnection 1"
+            return "rdpconnection 1";
         }
 
     }

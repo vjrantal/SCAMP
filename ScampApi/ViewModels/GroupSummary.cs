@@ -4,6 +4,6 @@
     {
         public int GroupId { get; set; }
         public string Name { get; set; }
-        // TODO - add hypermedia link
+        //public int MyProperty { get; set; }
     }
 }
