@@ -13,15 +13,15 @@ namespace ScampApi.Controllers
         public IEnumerable<GroupSummary> Get()
         {
             return new[] {
-                new GroupSummary { Id = 1, Name = "Group1" },
-                new GroupSummary { Id = 2, Name = "Group2" },
+                new GroupSummary { GroupId = 1, Name = "Group1" },
+                new GroupSummary { GroupId = 2, Name = "Group2" },
                 };
         }
 
         [HttpGet("{id}")]
         public Group Get(int id)
         {
-            return new Group { Id = id, Name = "Group" + id };
+            return new Group { GroupId = id, Name = "Group" + id };
         }
 
         [HttpPost]
@@ -41,7 +41,7 @@ namespace ScampApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            // TODO implement adding a group
+            // TODO implement deleting a group
             throw new NotImplementedException();
         }
     }

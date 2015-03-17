@@ -16,7 +16,7 @@ namespace ScampApi.Controllers.Controllers
         public User Get()
         {
             //List groups and resources for the current user
-            return new User { Id = 1, Name = "Group1" };
+            return new User { Id = 1, Name = "User1" };
         }
 
       

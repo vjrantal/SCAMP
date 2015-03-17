@@ -12,15 +12,15 @@ namespace ScampApi.Controllers
         public IEnumerable<GroupResourceSummary> Get(int groupId)
         {
             return new[] {
-                new GroupResourceSummary { GroupId = groupId, Id = 1, Name = "GroupResource1" },
-                new GroupResourceSummary { GroupId = groupId, Id = 2, Name = "GroupResource2" },
+                new GroupResourceSummary { GroupId = groupId, ResourceId = 1, Name = "GroupResource1" },
+                new GroupResourceSummary { GroupId = groupId, ResourceId = 2, Name = "GroupResource2" },
                 };
         }
 
         [HttpGet("{resourceid}")]
         public GroupResource Get(int groupId, int resourceId)
         {
-            return new GroupResource { GroupId = groupId, Id = resourceId, Name = "GroupResource" + resourceId };
+            return new GroupResource { GroupId = groupId, ResourceId = resourceId, Name = "GroupResource" + resourceId };
         }
 
         [HttpPost]
@@ -33,14 +33,14 @@ namespace ScampApi.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
-            // TODO implement updating a group
+            // TODO implement updating a group resource
             throw new NotImplementedException();
         }
 
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            // TODO implement adding a group
+            // TODO implement removing a resource from a group
             throw new NotImplementedException();
         }
     }

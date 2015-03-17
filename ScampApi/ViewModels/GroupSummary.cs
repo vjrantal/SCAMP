@@ -2,7 +2,7 @@
 {
     public class GroupSummary
     {
-        public int Id { get; set; }
+        public int GroupId { get; set; }
         public string Name { get; set; }
         // TODO - add hypermedia link
     }
