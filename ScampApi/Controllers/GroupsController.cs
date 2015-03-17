@@ -19,7 +19,6 @@ namespace ScampApi.Controllers
         [HttpGet]
         public IEnumerable<GroupSummary> Get()
         {
-            Request
             return new[] {
                 new GroupSummary { GroupId = 1, Name = "Group1", GroupUrl = _linkHelper.Group(groupId: 1) },
                 new GroupSummary { GroupId = 2, Name = "Group2", GroupUrl = _linkHelper.Group(groupId: 2) },
