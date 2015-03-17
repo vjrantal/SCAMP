@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNet.Mvc;
+using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
@@ -9,12 +10,19 @@ namespace ScampApi.Controllers
     [Route("api/groups")]
     public class GroupsController : Controller
     {
+        private ILinkHelper _linkHelper;
+
+        public GroupsController(ILinkHelper linkHelper)
+        {
+            _linkHelper = linkHelper;
+        }
         [HttpGet]
         public IEnumerable<GroupSummary> Get()
         {
+            Request
             return new[] {
-                new GroupSummary { GroupId = 1, Name = "Group1" },
-                new GroupSummary { GroupId = 2, Name = "Group2" },
+                new GroupSummary { GroupId = 1, Name = "Group1", GroupUrl = _linkHelper.Group(groupId: 1) },
+                new GroupSummary { GroupId = 2, Name = "Group2", GroupUrl = _linkHelper.Group(groupId: 2) },
                 };
         }
 

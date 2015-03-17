@@ -7,6 +7,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Routing;
 using Microsoft.Framework.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using ScampApi.Infrastructure;
 
 namespace ScampApi
 {
@@ -28,6 +29,8 @@ namespace ScampApi
                 jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             });
+
+            services.AddTransient<ILinkHelper, LinkHelper>();
         }
 
         // Configure is called after ConfigureServices is called.
