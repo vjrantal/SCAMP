@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNet.Mvc;
 using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
 {
-    [Route("api/groups")]
-    public class GroupsController : Controller
+    [Route("api/groups/{groupid}/resources")]
+    public class GroupResourcesController : Controller
     {
         [HttpGet]
-        public IEnumerable<GroupSummary> Get()
+        public IEnumerable<GroupResourceSummary> Get(int groupId)
         {
             return new[] {
-                new GroupSummary { Id = 1, Name = "Group1" },
-                new GroupSummary { Id = 2, Name = "Group2" },
+                new GroupResourceSummary { GroupId = groupId, Id = 1, Name = "GroupResource1" },
+                new GroupResourceSummary { GroupId = groupId, Id = 2, Name = "GroupResource2" },
                 };
         }
 
-        [HttpGet("{id}")]
-        public Group Get(int id)
+        [HttpGet("{resourceid}")]
+        public GroupResource Get(int groupId, int resourceId)
         {
-            return new Group { Id = id, Name = "Group" + id };
+            return new GroupResource { GroupId = groupId, Id = resourceId, Name = "GroupResource" + resourceId };
         }
 
         [HttpPost]
-        public void Post([FromBody]Group group)
+        public void Post([FromBody]GroupResource groupResource)
         {
-            // TODO implement adding a group
+            // TODO implement adding a resource to a group
             throw new NotImplementedException();
         }
 
