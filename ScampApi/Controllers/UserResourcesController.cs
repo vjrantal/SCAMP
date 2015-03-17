@@ -7,20 +7,22 @@ using Microsoft.AspNet.Mvc;
 
 namespace ScampApi.Controllers.Controllers
 {
-    [Route("api/user/resourcees/{resourceId}/")]
+    [Route("api/user/resources/{resourceId}/")]
     public class UserResourcesController : Controller
     {
 
-        // POST api/values
+        // POST /api/user/resources/{resourceId}/{actionname}
         [HttpPost("{actionname}")]
-        public void Post(string resourceId, string actionname)
+        public void Post(int resourceId, string actionname)
         {
+            // Start, Stop a resource
         }
 
-        // POST api/values
-        [HttpPost("connect")]
-        public string Get(string resourceId)
+        // GET /api/user/resources/{resourceId}/connect
+        [HttpGet("connect")]
+        public string Get(int resourceId)
         {
+            //return the RDP connection string
             return "rdpconnection 1";
         }
 
