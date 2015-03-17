@@ -11,16 +11,18 @@ namespace ScampApi.Controllers.Controllers
     public class UserResourcesController : Controller
     {
 
-        // POST api/values
+        // POST /api/user/resources/{resourceId}/{actionname}
         [HttpPost("{actionname}")]
         public void Post(int resourceId, string actionname)
         {
+            // Start, Stop a resource
         }
 
-        // POST api/values
+        // GET /api/user/resources/{resourceId}/connect
         [HttpGet("connect")]
         public string Get(int resourceId)
         {
+            //return the RDP connection string
             return "rdpconnection 1";
         }
 
