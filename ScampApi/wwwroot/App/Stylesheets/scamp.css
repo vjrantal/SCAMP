@@ -1,0 +1,39 @@
+[data-ember-action] {
+	cursor: pointer;
+}
+ul.breadcrumbs {
+	list-style: none; padding-left: 0px;
+}
+.breadcrumbs li::after {
+	content: "/";
+}
+.breadcrumbs li:last-child::after {
+	content: "";
+}
+.padding {
+	padding: 10px;
+}
+.widget-body .input-group {
+	margin-bottom: 10px;
+}
+.widget-body :last-child.input-group {
+	margin-bottom: 0px;
+}
+#addResource {
+	margin-left: 0px;
+}
+.resource .progress {
+	min-width: 50px;
+}
+table .btn-small {
+	padding: 0px;
+}
+table .progress {
+	margin-bottom: 0px;
+}
+.page::first-letter {
+	text-transform: uppercase;
+}
+.visible {
+	display: block; visibility: visible; opacity: 1;
+}
