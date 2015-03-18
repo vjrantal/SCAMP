@@ -11,7 +11,7 @@ namespace ScampApi.Infrastructure
         {
             _urlHelper = urlHelper;
         }
-
+        
         public string Group(int groupId)
         {
             return _urlHelper.Action("Get", "Groups", new { id = groupId });
