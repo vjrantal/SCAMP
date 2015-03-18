@@ -16,7 +16,7 @@ namespace ScampApi.Controllers
         {
             _linkHelper = linkHelper;
         }
-        [HttpGet]
+        [HttpGet(Name = "Groups.GetAll")]
         public IEnumerable<GroupSummary> Get()
         {
             return new[] {
@@ -25,7 +25,7 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{groupId}", Name ="Groups.GetSingle")]
+        [HttpGet("{groupId}", Name = "Groups.GetSingle")]
         public Group Get(int groupId)
         {
             return new Group
