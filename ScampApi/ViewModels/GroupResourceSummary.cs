@@ -5,5 +5,6 @@
         public int GroupId { get; set; }
         public int ResourceId { get; set; }
         public string Name { get; set; }
+        public string GroupResourceUrl { get; set; }
     }
 }

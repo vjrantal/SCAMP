@@ -16,7 +16,7 @@ namespace ScampApi.Controllers
         {
             _linkHelper = linkHelper;
         }
-        [HttpGet]
+        [HttpGet(Name = "Groups.GetAll")]
         public IEnumerable<GroupSummary> Get()
         {
             return new[] {
@@ -25,10 +25,26 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{id}")]
-        public Group Get(int id)
+        [HttpGet("{groupId}", Name = "Groups.GetSingle")]
+        public Group Get(int groupId)
         {
-            return new Group { GroupId = id, Name = "Group" + id };
+            return new Group
+            {
+                GroupId = groupId,
+                Name = "Group" + groupId,
+                Resources = new[]
+                {
+                    new GroupResourceSummary { GroupId = groupId, ResourceId = 1, Name = "GroupResource1", GroupResourceUrl = _linkHelper.GroupResource(groupId: groupId, resourceId: 1) }
+                },
+                Templates= new[]
+                {
+                    new GroupTemplateSummary { GroupId = groupId, TemplateId = 1, Name = "GroupTemplate1", GroupTemplateUrl = _linkHelper.GroupTemplate(groupId: groupId, templateId: 1) }
+                },
+                Users = new[]
+                {
+                    new GroupUserSummary { GroupId = groupId, UserId = 1, Name = "User1", GroupUserUrl = _linkHelper.GroupUser(groupId: groupId, userId: 1) }
+                }
+            };
         }
 
         [HttpPost]
@@ -38,15 +54,15 @@ namespace ScampApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Group value)
+        [HttpPut("{groupId}")]
+        public void Put(int groupId, [FromBody]Group value)
         {
             // TODO implement updating a group
             throw new NotImplementedException();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{groupId}")]
+        public void Delete(int groupId)
         {
             // TODO implement deleting a group
             throw new NotImplementedException();

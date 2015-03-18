@@ -5,6 +5,7 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Routing;
+using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using ScampApi.Infrastructure;
@@ -15,7 +16,13 @@ namespace ScampApi
     {
         public Startup(IHostingEnvironment env)
         {
+            // Setup configuration sources.
+            Configuration = new Configuration()
+                .AddJsonFile("config.json")
+                .AddEnvironmentVariables();
         }
+
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by a runtime.
         // Use this method to add services to the container
@@ -31,6 +38,8 @@ namespace ScampApi
             });
 
             services.AddTransient<ILinkHelper, LinkHelper>();
+
+            services.AddInstance(Configuration);
         }
 
         // Configure is called after ConfigureServices is called.

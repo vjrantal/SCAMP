@@ -5,7 +5,7 @@ using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
 {
-    [Route("api/groups/{groupid}/templates")]
+    [Route("api/groups/{groupId}/templates")]
     public class GroupTemplatesController : Controller
     {
         [HttpGet]
@@ -17,7 +17,7 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{templateid}")]
+        [HttpGet("{templateId}", Name = "GroupTemplates.GetSingle")]
         public GroupTemplate Get(int groupId, int templateId)
         {
             return new GroupTemplate { GroupId = groupId, TemplateId = templateId, Name = "GroupTemplate" + templateId };
@@ -30,15 +30,15 @@ namespace ScampApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]GroupTemplate value)
+        [HttpPut("{templateId}")]
+        public void Put(int groupId, int templateId, [FromBody]GroupTemplate value)
         {
             // TODO implement updating a group template
             throw new NotImplementedException();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{templateId}")]
+        public void Delete(int groupId, int templateId)
         {
             // TODO implement removing a template from a group
             throw new NotImplementedException();

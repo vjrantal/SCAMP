@@ -5,16 +5,21 @@ using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
 {
-    [Route("api/groups/{groupid}/resources/{resourceid}/users")]
+    [Route("api/groups/{groupId}/resources/{resourceId}/users")]
     public class GroupResourceUsersController : Controller
     {
         [HttpGet]
-        public IEnumerable<GroupResourceUser> Get(int groupId, int resourceId)
+        public IEnumerable<GroupResourceUser> GetAll(int groupId, int resourceId)
         {
             return new[] {
                 new GroupResourceUser { GroupId = groupId, ResourceId = resourceId, UserId = 1 },
                 new GroupResourceUser { GroupId = groupId, ResourceId = resourceId, UserId = 2 },
                 };
+        }
+        [HttpGet(Name ="GroupResourceUsers.GetSingle")]
+        public GroupResourceUser Get(int groupId, int resourceId, int userId)
+        {
+            return new GroupResourceUser { GroupId = groupId, ResourceId = resourceId, UserId = userId };
         }
 
         [HttpPost]
@@ -25,7 +30,7 @@ namespace ScampApi.Controllers
         }
 
         [HttpDelete("{userId}")]
-        public void Delete(int userId)
+        public void Delete(int groupId, int resourceId, int userId)
         {
             // TODO implement removing a user from a group resource
             throw new NotImplementedException();
