@@ -10,17 +10,17 @@ using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers.Controllers
 {
-    [Route("api/[controller]")]
-    public class UserController : Controller
+    [Route("api/currentUser")]
+    public class CurrentUserController : Controller
     {
         private ILinkHelper _linkHelper;
 
-        public UserController(ILinkHelper linkHelper)
+        public CurrentUserController(ILinkHelper linkHelper)
         {
             _linkHelper = linkHelper;
         }
         // GET: api/user
-        [HttpGet(Name = "User.Current")]
+        [HttpGet(Name = "User.CurrentUser")]
         public User Get()
         {
            

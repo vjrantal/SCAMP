@@ -11,5 +11,7 @@ namespace ScampApi.ViewModels
 
         public IEnumerable<GroupSummary> Groups { get; internal set; }
         public IEnumerable<GroupResourceSummary> Resources { get; internal set; }
+
+
     }
 }

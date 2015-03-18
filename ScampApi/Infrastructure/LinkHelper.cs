@@ -40,9 +40,16 @@ namespace ScampApi.Infrastructure
 
         public string User()
         {
-            return FullyQualify(_urlHelper.RouteUrl("User.Current"));
+            return FullyQualify(_urlHelper.RouteUrl("User.CurrentUser"));
         }
-
+        public string Users()
+        {
+            return FullyQualify(_urlHelper.RouteUrl("Users.GetAll"));
+        }
+        public string Users(int userId)
+        {
+            return FullyQualify(_urlHelper.RouteUrl("Users.GetSingle", new {  userId }));
+        }
         private string FullyQualify(string url)
         {
             // TODo - put proper implementation here ;-)

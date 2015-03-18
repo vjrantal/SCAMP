@@ -8,5 +8,7 @@
         string GroupTemplate(int groupId, int templateId);
         string GroupUser(int groupId, int userId);
         string User();
+        string Users();
+        string Users(int userId);
     }
 }

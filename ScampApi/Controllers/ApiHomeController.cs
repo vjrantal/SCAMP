@@ -20,10 +20,11 @@ namespace ScampApi.Controllers.Controllers
         [HttpGet]
         public object Get()
         {
-            return new 
+            return new
             {
                 groupsUrl = _linkHelper.Groups(),
-                currentUserUrl = _linkHelper.User()
+                currentUserUrl = _linkHelper.User(),
+                usersUrl = _linkHelper.Users()
             };
         }
     }
