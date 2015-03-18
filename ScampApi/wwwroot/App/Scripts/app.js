@@ -22,10 +22,10 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
 
     adalProvider.init(
         {
-            tenant: 'dpe1.onmicrosoft.com',
-            clientId: '5480d52a-a26b-47f5-a0a7-c4838f543f7e',
-            extraQueryParameter: 'nux=1',
-            cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
+            tenant: scampConfig.settings.tenantId,
+            clientId: scampConfig.settings.clientId,
+            extraQueryParameter: scampConfig.settings.extraQueryParameter,
+            cacheLocation: scampConfig.settings.cacheLocation, // enable this for IE, as sessionStorage does not work for localhost.
         },
         $httpProvider
         );
