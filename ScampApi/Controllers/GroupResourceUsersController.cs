@@ -5,7 +5,7 @@ using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
 {
-    [Route("api/groups/{groupid}/resources/{resourceid}/users")]
+    [Route("api/groups/{groupId}/resources/{resourceId}/users")]
     public class GroupResourceUsersController : Controller
     {
         [HttpGet]
@@ -30,7 +30,7 @@ namespace ScampApi.Controllers
         }
 
         [HttpDelete("{userId}")]
-        public void Delete(int userId)
+        public void Delete(int groupId, int resourceId, int userId)
         {
             // TODO implement removing a user from a group resource
             throw new NotImplementedException();

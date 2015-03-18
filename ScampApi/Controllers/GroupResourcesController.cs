@@ -5,7 +5,7 @@ using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
 {
-    [Route("api/groups/{groupid}/resources")]
+    [Route("api/groups/{groupId}/resources")]
     public class GroupResourcesController : Controller
     {
         [HttpGet]
@@ -17,7 +17,7 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{resourceid}", Name ="GroupResources.GetSingle")]
+        [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]
         public GroupResource Get(int groupId, int resourceId)
         {
             return new GroupResource { GroupId = groupId, ResourceId = resourceId, Name = "GroupResource" + resourceId };
@@ -30,15 +30,15 @@ namespace ScampApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]GroupResource value)
+        [HttpPut("{resourceId}")]
+        public void Put(int groupId, int resourceId, [FromBody]GroupResource value)
         {
             // TODO implement updating a group resource
             throw new NotImplementedException();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{resourceId}")]
+        public void Delete(int groupId, int resourceId,)
         {
             // TODO implement removing a resource from a group
             throw new NotImplementedException();

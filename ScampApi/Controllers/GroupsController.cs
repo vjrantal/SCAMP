@@ -54,15 +54,15 @@ namespace ScampApi.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]Group value)
+        [HttpPut("{groupId}")]
+        public void Put(int groupId, [FromBody]Group value)
         {
             // TODO implement updating a group
             throw new NotImplementedException();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{groupId}")]
+        public void Delete(int groupId)
         {
             // TODO implement deleting a group
             throw new NotImplementedException();
