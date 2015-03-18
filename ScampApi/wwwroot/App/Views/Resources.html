@@ -1,0 +1,97 @@
+﻿<div ng-init="populate()">
+    <p class="error">{{error}}</p>
+    <p>{{loadingMessage}}</p>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="widget">
+                <div class="widget-header">
+                    <i class="fa fa-tasks"></i> Resources <span class="pull-right">Manage</span>
+                </div>
+                <div class="widget-body no-padding">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">ID</th>
+                                    <th>Action</th>
+                                    <th>Name</th>
+                                    <th>State</th>
+                                    <th>Group</th>
+                                    <th>Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="item in resources">
+                                    <td class="text-center">{{item.id}}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" ref="#">
+                                                Action
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#">Start</a></li>
+                                                <li><a href="#">Stop</a></li>
+                                                <li><a href="#">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.state}}</td>
+                                    <td>{{item.group.name}}</td>
+                                    <td class="resource">
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" ng-attr-style="{{resource.remainingBarStyle}}" ng-attr-aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="1">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="widget">
+                <div class="widget-header">
+                    <i class="fa fa-plus"></i> Add Resource (Debug Only)
+                </div>
+                <div class="widget-body padding">
+                    <form class="form-horizontal">
+                        <div class="input-group">
+                            <span class="input-group-addon">Name</span>
+
+                            <span class="input-group-addon" data-ng-hide="item.edit">{{item.Name}}</span>
+                            <input data-ng-show="item.edit" class="form-control" type="text" data-ng-model="editInProgressResource.Name" />
+
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">Status</span>
+                            {{input type="text" class="form-control" placeholder="Recource's Status" value=rState}}
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">Group</span>
+                            {{
+view "select"
+                            class="form-control"
+                            content=groupsLookup
+                            selection=rGroup
+                            optionValuePath="content.id"
+                            optionLabelPath="content.name"
+                            prompt="Choose a Group"
+                            }}
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">Remaining</span>
+                            {{input type="number" min="0" max="1" step="0.1" class="form-control" placeholder="Recource's Remaining Usage (0-1)" value=rRemaining}}
+                        </div>
+                        <div class="input-group">
+                            <button type="submit" {{action "addResource"}} type="button" class="btn btn-primary" id="addResource">Add Resource</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
