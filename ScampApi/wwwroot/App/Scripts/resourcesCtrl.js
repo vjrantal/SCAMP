@@ -46,7 +46,7 @@ angular.module('scamp')
     };
 
     $scope.populate = function () {
-        resourceListSvc.getItems().success(function (results) {
+        resourcesSvc.getItems().success(function (results) {
             $scope.resourceList = results;
             $scope.loadingMessage = "";
         }).error(function (err) {
@@ -55,7 +55,7 @@ angular.module('scamp')
         })
     };
     $scope.delete = function (id) {
-        resourceListSvc.deleteItem(id).success(function (results) {
+        resourcesSvc.deleteItem(id).success(function (results) {
             $scope.loadingMessage = "";
             $scope.populate();
         }).error(function (err) {
@@ -64,7 +64,7 @@ angular.module('scamp')
         })
     };
     $scope.update = function (resource) {
-        resourceListSvc.putItem($scope.editInProgressresource).success(function (results) {
+        resourcesSvc.putItem($scope.editInProgressresource).success(function (results) {
             $scope.loadingMsg = "";
             $scope.populate();
             $scope.editSwitch(resource);
@@ -75,7 +75,7 @@ angular.module('scamp')
     };
     $scope.add = function () {
 
-        resourceListSvc.postItem({
+        resourcesSvc.postItem({
             'Description': $scope.newresourceCaption,
             'Owner': adalService.userInfo.userName
         }).success(function (results) {

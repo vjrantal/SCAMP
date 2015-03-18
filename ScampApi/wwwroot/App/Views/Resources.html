@@ -69,26 +69,33 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon">Status</span>
-                            {{input type="text" class="form-control" placeholder="Recource's Status" value=rState}}
+                            <span class="input-group-addon" data-ng-hide="item.edit">{{item.Status}}</span>
+                            <input data-ng-show="item.edit" class="form-control" type="text" data-ng-model="editInProgressResource.Status" />
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon">Group</span>
-                            {{
-view "select"
-                            class="form-control"
-                            content=groupsLookup
-                            selection=rGroup
-                            optionValuePath="content.id"
-                            optionLabelPath="content.name"
-                            prompt="Choose a Group"
-                            }}
+                            <select ng-init="groupDropDown = groups[0]" id='group-dropdown' ng-model="groupDropDown" ng-options="group as group.name for group in groups"
+                                    ng-change="onchangeGroup(groupDropDown)"></select>
+
+                            <select ng-model="choice" ng-options="x.id as x.name for x in array"></select>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon">Remaining</span>
-                            {{input type="number" min="0" max="1" step="0.1" class="form-control" placeholder="Recource's Remaining Usage (0-1)" value=rRemaining}}
+                            <span class="input-group-addon" data-ng-hide="item.edit">{{item.Remaining}}</span>
+                            <input data-ng-show="item.edit" class="form-control" type="number" data-ng-model="editInProgressResource.Remaining" />
+
                         </div>
                         <div class="input-group">
-                            <button type="submit" {{action "addResource"}} type="button" class="btn btn-primary" id="addResource">Add Resource</button>
+                            <p data-ng-hide="item.edit || editingInProgress">
+                                <a data-ng-click="editSwitch(item)" href="javascript:;">Edit</a> |
+                                <a data-ng-click="delete(item.ID)" href="javascript:;">Delete</a>
+                            </p>
+                            <p data-ng-show="item.edit">
+                                <a data-ng-click="update(item)" href="javascript:;">Save</a> |
+                                <a data-ng-click="editSwitch(item)" href="javascript:;">Cancel</a>
+                            </p>    
+
+                        
                         </div>
                     </form>
                 </div>

@@ -9,6 +9,7 @@
         "Microsoft.AspNet.Server.WebListener": "1.0.0-beta3",
         "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta3"
     },
+
     "frameworks": {
         "aspnet50": { },
         "aspnetcore50": { }

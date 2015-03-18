@@ -34,6 +34,7 @@ namespace ScampApi
                     .First(formatter => formatter.Instance is JsonOutputFormatter)
                     .Instance);
                 jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                //options.Filters.Add(new RequireHttpsAttribute());
 
             });
 
@@ -45,6 +46,7 @@ namespace ScampApi
         // Configure is called after ConfigureServices is called.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
             app.UseStaticFiles();
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>
@@ -53,6 +55,7 @@ namespace ScampApi
                     name: "default",
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
+                
             });
         }
     }
