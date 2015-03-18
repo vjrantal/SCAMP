@@ -29,7 +29,10 @@ namespace ScampApi.Infrastructure
         {
             return FullyQualify(_urlHelper.RouteUrl("GroupResources.GetSingle", new { groupId, resourceId }));
         }
-
+        public string GroupTemplate(int groupId, int templateId)
+        {
+            return FullyQualify(_urlHelper.RouteUrl("GroupTemplates.GetSingle", new { groupId, templateId }));
+        }
         public string GroupUser(int groupId, int userId)
         {
             return FullyQualify(_urlHelper.RouteUrl("GroupUsers.GetSingle", new { groupId , userId }));
@@ -45,5 +48,7 @@ namespace ScampApi.Infrastructure
             // TODo - put proper implementation here ;-)
             return _apiRootUrl + url;
         }
+
+
     }
 }

@@ -17,7 +17,7 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{templateid}")]
+        [HttpGet("{templateid}", Name = "GroupTemplates.GetSingle")]
         public GroupTemplate Get(int groupId, int templateId)
         {
             return new GroupTemplate { GroupId = groupId, TemplateId = templateId, Name = "GroupTemplate" + templateId };

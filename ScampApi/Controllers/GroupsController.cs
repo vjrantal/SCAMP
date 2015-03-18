@@ -36,6 +36,10 @@ namespace ScampApi.Controllers
                 {
                     new GroupResourceSummary { GroupId = groupId, ResourceId = 1, Name = "GroupResource1", GroupResourceUrl = _linkHelper.GroupResource(groupId: groupId, resourceId: 1) }
                 },
+                Templates= new[]
+                {
+                    new GroupTemplateSummary { GroupId = groupId, TemplateId = 1, Name = "GroupTemplate1", GroupTemplateUrl = _linkHelper.GroupTemplate(groupId: groupId, templateId: 1) }
+                },
                 Users = new[]
                 {
                     new GroupUserSummary { GroupId = groupId, UserId = 1, Name = "User1", GroupUserUrl = _linkHelper.GroupUser(groupId: groupId, userId: 1) }
