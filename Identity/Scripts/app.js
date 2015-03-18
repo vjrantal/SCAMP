@@ -4,14 +4,14 @@ angular.module('corsApp', ['ngRoute','AdalAngular'])
 
     $routeProvider.when("/Home", {
         controller: "homeCtrl",
-        templateUrl: "/App/Views/Home.html",
+        templateUrl: "/Views/Home.html",
     }).when("/CorsCall", {
         controller: "corsCallCtrl",
-        templateUrl: "/App/Views/CorsCall.html",
+        templateUrl: "/Views/ApiCall.html",
         requireADLogin: true,
     }).when("/UserData", {
         controller: "userDataCtrl",
-        templateUrl: "/App/Views/UserData.html",
+        templateUrl: "/Views/UserData.html",
     }).otherwise({ redirectTo: "/Home" });
 
     //TODO: The endpoints setting ensures ADAL.js will automatically acquire the access tokens transparently during requests.

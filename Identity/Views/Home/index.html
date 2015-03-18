@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
-    <title>Mat's tutorial for CORS-Angular-ADAL-WebAPI-AAD</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <title>Scamp Home</title>
+    <link rel="stylesheet" href="/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
 </head>
 <body ng-app="corsApp" ng-controller="homeCtrl" class="ng-app:corsApp" id="ng-app" role="document">
 
@@ -18,12 +18,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#/Home">Mat's CORS Sample</a>
+                <a class="navbar-brand" href="#/Home">Scamp</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li ng-class="{ active: isActive('/Home') }"><a href="#/Home/">Home</a></li>
-                    <li ng-class="{ active: isActive('/CorsCall') }"><a href="#/CorsCall/">Execute Cors Call</a></li>
+                    <li ng-class="{ active: isActive('/ApiCall') }"><a href="#/ApiCall/">Scamp Api</a></li>
                     <li ng-class="{ active: isActive('/UserData') }"><a href="#/UserData/" ng-show="userInfo.isAuthenticated">User</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -54,12 +54,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
         <script src="https://code.angularjs.org/1.2.25/angular-route.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-        <script src="App/Scripts/adal-angular.min.js"></script>
-        <script src="App/Scripts/adal.min.js"></script>
-        <script src="App/Scripts/app.js"></script>
-        <script src="App/Scripts/homeCtrl.js"></script>
-        <script src="App/Scripts/userDataCtrl.js"></script>
-        <script src="App/Scripts/corsCallCtrl.js"></script>
-        <script src="App/Scripts/corsCallSvc.js"></script>
+        <script src="Scripts/adal-angular.min.js"></script>
+        <script src="Scripts/adal.min.js"></script>
+        <script src="Scripts/app.js"></script>
+        <script src="Scripts/homeCtrl.js"></script>
+        <script src="Scripts/userDataCtrl.js"></script>
+        <script src="Scripts/corsCallCtrl.js"></script>
+        <script src="Scripts/corsCallSvc.js"></script>
 </body>
 </html>
