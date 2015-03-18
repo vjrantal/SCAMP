@@ -1,3 +1,9 @@
 ﻿{
-    "ApiRootUrl": "http://localhost:10838"
+  "ApiRootUrl": "https://localhost:44300/api",
+  "AzureAd": {
+    "ClientId": "82462670-0893-4317-9f72-d8526cf6f662",
+    "Tenant": "zbrad.com",
+    "AadInstance": "https://login.windows.net/{0}", // This is the public instance of Azure AD
+    "PostLogoutRedirectUri":  "https://localhost:44300/"
+  }
 }
