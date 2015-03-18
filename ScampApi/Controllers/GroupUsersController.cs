@@ -17,7 +17,7 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}", Name="GroupUsers.GetSingle")]
         public GroupUser Get(int groupId, int userId)
         {
             return new GroupUser { GroupId = groupId, UserId = userId, Name = "GroupUser" + userId };

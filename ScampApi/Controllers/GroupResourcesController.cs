@@ -9,7 +9,7 @@ namespace ScampApi.Controllers
     public class GroupResourcesController : Controller
     {
         [HttpGet]
-        public IEnumerable<GroupResourceSummary> Get(int groupId)
+        public IEnumerable<GroupResourceSummary> GetAll(int groupId)
         {
             return new[] {
                 new GroupResourceSummary { GroupId = groupId, ResourceId = 1, Name = "GroupResource1" },
@@ -17,7 +17,7 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{resourceid}")]
+        [HttpGet("{resourceid}", Name ="GroupResources.GetSingle")]
         public GroupResource Get(int groupId, int resourceId)
         {
             return new GroupResource { GroupId = groupId, ResourceId = resourceId, Name = "GroupResource" + resourceId };

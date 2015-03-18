@@ -25,10 +25,22 @@ namespace ScampApi.Controllers
                 };
         }
 
-        [HttpGet("{id}")]
-        public Group Get(int id)
+        [HttpGet("{groupId}", Name ="Groups.GetSingle")]
+        public Group Get(int groupId)
         {
-            return new Group { GroupId = id, Name = "Group" + id };
+            return new Group
+            {
+                GroupId = groupId,
+                Name = "Group" + groupId,
+                Resources = new[]
+                {
+                    new GroupResourceSummary { GroupId = groupId, ResourceId = 1, Name = "GroupResource1", GroupResourceUrl = _linkHelper.GroupResource(groupId: groupId, resourceId: 1) }
+                },
+                Users = new[]
+                {
+                    new GroupUserSummary { GroupId = groupId, UserId = 1, Name = "User1", GroupUserUrl = _linkHelper.GroupUser(groupId: groupId, userId: 1) }
+                }
+            };
         }
 
         [HttpPost]

@@ -1,9 +1,12 @@
-﻿namespace ScampApi.ViewModels
+﻿using System.Collections.Generic;
+
+namespace ScampApi.ViewModels
 {
     public class Group
     {
         public int GroupId { get; set; }
         public string Name { get; set; }
-        // TODO add resources, users
+        public IEnumerable<GroupResourceSummary> Resources { get; set; }
+        public IEnumerable<GroupUserSummary> Users { get; set; }
     }
 }
