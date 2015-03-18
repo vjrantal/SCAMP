@@ -38,7 +38,7 @@ namespace ScampApi.Controllers
         }
 
         [HttpDelete("{resourceId}")]
-        public void Delete(int groupId, int resourceId,)
+        public void Delete(int groupId, int resourceId)
         {
             // TODO implement removing a resource from a group
             throw new NotImplementedException();
