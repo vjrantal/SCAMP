@@ -17,10 +17,8 @@ namespace DocumentDbRepositories.Implementation
         private DocumentClient client;
         private Database database;
         private DocumentCollection collection;
-        private static readonly string dbName = "scamp";
-        private static readonly string collectionName = "groupdata";
 
-        public async Task InitializeDBConnection(string endpointUrl, string authKey)
+        public async Task InitializeDBConnection(string endpointUrl, string authKey, string databaseName, string collectionName)
         {
             var policy = new ConnectionPolicy()
             {
@@ -28,7 +26,7 @@ namespace DocumentDbRepositories.Implementation
                 ConnectionMode = ConnectionMode.Direct
             };
             client = new DocumentClient(new Uri(endpointUrl), authKey);//, policy);
-            database = await GetOrCreateDatabaseAsync(dbName);
+            database = await GetOrCreateDatabaseAsync(databaseName);
 
             //Get, or Create, the Document Collection
             collection = await GetOrCreateCollectionAsync(database.SelfLink, collectionName);

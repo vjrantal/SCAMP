@@ -10,6 +10,8 @@ In your Package Manager Console, before you debug - add 2 $env variabiels.
     PM> $env:APPSETTING_ClientId = "bar"
     PM> $env:AppSETTING_DocDb:endpoint = "<url here>"
     PM> $env:AppSETTING_DocDb:authkey = "<key here>"
+    PM> $env:AppSETTING_DocDb:databaseName = "<db name here, e.g. scamp>"
+    PM> $env:AppSETTING_DocDb:collectionName = "<collection name>"
 ````
 
 
@@ -18,6 +20,8 @@ Or, these can be set also from Project Properties -> Debug -> Environment Variab
 *    APPSETTING_ClientId
 *    AppSETTING_DocDb:endpoint
 *    AppSETTING_DocDb:authkey
+*    AppSETTING_DocDb:databaseName
+*    AppSETTING_DocDb:collectionName
 
 This format is used as this is what AZW uses
 
