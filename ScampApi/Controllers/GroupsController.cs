@@ -34,12 +34,12 @@ namespace ScampApi.Controllers
             {
                 GroupId = docDbGroup.Id,
                 Name = docDbGroup.Name,
-                Links = { new Link { Rel = "group", Href = "TODO" /*_linkHelper.Group(groupId: 1) */ } }
+                Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: docDbGroup.Id) } }
             };
         }
 
         [HttpGet("{groupId}", Name = "Groups.GetSingle")]
-        public Group Get(int groupId)
+        public Group Get(string groupId)
         {
             return new Group
             {
