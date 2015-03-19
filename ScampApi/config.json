@@ -1,3 +1,7 @@
 ﻿{
-    "ApiRootUrl": "http://localhost:10838"
+    "ApiRootUrl": "http://localhost:10838",
+    "DocDb": {
+        "endpoint" : "<override in env vars>",  
+        "authkey" : "<override in env vars>"  
+    }
 }

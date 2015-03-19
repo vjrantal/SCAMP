@@ -7,9 +7,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ScampApi", "ScampApi\ScampA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataTier", "DataTier", "{FD068F2A-2241-4948-A1F7-C756BC85DFAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocDBRepository,impl", "DataRepository\DocDBRepository,impl\DocDBRepository,impl.csproj", "{3613E7B3-DD07-411F-980C-E55D7BF9170F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocDBRepository.dto", "DataRepository\DocDBRepository.dto\DocDBRepository.dto.csproj", "{B2339FD5-5D31-4B74-9FC3-CE4194732BD8}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DocumentDbRepositories", "DocumentDbRepositories\DocumentDbRepositories.kproj", "{0C8E6A9D-D14F-4A5B-9228-09F826D74604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,20 +19,15 @@ Global
 		{49C949D4-8A1F-4FAB-9484-B0F50C5776DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49C949D4-8A1F-4FAB-9484-B0F50C5776DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49C949D4-8A1F-4FAB-9484-B0F50C5776DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3613E7B3-DD07-411F-980C-E55D7BF9170F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3613E7B3-DD07-411F-980C-E55D7BF9170F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3613E7B3-DD07-411F-980C-E55D7BF9170F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3613E7B3-DD07-411F-980C-E55D7BF9170F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2339FD5-5D31-4B74-9FC3-CE4194732BD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2339FD5-5D31-4B74-9FC3-CE4194732BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2339FD5-5D31-4B74-9FC3-CE4194732BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2339FD5-5D31-4B74-9FC3-CE4194732BD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C8E6A9D-D14F-4A5B-9228-09F826D74604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C8E6A9D-D14F-4A5B-9228-09F826D74604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C8E6A9D-D14F-4A5B-9228-09F826D74604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C8E6A9D-D14F-4A5B-9228-09F826D74604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{3613E7B3-DD07-411F-980C-E55D7BF9170F} = {FD068F2A-2241-4948-A1F7-C756BC85DFAF}
-		{B2339FD5-5D31-4B74-9FC3-CE4194732BD8} = {FD068F2A-2241-4948-A1F7-C756BC85DFAF}
+		{0C8E6A9D-D14F-4A5B-9228-09F826D74604} = {FD068F2A-2241-4948-A1F7-C756BC85DFAF}
 	EndGlobalSection
 EndGlobal
