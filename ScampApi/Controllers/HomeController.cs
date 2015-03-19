@@ -21,7 +21,10 @@ namespace ScampApi.Controllers
             var settings = new ScampSettings
             {
                 TenantId = _config.Get("TenantId"),
-                ClientId = _config.Get("ClientId")
+                ClientId = _config.Get("ClientId"),
+                RedirectUri = _config.Get("RedirectUri"),
+                CacheLocation = _config.Get("CacheLocation"),
+                
             };
 
             return View(settings);
