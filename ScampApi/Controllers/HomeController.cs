@@ -1,34 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Framework.ConfigurationModel;
+using ScampApi.ViewModels;
 
-namespace Scamp.Controllers
+// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace ScampApi.Controllers
 {
     public class HomeController : Controller
     {
+
+        IConfiguration _config;
+        public HomeController(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
-        }
+            var settings = new ScampSettings
+            {
+                TenantId = _config.Get("TenantId"),
+                ClientId = _config.Get("ClientId")
+            };
 
-        public IActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Error()
-        {
-            return View("~/Views/Shared/Error.cshtml");
+            return View(settings);
         }
     }
 }
+
