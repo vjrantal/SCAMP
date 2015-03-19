@@ -60,6 +60,8 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
                 "APPSETTING_ClientId": "<clientId-from above App in AAD>",
                 "APPSETTING_TenantId": "<tenantId-from above App in AAD->",
                 "APPSETTING_RedirectUri": "https://localhost:44300/"
+                "APPSETTING_DocDb:databaseName": "scamp",
+                "APPSETTING_DocDb:collectionName": "scampdata"
             }
         }
     ]
