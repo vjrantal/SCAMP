@@ -48,10 +48,11 @@ angular.module('scamp')
 
 
     $scope.populate = function () {
-        resourcesSvc.getItems().success(function (results) {
+        resourcesSvc.getItems().then(function (results) {
             $scope.resourceList = results;
             $scope.loadingMessage = "";
-        }).error(function (err) {
+        },
+        function (err) {
             $scope.error = err;
             $scope.loadingMessage = "";
         })
