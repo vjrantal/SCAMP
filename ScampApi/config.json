@@ -1,5 +1,5 @@
 ﻿{
-  "ApiRootUrl": "https://localhost:44300/api",
+  "ApiRootUrl": "https://localhost:44300",
   "AzureAd": {
     "ClientId": "82462670-0893-4317-9f72-d8526cf6f662",
     "Tenant": "zbrad.com",
