@@ -12,13 +12,13 @@ using DocDBRepository.dto;
 namespace DocDBRepository.impl
 {
 
-    public class UserRepository
+    public class ResourceRepository
     {
         private  DocumentClient client;
         private  Database database;
         private  DocumentCollection collection;
         private static readonly string dbName="scamp";
-        private static readonly string collectionName = "userdata";
+        private static readonly string collectionName = "resourcedata";
 
         public  async Task InitializeDBConnection(string endpointUrl, string authKey)
         {
@@ -35,25 +35,60 @@ namespace DocDBRepository.impl
 
         }
 
-		public async Task CreateUser(ScampUser newUser)
-		{
-			var created = await client.CreateDocumentAsync(collection.SelfLink, newUser);
-		}
-
-		public async Task<ScampUser> GetUser(string userId)
+        public  async Task<ScampResource> GetResource(string resourceId)
         {
-            var users = from u in client.CreateDocumentQuery<ScampUser>(collection.SelfLink)
-                        where u.Id == userId
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
+            var resources = from u in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
+                        where u.Id == resourceId
+						select u;
+            var resourceList = resources.ToList();
+            if (resourceList.Count == 0)
                 return null;
-            return userList[0];           
+            return resourceList[0];           
         }
 
+		public async Task<ScampResourceGroup> GetResources()
+		{
+			var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+							select u;
+			var resourceList = resources.ToList();
+			if (resourceList.Count == 0)
+				return null;
+			return resourceList[0];
+		}
 
+		public async Task<ScampResourceGroup> GetResourcesByOwner(string userId)
+		{
+			//TODO: need to add "join" to get by owner relationship
+			var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+							select u;
+			var resourceList = resources.ToList();
+			if (resourceList.Count == 0)
+				return null;
+			return resourceList[0];
+		}
 
-        private async Task<Database> GetOrCreateDatabaseAsync(string id)
+		public async Task<ScampResourceGroup> GetResourcesByGroup(string userId)
+		{
+			//TODO: need to add "join" to get by group relationship
+			var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+							select u;
+			var resourceList = resources.ToList();
+			if (resourceList.Count == 0)
+				return null;
+			return resourceList[0];
+		}
+
+		public async void AddResource(string groupID)
+		{
+			//TODO: stuff
+		}
+
+		public async void AddOwner(string groupID)
+		{
+			//TODO: stuff
+		}
+
+		private async Task<Database> GetOrCreateDatabaseAsync(string id)
         {
             Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().FirstOrDefault();
             if (database == null)

@@ -12,13 +12,13 @@ using DocDBRepository.dto;
 namespace DocDBRepository.impl
 {
 
-    public class UserRepository
+    public class SubscriptionRepository
     {
         private  DocumentClient client;
         private  Database database;
         private  DocumentCollection collection;
         private static readonly string dbName="scamp";
-        private static readonly string collectionName = "userdata";
+        private static readonly string collectionName = "SubscriptionRepository";
 
         public  async Task InitializeDBConnection(string endpointUrl, string authKey)
         {
@@ -35,20 +35,21 @@ namespace DocDBRepository.impl
 
         }
 
-		public async Task CreateUser(ScampUser newUser)
+		public async Task CreateSubscription(ScampSubscription newSubscription)
 		{
-			var created = await client.CreateDocumentAsync(collection.SelfLink, newUser);
+			var created = await client.CreateDocumentAsync(collection.SelfLink, newSubscription);
 		}
 
-		public async Task<ScampUser> GetUser(string userId)
+		public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
-            var users = from u in client.CreateDocumentQuery<ScampUser>(collection.SelfLink)
-                        where u.Id == userId
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
+            var subscriptions = from u in client.CreateDocumentQuery<ScampSubscription>(collection.SelfLink)
+								where u.Id == subscriptionId
+								select u;
+            var subList = subscriptions.ToList();
+            if (subList.Count == 0)
                 return null;
-            return userList[0];           
+            return subList[0];
+           
         }
 
 

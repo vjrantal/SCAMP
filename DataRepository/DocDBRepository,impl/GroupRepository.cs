@@ -46,6 +46,18 @@ namespace DocDBRepository.impl
             return grouplist[0];
            
         }
+
+		public async Task<ScampResourceGroup> GetGroups()
+		{
+			var groups = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+						 select u;
+			var grouplist = groups.ToList();
+			if (grouplist.Count == 0)
+				return null;
+			return grouplist[0];
+
+		}
+
 		public async void AddResource(string groupID)
 		{
 			//TODO: stuff
