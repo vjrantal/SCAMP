@@ -14,17 +14,17 @@ namespace ScampApi.Controllers
     public class GroupsController : Controller
     {
         private ILinkHelper _linkHelper;
-        private RepositoryFactory _repositoryFacgtory;
+        private RepositoryFactory _repositoryFactory;
 
         public GroupsController(ILinkHelper linkHelper, RepositoryFactory repositoryFactory)
         {
             _linkHelper = linkHelper;
-            _repositoryFacgtory = repositoryFactory; // TODO - revisit this. would be nice to inject repository here
+            _repositoryFactory = repositoryFactory; // TODO - revisit this. would be nice to inject repository here
         }
         [HttpGet(Name = "Groups.GetAll")]
         public async Task<IEnumerable<GroupSummary>> Get()
         {
-            var repository = await _repositoryFacgtory.GetGroupRepositoryAsync();
+            var repository = await _repositoryFactory.GetGroupRepositoryAsync();
             var groups = await repository.GetGroups();
             return groups.Select(MapToSummary);
         }
