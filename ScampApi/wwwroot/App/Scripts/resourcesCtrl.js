@@ -1,6 +1,6 @@
 ﻿'use strict';
 angular.module('scamp')
-.controller('resourcesCtrl', ['$scope', '$location', 'resourcesSvc', 'adalAuthenticationService', function ($scope, $location, resourcesSvc, adalService) {
+.controller('resourcesCtrl', ['$scope', '$location', 'resourcesSvc', 'adalAuthenticationService','$sce', function ($scope, $location, resourcesSvc, adalService,$sce) {
     $scope.error = "";
     $scope.loadingMessage = "Loading...";
     $scope.resourceList = null;
@@ -44,6 +44,8 @@ angular.module('scamp')
             $scope.editingInProgress = false;
         }
     };
+
+
 
     $scope.populate = function () {
         resourcesSvc.getItems().success(function (results) {

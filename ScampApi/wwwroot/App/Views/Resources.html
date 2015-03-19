@@ -1,6 +1,7 @@
 ﻿<div ng-init="populate()">
     <p class="error">{{error}}</p>
     <p>{{loadingMessage}}</p>
+  
     <div class="row">
         <div class="col-lg-8">
             <div class="widget">
@@ -21,7 +22,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-ng-repeat="item in resources">
+                                <tr data-ng-repeat="item in resourceList">
                                     <td class="text-center">{{item.id}}</td>
                                     <td>
                                         <div class="btn-group">
@@ -38,10 +39,10 @@
                                     </td>
                                     <td>{{item.name}}</td>
                                     <td>{{item.state}}</td>
-                                    <td>{{item.group.name}}</td>
+                                    <td>{{item.groupName}}</td>
                                     <td class="resource">
                                         <div class="progress">
-                                            <div class="progress-bar" role="progressbar" ng-attr-style="{{resource.remainingBarStyle}}" ng-attr-aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="1">
+                                            <div class="progress-bar" role="progressbar" ng-style="{width: item.remaining * 100}"  >
                                             </div>
                                         </div>
                                     </td>
@@ -52,7 +53,7 @@
                 </div>
             </div>
         </div>
-
+        <br />
         <div class="col-lg-4">
             <div class="widget">
                 <div class="widget-header">
