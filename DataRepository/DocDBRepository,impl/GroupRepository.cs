@@ -12,13 +12,13 @@ using DocDBRepository.dto;
 namespace DocDBRepository.impl
 {
 
-    public class UserRepository
+    public class GroupRepository
     {
         private  DocumentClient client;
         private  Database database;
         private  DocumentCollection collection;
         private static readonly string dbName="scamp";
-        private static readonly string collectionName = "userdata";
+        private static readonly string collectionName = "groupdata";
 
         public  async Task InitializeDBConnection(string endpointUrl, string authKey)
         {
@@ -35,26 +35,32 @@ namespace DocDBRepository.impl
 
         }
 
-		public async Task CreateUser(ScampUser newUser)
-		{
-			var created = await client.CreateDocumentAsync(collection.SelfLink, newUser);
-		}
-
-		public async Task<ScampUser> GetUser(string userId)
+        public  async Task<ScampResourceGroup> GetGroup(string groupID)
         {
-            var users = from u in client.CreateDocumentQuery<ScampUser>(collection.SelfLink)
-                        where u.Id == userId
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
+            var groups = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+                        where u.Id == groupID
+						select u;
+            var grouplist = groups.ToList();
+            if (grouplist.Count == 0)
                 return null;
-            return userList[0];
+            return grouplist[0];
            
         }
+		public async void AddResource(string groupID)
+		{
+			//TODO: stuff
+		}
 
+		public async void AddMember(string groupID)
+		{
+			//TODO: stuff
+		}
+		public async void AddAdmin(string groupID)
+		{
+			//TODO: stuff
+		}
 
-
-        private async Task<Database> GetOrCreateDatabaseAsync(string id)
+		private async Task<Database> GetOrCreateDatabaseAsync(string id)
         {
             Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().FirstOrDefault();
             if (database == null)

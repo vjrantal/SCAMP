@@ -42,7 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ScampSubscription.cs" />
+    <Compile Include="ScampResource.cs" />
+    <Compile Include="ScampResourceGroup.cs" />
+    <Compile Include="ScampUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
