@@ -20,6 +20,13 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
         templateUrl: "/App/Views/Settings.html",
     }).otherwise({ redirectTo: "/Home" });
 
+
+    if (scampSettings.settings.clientId === null)
+        console.error("Missing $env:APPSETTING_ClientId");
+    if (scampSettings.settings.tenantId === null)
+        console.error("Missing $env:APPSETTING_TenantId");
+
+
     adalProvider.init(
         {
             tenant: scampConfig.settings.tenantId,
