@@ -56,6 +56,11 @@ namespace DocumentDbRepositories.Implementation
 
         }
 
+        public async Task CreateGroup(ScampResourceGroup newGroup)
+        {
+            var created = await client.CreateDocumentAsync(collection.SelfLink, newGroup);
+        }
+
         public Task AddResource(string groupID)
         {
             //TODO: stuff
