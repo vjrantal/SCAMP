@@ -26,13 +26,15 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
     if (scampConfig.settings.tenantId === null)
         console.error("Missing $env:APPSETTING_TenantId");
 
+    
 
     adalProvider.init(
         {
             tenant: scampConfig.settings.tenantId,
             clientId: scampConfig.settings.clientId,
             extraQueryParameter: scampConfig.settings.extraQueryParameter,
-            cacheLocation: scampConfig.settings.cacheLocation, // enable this for IE, as sessionStorage does not work for localhost.
+            cacheLocation: scampConfig.settings.cacheLocation,
+            redirectUri: scampConfig.settings.redirectUri
         },
         $httpProvider
         );
