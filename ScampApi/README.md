@@ -20,3 +20,6 @@ Or, these can be set also from Project Properties -> Debug -> Environment Variab
 *    AppSETTING_DocDb:authkey
 
 This format is used as this is what AZW uses
+
+
+There is a temporary endpoint to aid the demo scenario (that we should plan to remove). Hit /sampledata to generate sample data. There's still some work to do to generate more meaningful sample data.
