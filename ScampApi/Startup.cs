@@ -48,6 +48,11 @@ namespace ScampApi
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
 
+            app.UseOAuthBearerAuthentication(options =>
+            {
+                options.Audience = Configuration.Get("ClientId");
+                options.Authority = String.Format(Configuration.Get("AadInstance"), Configuration.Get("TenantId"));
+            });
 
             //app.UseStaticFiles();
             // Add MVC to the request pipeline.
