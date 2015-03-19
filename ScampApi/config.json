@@ -1,8 +1,4 @@
 ﻿{
     "ApiRootUrl": "https://localhost:44300",
-    "AzureAd": {
-        "AadInstance": "https://login.windows.net/{0}",
-        "Tenant": "slscamp.onmicrosoft.com",
-        "Audience": "https://slscamp.onmicrosoft.com/ScampApi"
-    }
+    "AadInstance": "https://login.windows.net/{0}"
 }

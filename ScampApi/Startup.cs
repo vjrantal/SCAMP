@@ -50,8 +50,8 @@ namespace ScampApi
 
             app.UseOAuthBearerAuthentication(options =>
             {
-                options.Audience = Configuration.Get("AzureAd:Audience");
-                options.Authority = String.Format(Configuration.Get("AzureAd:AadInstance"), Configuration.Get("AzureAd:Tenant"));
+                options.Audience = Configuration.Get("ClientId");
+                options.Authority = String.Format(Configuration.Get("AadInstance"), Configuration.Get("TenantId"));
             });
 
             //app.UseStaticFiles();
