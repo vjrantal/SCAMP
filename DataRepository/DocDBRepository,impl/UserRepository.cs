@@ -20,9 +20,6 @@ namespace DocDBRepository.impl
         private static readonly string dbName="scamp";
         private static readonly string collectionName = "userdata";
 
-
-
-
         public  async Task InitializeDBConnection(string endpointUrl, string authKey)
         {
             var policy = new ConnectionPolicy()
@@ -38,7 +35,12 @@ namespace DocDBRepository.impl
 
         }
 
-        public  async Task<ScampUser> GetUser(string userId)
+		public async Task CreateUser(ScampUser newUser)
+		{
+			var created = await client.CreateDocumentAsync(collection.SelfLink, newUser);
+		}
+
+		public async Task<ScampUser> GetUser(string userId)
         {
             var users = from u in client.CreateDocumentQuery<ScampUser>(collection.SelfLink)
                         where u.Id == userId
@@ -46,9 +48,10 @@ namespace DocDBRepository.impl
             var userList = users.ToList();
             if (userList.Count == 0)
                 return null;
-            return userList[0];
-           
+            return userList[0];           
         }
+
+
 
         private async Task<Database> GetOrCreateDatabaseAsync(string id)
         {
