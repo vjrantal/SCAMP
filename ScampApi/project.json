@@ -11,6 +11,7 @@
         "Microsoft.AspNet.Security.OAuthBearer": "1.0.0-beta3",
         "DocumentDbRepositories": ""
     },
+
     "frameworks": {
         "aspnet50": {
             "dependencies": {

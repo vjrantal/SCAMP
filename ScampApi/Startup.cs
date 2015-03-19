@@ -39,6 +39,7 @@ namespace ScampApi
                     .First(formatter => formatter.Instance is JsonOutputFormatter)
                     .Instance);
                 jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                //options.Filters.Add(new RequireHttpsAttribute());
 
             });
 
@@ -67,6 +68,7 @@ namespace ScampApi
                     name: "default",
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
+                
             });
         }
     }
