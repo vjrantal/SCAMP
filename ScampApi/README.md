@@ -1,4 +1,3 @@
-﻿
 
 ### Running with specific Tenant and Client ID ###
 
@@ -10,3 +9,7 @@ In your Package Manager Console, before you debug - add 2 $env variabiels.
 PM> $env:APPSETTING_TenantId = "foo"
 PM> $env:APPSETTING_ClientId = "bar"
 '''
+These can be set also from 
+Project Properties -> Debug -> Environment Variables to set:
+APPSETTING_TenantId  && APPSETTING_ClientId
+this format is used as this is what AZW uses
