@@ -1,10 +1,17 @@
-﻿namespace ScampApi.ViewModels
+﻿using System.Collections.Generic;
+
+namespace ScampApi.ViewModels
 {
     public class GroupResourceSummary
     {
-        public int GroupId { get; set; }
+        public GroupResourceSummary()
+        {
+            Links = new List<Link>();
+        }
+        public string GroupId { get; set; }
         public int ResourceId { get; set; }
         public string Name { get; set; }
-        public string GroupResourceUrl { get; set; }
+        public List<Link> Links { get; set; }
+
     }
 }
