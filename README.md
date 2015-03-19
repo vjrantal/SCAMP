@@ -95,7 +95,9 @@ In your Package Manager Console, before you debug - add $env variabiels.
     PM> $env:AppSETTING_DocDb:databaseName = "<db name here, e.g. scamp>"
     PM> $env:AppSETTING_DocDb:collectionName = "<collection name>"
 
-Or, these can be set also from Project Properties -> Debug -> Environment Variables to set
+Or, these can be set also from Project Properties -> Debug -> Environment Variables to set.
+This format is used as this is what AZW uses for Environment variables. 
+
 
 ````
 APPSETTING_TenantId
@@ -106,9 +108,14 @@ APPSETTING_DocDb:databaseName
 APPSETTING_DocDb:collectionName
 ````
 
-This format is used as this is what AZW uses
+### Settings For Site ###
+- **TenantId** this is the Tenant ID of the AAD Domain. This can be retrieved from the Azure Portal from the URL.
+- **ClientId** this is the Client ID for the Scamp application once it's been setup in an AAD tenant. This comes from the Applications Configure page for that specific AAD Tenant.
+- **DocDB:endpoint** this is the DocumentDB URL that comes from the [Azure Preview Portal](https://portal.azure.com)
+- **DocDB:authkey** this is the DocumentDB key that comes from the [Azure Preview Portal](https://portal.azure.com)
+- **DocDb:databaseName** this is '**scamp**' by default the Scamp code will create this if it doesn't exist already
+- **DocDb:collectionName** this is '**scampdata**' by default the Scamp code will create this if it doesn't exist already.
 
+#### Sample Data Generation ####
 
 There is a temporary endpoint to aid the demo scenario (that we should plan to remove). Hit /sampledata to generate sample data. There's still some work to do to generate more meaningful sample data.
-
-
