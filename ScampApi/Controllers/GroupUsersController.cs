@@ -20,17 +20,17 @@ namespace ScampApi.Controllers
         {
             return new[]
                 {
-                    new UserSummary { UserId = 1, Name = "User1", Links =
+                    new UserSummary { UserId = "1", Name = "User1", Links =
                         {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: 1) } ,
-                            new Link {Rel="groupUser", Href = _linkHelper.GroupUser(groupId: groupId, userId: 1) }
+                            new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
+                            new Link {Rel="groupUser", Href = _linkHelper.GroupUser(groupId: groupId, userId: "1") }
                         }
                     }
                 };
         }
 
         [HttpGet("{userId}", Name="GroupUsers.GetSingle")]
-        public UserSummary Get(string groupId, int userId)
+        public UserSummary Get(string groupId, string userId)
         {
             return new UserSummary
             {
@@ -45,7 +45,7 @@ namespace ScampApi.Controllers
         }
 
         [HttpPost]
-        public void Post(string groupId, [FromBody]int userId)
+        public void Post(string groupId, [FromBody]string userId)
         {
             // TODO implement adding a user to a group
             throw new NotImplementedException();
