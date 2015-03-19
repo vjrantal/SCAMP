@@ -20,17 +20,18 @@ namespace AzureProvisioningLibrary
 
         public Guid SubmitActionInQueue(int resourceId, AzureProvisioningLibrary.ResourceAction  action)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ProvisioningLibraryConfiguration.GetStorageConnectionString()); 
+            var storageConnectionString = ProvisioningLibraryConfiguration.GetStorageConnectionString();
+            var storageAccount = CloudStorageAccount.Parse(storageConnectionString); 
 
 
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            CloudQueue queue = queueClient.GetQueueReference("processorqueue");
+            var queueClient = storageAccount.CreateCloudQueueClient();
+            var queue = queueClient.GetQueueReference("processorqueue");
 
 
             queue.CreateIfNotExists();
             var actionId = Guid.NewGuid();
 
-            var email = new QueueMessage()
+            var actionMessage    = new QueueMessage()
             {
                 OperationGuid = actionId,
                 Action  = action,
@@ -38,8 +39,29 @@ namespace AzureProvisioningLibrary
             };
 
 
-            queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(email)));
+            queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(actionMessage)));
             return actionId;
+        }
+
+        public void SubmitActionInQueue(int resourceId, string actionname)
+        {
+            var action= ResourceAction.Undefined;
+            if (actionname.ToLowerInvariant() == "start")
+            {
+                action = ResourceAction.Start;
+            }
+            if (actionname.ToLowerInvariant() == "stop")
+            {
+                action = ResourceAction.Stop;
+            }
+            if (actionname.ToLowerInvariant() == "create")
+            {
+                action = ResourceAction.Create;
+            }
+            if (action == ResourceAction.Undefined) throw new Exception("Action no defined");
+
+            this.SubmitActionInQueue(resourceId, action);
+
         }
     }
 }

@@ -11,8 +11,11 @@
         "Microsoft.AspNet.Security.OAuthBearer": "1.0.0-beta3"
     },
     "frameworks": {
-        "aspnet50": { },
-        "aspnetcore50": { }
+        "aspnet50": {
+            "dependencies": {
+                "AzureProvisioningLibrary": "1.0.0-*"
+            }
+        }
     },
     "exclude": [
         "wwwroot",
