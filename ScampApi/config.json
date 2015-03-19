@@ -1,9 +1,8 @@
 ﻿{
-  "ApiRootUrl": "https://localhost:44300",
-  "AzureAd": {
-    "ClientId": "82462670-0893-4317-9f72-d8526cf6f662",
-    "Tenant": "zbrad.com",
-    "AadInstance": "https://login.windows.net/{0}", // This is the public instance of Azure AD
-    "PostLogoutRedirectUri":  "https://localhost:44300/"
-  }
+    "ApiRootUrl": "https://localhost:44300",
+    "AzureAd": {
+        "AadInstance": "https://login.windows.net/{0}",
+        "Tenant": "slscamp.onmicrosoft.com",
+        "Audience": "https://slscamp.onmicrosoft.com/ScampApi"
+    }
 }
