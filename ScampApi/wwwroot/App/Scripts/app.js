@@ -21,9 +21,9 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
     }).otherwise({ redirectTo: "/Home" });
 
 
-    if (scampSettings.settings.clientId === null)
+    if (scampConfig.settings.clientId === null)
         console.error("Missing $env:APPSETTING_ClientId");
-    if (scampSettings.settings.tenantId === null)
+    if (scampConfig.settings.tenantId === null)
         console.error("Missing $env:APPSETTING_TenantId");
 
 
