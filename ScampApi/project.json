@@ -10,16 +10,13 @@
         "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta3",
         "Microsoft.AspNet.Security.OAuthBearer": "1.0.0-beta3",
         "DocumentDbRepositories": "",
-        "Newtonsoft.Json": "6.0.8"
+        "Newtonsoft.Json": "6.0.8",
+        "ProvisioningLibrary": "1.0.0-*"
     },
 
     "frameworks": {
         "aspnet50": {
-            "dependencies": {
-                "AzureProvisioningLibrary": "1.0.0-*"
 
-
-            }
         }
     },
     "exclude": [

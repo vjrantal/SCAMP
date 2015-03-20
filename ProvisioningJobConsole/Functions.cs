@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Azure;
-using System.Threading;
-using AzureProvisioningLibrary;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using Microsoft.WindowsAzure.Management.Models;
+using ProvisioningLibrary;
 
-namespace AzureProvisioningJob
+namespace ProvisioningJobConsole
 {
     public class Functions
     {
