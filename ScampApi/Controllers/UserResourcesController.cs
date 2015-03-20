@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AzureProvisioningLibrary;
+using ProvisioningLibrary;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.ConfigurationModel;
 
@@ -20,8 +20,8 @@ namespace ScampApi.Controllers.Controllers
         public UserResourcesController(IConfiguration config)
         {
 
-            var storageCstr = config.Get("StorageConnectionString");
-            settings.Add("StorageConnectionString", storageCstr);
+            var storageCstr = config.Get("Provisioning:StorageConnectionString");
+            settings.Add("Provisioning:StorageConnectionString", storageCstr);
 
             _webJobController = new WebJobController(settings);
         }
