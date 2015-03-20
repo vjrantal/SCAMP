@@ -17,7 +17,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <DevelopmentServerPort>10838</DevelopmentServerPort>
+    <DevelopmentServerPort>44300</DevelopmentServerPort>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AzureProvisioningLibrary\AzureProvisioningLibrary.csproj" />
