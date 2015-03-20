@@ -18,6 +18,7 @@
             "dependencies": {
                 "AzureProvisioningLibrary": "1.0.0-*"
 
+
             }
         }
     },

@@ -29,13 +29,13 @@ namespace AzureProvisioningJob
             if (message.Action == ResourceAction.Stop )
             {
                 log.WriteLine("Stopping VM");
-                var x=resourceController.StartStopVirtualMachine("VSGAB", VirtualMachineAction.Stop);
+                var x=resourceController.StartStopVirtualMachine("VSGAB","DEVSTATION", VirtualMachineAction.Stop);
                 x.Wait();
             }
             if (message.Action == ResourceAction.Start)
             {
                 log.WriteLine("Starting VM");
-               var x=resourceController.StartStopVirtualMachine("VSGAB",VirtualMachineAction.Start);
+               var x=resourceController.StartStopVirtualMachine("VSGAB", "DEVSTATION", VirtualMachineAction.Start);
                 x.Wait();
             }
             if (message.Action == ResourceAction.Create )
