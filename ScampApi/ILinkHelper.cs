@@ -4,12 +4,12 @@
     {
         string Groups();
         string Group(string groupId);
-        string GroupResource(string groupId, int resourceId);
+        string GroupResource(string groupId, string resourceId);
         string GroupTemplate(string groupId, int templateId);
-        string GroupUser(string groupId, int userId);
+        string GroupUser(string groupId, string userId);
         string CurrentUser();
         string Users();
-        string User(int userId);
-        string GroupResourceUser(string groupId, int resourceId, int userId);
+        string User(string userId);
+        string GroupResourceUser(string groupId, string resourceId, string userId);
     }
 }

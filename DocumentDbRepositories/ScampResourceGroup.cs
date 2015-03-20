@@ -15,5 +15,7 @@ namespace DocumentDbRepositories
 		public List<ScampUser> Admins { get; set; }
 		public List<ScampUser> Members { get; set; }
 		public List<ScampResource> Resources { get; set; }
+
+        public string type { get { return "group"; } }
 	}
 }

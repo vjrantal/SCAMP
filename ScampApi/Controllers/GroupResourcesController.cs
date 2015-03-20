@@ -19,13 +19,13 @@ namespace ScampApi.Controllers
         public IEnumerable<GroupResourceSummary> GetAll(string groupId)
         {
             return new[] {
-                new GroupResourceSummary { GroupId = groupId, ResourceId = 1, Name = "GroupResource1" },
-                new GroupResourceSummary { GroupId = groupId, ResourceId = 2, Name = "GroupResource2" },
+                new GroupResourceSummary { GroupId = groupId, ResourceId = "1", Name = "GroupResource1" },
+                new GroupResourceSummary { GroupId = groupId, ResourceId = "2", Name = "GroupResource2" },
                 };
         }
 
         [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]
-        public GroupResource Get(string groupId, int resourceId)
+        public GroupResource Get(string groupId, string resourceId)
         {
             return new GroupResource
             {
@@ -34,10 +34,10 @@ namespace ScampApi.Controllers
                 Name = "GroupResource" + resourceId,
                 Users = new[]
                 {
-                    new UserSummary { UserId = 1, Name = "User1", Links =
+                    new UserSummary { UserId = "1", Name = "User1", Links =
                         {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: 1) } ,
-                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: 1) }
+                            new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
+                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: "1") }
                         }
                     }
                 }
@@ -52,14 +52,14 @@ namespace ScampApi.Controllers
         }
 
         [HttpPut("{resourceId}")]
-        public void Put(int groupId, int resourceId, [FromBody]GroupResource value)
+        public void Put(int groupId, string resourceId, [FromBody]GroupResource value)
         {
             // TODO implement updating a group resource
             throw new NotImplementedException();
         }
 
         [HttpDelete("{resourceId}")]
-        public void Delete(int groupId, int resourceId)
+        public void Delete(int groupId, string resourceId)
         {
             // TODO implement removing a resource from a group
             throw new NotImplementedException();

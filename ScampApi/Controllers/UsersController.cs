@@ -23,33 +23,33 @@ namespace ScampApi.Controllers.Controllers
         {
             return new[] {
                 new UserSummary {
-                    UserId =1,
+                    UserId ="1",
                     Name = "User1",
                     Links = {
-                         new Link {Rel="user", Href= _linkHelper.User(1) }
+                         new Link {Rel="user", Href= _linkHelper.User("1") }
                     }
                 },
                  new UserSummary {
-                    UserId =2,
+                    UserId ="2",
                     Name = "User2",
                     Links = {
-                         new Link {Rel="user", Href= _linkHelper.User(2) }
+                         new Link {Rel="user", Href= _linkHelper.User("2") }
                     }
                 }
             };
         }
 
         [HttpGet("{userId}", Name = "Users.GetSingle")]
-        public User Get(int userId)
+        public User Get(string userId)
         {
 
 
             return new User
             {
-                Id = 1,
+                Id = "1",
                 Name = "User1",
                 Groups = new[] { new GroupSummary { GroupId = "Id1", Name = "Group1", Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: "Id1") } } } },
-                Resources = new[] { new GroupResourceSummary { GroupId = "Id1", ResourceId = 1, Name = "GroupResource1", Links = { new Link { Rel = "groupResource", Href = _linkHelper.GroupResource(groupId: "Id1", resourceId: 1) } } } }
+                Resources = new[] { new GroupResourceSummary { GroupId = "Id1", ResourceId = "1", Name = "GroupResource1", Links = { new Link { Rel = "groupResource", Href = _linkHelper.GroupResource(groupId: "Id1", resourceId: "1") } } } }
             };
         }
 

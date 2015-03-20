@@ -10,7 +10,7 @@ namespace ScampApi.ViewModels
             Links = new List<Link>();
         }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string Name { get; set; }
 
         public List<Link> Links { get; set; }
