@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AzureProvisioningLibrary;
 using Microsoft.Azure.WebJobs;
+using Microsoft.WindowsAzure;
 
 namespace AzureProvisioningJob
 {
@@ -16,9 +18,34 @@ namespace AzureProvisioningJob
         static void Main()
         {
 
-            var host = new JobHost();
+            string storageCstr = GetConnectionString();
+
+            var host = new JobHost(new JobHostConfiguration(storageCstr));
+
+            //AzureProvisioningLibrary.WebJobController w = new WebJobController();
+            //w.SubmitActionInQueue(1, ResourceAction.Start);
+
+            
             // The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
+        }
+
+        private static string GetConnectionString()
+        {
+
+            string rv = null;
+
+            rv = System.Environment.GetEnvironmentVariable("APPSETTING_StorageConnectionString");
+
+            if (string.IsNullOrEmpty(rv))
+                rv = CloudConfigurationManager.GetSetting("StorageConnectionString");
+
+
+            if (string.IsNullOrEmpty(rv))
+                throw new ArgumentNullException("you're missing StorageConnectionString in either ENV or Config");
+
+
+            return rv;
         }
     }
 }

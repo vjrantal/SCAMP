@@ -9,7 +9,7 @@ using Microsoft.Azure.Documents.Linq;
 namespace DocumentDbRepositories.Implementation
 {
 
-    public class ResourceRepository
+    public class GroupRepository
     {
         private DocumentClient client;
         private Database database;
@@ -30,41 +30,30 @@ namespace DocumentDbRepositories.Implementation
 
         }
 
-        public Task<ScampResource> GetResource(string resourceId)
+        public Task<ScampResourceGroup> GetGroup(string groupID)
         {
-            var resources = from u in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
-                            where u.Id == resourceId
-                            select u;
-            var resourceList = resources.ToList();
-            if (resourceList.Count == 0)
-                return Task.FromResult((ScampResource)null);
-            return Task.FromResult(resourceList[0]);
+            var groups = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+                         where u.Id == groupID
+                         select u;
+            var grouplist = groups.ToList();
+            if (grouplist.Count == 0)
+                return Task.FromResult((ScampResourceGroup)null);
+            return Task.FromResult(grouplist[0]);
+
         }
 
-        public Task<IEnumerable<ScampResourceGroup>> GetResources()
+        public Task<IEnumerable<ScampResourceGroup>> GetGroups()
         {
-            var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                            select u;
-            var resourceList = resources.ToList();
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList[0]);
+            var groups = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+                         select u;
+            var grouplist = groups.ToList();
+            return Task.FromResult((IEnumerable<ScampResourceGroup>)grouplist);
+
         }
 
-        public Task<IEnumerable<ScampResourceGroup>> GetResourcesByOwner(string userId)
+        public async Task CreateGroup(ScampResourceGroup newGroup)
         {
-            //TODO: need to add "join" to get by owner relationship
-            var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                            select u;
-            var resourceList = resources.ToList();
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
-        }
-
-        public Task<IEnumerable<ScampResourceGroup>> GetResourcesByGroup(string userId)
-        {
-            //TODO: need to add "join" to get by group relationship
-            var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                            select u;
-            var resourceList = resources.ToList();
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
+            var created = await client.CreateDocumentAsync(collection.SelfLink, newGroup);
         }
 
         public Task AddResource(string groupID)
@@ -73,7 +62,12 @@ namespace DocumentDbRepositories.Implementation
             throw new NotImplementedException();
         }
 
-        public void AddOwner(string groupID)
+        public Task AddMember(string groupID)
+        {
+            //TODO: stuff
+            throw new NotImplementedException();
+        }
+        public Task AddAdmin(string groupID)
         {
             //TODO: stuff
             throw new NotImplementedException();

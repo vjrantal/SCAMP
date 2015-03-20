@@ -20,22 +20,23 @@ namespace AzureProvisioningJob
         // on an Azure Queue called queue.
         public static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
         {
-            //TODO Get cert from DB and SubscritpionId
-            const string cert = "{add certificate}";
-            const string subscriptionId = "{add Subscription Id}";
+            //TODO Get cert from DB and SubscritpionId this is temporary
+            string cert = ProvisioningLibraryConfiguration.GetStorageSubscriptionCertificate() ;
+            string subscriptionId = ProvisioningLibraryConfiguration.GetStorageSubscriptionId() ;
             var resourceController  = new ResourceController(cert, subscriptionId);
             //TODO Get Connection string from DB
 
             if (message.Action == ResourceAction.Stop )
             {
                 log.WriteLine("Stopping VM");
-                resourceController.StartStopVirtualMachine("VSGAB", VirtualMachineAction.Start).RunSynchronously();
+                var x=resourceController.StartStopVirtualMachine("VSGAB","DEVSTATION", VirtualMachineAction.Stop);
+                x.Wait();
             }
-            if (message.Action == ResourceAction.Stop)
+            if (message.Action == ResourceAction.Start)
             {
                 log.WriteLine("Starting VM");
-                resourceController.StartStopVirtualMachine("VSGAB", VirtualMachineAction.Stop).RunSynchronously();
-
+               var x=resourceController.StartStopVirtualMachine("VSGAB", "DEVSTATION", VirtualMachineAction.Start);
+                x.Wait();
             }
             if (message.Action == ResourceAction.Create )
             {
