@@ -29,13 +29,9 @@ namespace ScampApi.Controllers.Controllers
 
         // POST /api/user/resources/{resourceId}/{actionname}
         [HttpPost("{actionname}")]
-        public void Post(int resourceId, string actionname)
+        public void Post(string  resourceId, string actionname)
         {
-            // Start, Stop a resource
-
             _webJobController.SubmitActionInQueue(resourceId, actionname);
-
-
         }
 
         // GET /api/user/resources/{resourceId}/connect

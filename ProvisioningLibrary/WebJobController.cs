@@ -20,7 +20,7 @@ namespace ProvisioningLibrary
             _settings = settings;   
         }
 
-        public Guid SubmitActionInQueue(int resourceId, ProvisioningLibrary.ResourceAction  action)
+        public Guid SubmitActionInQueue(string  resourceId, ProvisioningLibrary.ResourceAction  action)
         {
             var storageConnectionString = _settings["Provisioning:StorageConnectionString"];
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString); 
@@ -45,7 +45,7 @@ namespace ProvisioningLibrary
             return actionId;
         }
 
-        public void SubmitActionInQueue(int resourceId, string actionname)
+        public void SubmitActionInQueue(string resourceId, string actionname)
         {
             var action= ResourceAction.Undefined;
             if (actionname.ToLowerInvariant() == "start")
