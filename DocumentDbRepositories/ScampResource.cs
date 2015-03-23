@@ -16,7 +16,11 @@ namespace DocumentDbRepositories
 		public string SubscriptionId { get; set; }
 		public string ResourceType { get; set; }
 		public string State { get; set; }
-		public List<ScampUser> Owners { get; set; }
+        public string CloudServiceName { get; set; }
+        public string UserName { get; set; }
+        public string UserPassword { get; set; }
+        public string rdpPort { get; set; }
+        public List<ScampUser> Owners { get; set; }
         public string GroupId { get; set; }
     }
 }

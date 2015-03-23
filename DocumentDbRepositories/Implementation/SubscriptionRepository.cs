@@ -50,6 +50,17 @@ namespace DocumentDbRepositories.Implementation
            
         }
 
+        public Task<List<ScampSubscription>> GetAllSubscription()
+        {
+            var subscriptions = from u in client.CreateDocumentQuery<ScampSubscription>(collection.SelfLink)
+                                select u;
+            var subList = subscriptions.ToList();
+            if (subList.Count == 0)
+                return Task.FromResult((List<ScampSubscription>)null);
+            return Task.FromResult(subList);
+
+        }
+
 
 
         private async Task<Database> GetOrCreateDatabaseAsync(string id)

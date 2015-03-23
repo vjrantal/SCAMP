@@ -27,22 +27,38 @@ namespace ScampApi.Controllers
         [ActionName("Index")]
         public async Task<IActionResult> Index_Post()
         {
-            var groupRepo = await _repositoryFactory.GetGroupRepositoryAsync();
-            await groupRepo.CreateGroup(new ScampResourceGroup
-            {
-                Id = Guid.NewGuid().ToString("d"),
-                Name = "My sample group",
-                Resources = new List<ScampResource>
+            var subscriptionId= Request.Form["subscriptionId"];
+            var subscriptionMngCert = Request.Form["subscriptionMngCert"];
+            
+            if(Request.Form["addSampleData"]== "on")
+            { 
+                var groupRepo = await _repositoryFactory.GetGroupRepositoryAsync();
+                await groupRepo.CreateGroup(new ScampResourceGroup
                 {
-                    new ScampResource
+                    Id = Guid.NewGuid().ToString("d"),
+                    Name = "Classrome 1 (SampleData)",
+                    Resources = new List<ScampResource>
+                    {
+                        new ScampResource
+                        {
+                            Id = Guid.NewGuid().ToString("d"),
+                            Name = "Wordpress virtual machine (SampleData)",
+                            ResourceType = "Virtual Machine",
+                            State = "Not provisioned"
+                        }
+                    }
+                });
+            }
+            if (Request.Form["addSubscription"] == "on")
+            {
+                var subRepo = await _repositoryFactory.GetSubscriptionRepositoryAsync();
+                    await subRepo.CreateSubscription(new ScampSubscription
                     {
                         Id = Guid.NewGuid().ToString("d"),
-                        Name = "my resource",
-                        ResourceType = "dummy type",
-                        
-                    }
-                }
-            });
+                        AzureSubscriptionID = subscriptionId,
+                        AzureManagementThumbnail = subscriptionMngCert
+                    });
+            }
             return Content("Done!");
         }
     }
