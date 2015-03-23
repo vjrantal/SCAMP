@@ -9,11 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataTier", "DataTier", "{FD
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DocumentDbRepositories", "DocumentDbRepositories\DocumentDbRepositories.kproj", "{0C8E6A9D-D14F-4A5B-9228-09F826D74604}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{63EC0B60-3D54-4B7D-8BEE-FD226D655CD0}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Provisioning", "Provisioning", "{80B65567-31FB-417F-BF5A-E4D24CA13903}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ProvisioningLibrary", "ProvisioningLibrary\ProvisioningLibrary.kproj", "{2C51CD0C-EB46-40FF-BDD4-1F5E8A55B182}"
