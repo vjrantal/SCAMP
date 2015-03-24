@@ -17,24 +17,24 @@ namespace ScampApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<UserSummary> GetAll(string groupId, int resourceId)
+        public IEnumerable<UserSummary> GetAll(string groupId, string resourceId)
         {
             return new[]
                 {
-                    new UserSummary { UserId = 1, Name = "User1", Links =
+                    new UserSummary { UserId = "1", Name = "User1", Links =
                         {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: 1) } ,
-                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: 1) }
+                            new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
+                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: "1") }
                         }
                     }
                 };
         }
         [HttpGet("{userId}", Name = "GroupResourceUsers.GetSingle")]
-        public UserSummary Get(string groupId, int resourceId, int userId)
+        public UserSummary Get(string groupId, string resourceId, string userId)
         {
             return new UserSummary
             {
-                UserId = 1,
+                UserId = "1",
                 Name = "User1",
                 Links =
                         {
@@ -45,14 +45,14 @@ namespace ScampApi.Controllers
         }
 
         [HttpPost]
-        public void Post(string groupId, int resourceId, [FromBody]int userId)
+        public void Post(string groupId, string resourceId, [FromBody]string userId)
         {
             // TODO implement adding a user to a group resource
             throw new NotImplementedException();
         }
 
         [HttpDelete("{userId}")]
-        public void Delete(string groupId, int resourceId, int userId)
+        public void Delete(string groupId, string resourceId, string userId)
         {
             // TODO implement removing a user from a group resource
             throw new NotImplementedException();

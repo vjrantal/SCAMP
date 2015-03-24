@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Azure;
-using System.Threading;
-using AzureProvisioningLibrary;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using Microsoft.WindowsAzure.Management.Models;
+using ProvisioningLibrary;
 
-namespace AzureProvisioningJob
+namespace ProvisioningJobConsole
 {
     public class Functions
     {
@@ -29,13 +22,14 @@ namespace AzureProvisioningJob
             if (message.Action == ResourceAction.Stop )
             {
                 log.WriteLine("Stopping VM");
-                resourceController.StartStopVirtualMachine("VSGAB", VirtualMachineAction.Start).RunSynchronously();
+                var x=resourceController.StartStopVirtualMachine("VSGAB","DEVSTATION", VirtualMachineAction.Stop);
+                x.Wait();
             }
-            if (message.Action == ResourceAction.Stop)
+            if (message.Action == ResourceAction.Start)
             {
                 log.WriteLine("Starting VM");
-                resourceController.StartStopVirtualMachine("VSGAB", VirtualMachineAction.Stop).RunSynchronously();
-
+               var x=resourceController.StartStopVirtualMachine("VSGAB", "DEVSTATION", VirtualMachineAction.Start);
+                x.Wait();
             }
             if (message.Action == ResourceAction.Create )
             {

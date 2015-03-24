@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
@@ -31,6 +32,16 @@ namespace ScampApi.Controllers
             {
                 Id = Guid.NewGuid().ToString("d"),
                 Name = "My sample group",
+                Resources = new List<ScampResource>
+                {
+                    new ScampResource
+                    {
+                        Id = Guid.NewGuid().ToString("d"),
+                        Name = "my resource",
+                        ResourceType = "dummy type",
+                        
+                    }
+                }
             });
             return Content("Done!");
         }

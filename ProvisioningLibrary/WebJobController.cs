@@ -9,18 +9,20 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
-namespace AzureProvisioningLibrary
+namespace ProvisioningLibrary
 {
     public class WebJobController
     {
-        public WebJobController()
+        IDictionary<string, string> _settings;
+
+        public WebJobController(IDictionary<string, string> settings)
         {
-                
+            _settings = settings;   
         }
 
-        public Guid SubmitActionInQueue(int resourceId, AzureProvisioningLibrary.ResourceAction  action)
+        public Guid SubmitActionInQueue(int resourceId, ProvisioningLibrary.ResourceAction  action)
         {
-            var storageConnectionString = ProvisioningLibraryConfiguration.GetStorageConnectionString();
+            var storageConnectionString = _settings["Provisioning:StorageConnectionString"];
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString); 
 
 

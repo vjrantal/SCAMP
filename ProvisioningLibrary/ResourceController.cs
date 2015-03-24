@@ -1,7 +1,6 @@
 ﻿using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Management.Compute;
 using Microsoft.WindowsAzure.Management.Compute.Models;
-using Microsoft.WindowsAzure.Management.Models;
 using Microsoft.WindowsAzure.Management.Storage;
 using Microsoft.WindowsAzure.Management.Storage.Models;
 using System;
@@ -12,7 +11,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace AzureProvisioningLibrary
+namespace ProvisioningLibrary
 {
     public class ResourceController 
     {
@@ -149,31 +148,54 @@ namespace AzureProvisioningLibrary
 
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
-                var Details = await computeClient.HostedServices.GetDetailedAsync(virtualMachineName);
+                var details = await computeClient.HostedServices.GetDetailedAsync(virtualMachineName);
                
-                return Details.Deployments[0].RoleInstances[0].InstanceStatus;
+                return details.Deployments[0].RoleInstances[0].InstanceStatus;
             }
         }
-        public async Task StartStopVirtualMachine(string virtualMachineName, VirtualMachineAction action)
+        public async Task StartStopVirtualMachine(string cloudServiceName, string virtualMachineName, VirtualMachineAction action)
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
-                var vm =  await computeClient.HostedServices.GetDetailedAsync(virtualMachineName);
+                HostedServiceGetDetailedResponse vm;
+                try
+                {
+                     vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine( "Virtual Machine not found");
+                    return;
+                }
+                
 
-                var deployment = vm.Deployments.ToList().FirstOrDefault();
+                var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
+
                 if (deployment != null)
                 {
                     var deploymantSlotName = deployment.Name;
                     var serviceName= vm.ServiceName;
+                    var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
+
                     if (action == VirtualMachineAction.Start)
                     {
+                        if (instance.InstanceStatus == "ReadyRole")
+                        {
+                            Console.WriteLine("VM Already Started");
+                            return;
+                        }
                         //TODO this is strange but for now i leave it a is. Need to be refactored.
-                        await  computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, deploymantSlotName);
+                        await  computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
                     
                     }
                     else
                     {
-                        computeClient.VirtualMachines.Shutdown (serviceName, deploymantSlotName, deploymantSlotName, new VirtualMachineShutdownParameters { });
+                        if (instance.InstanceStatus == "StoppedVM")
+                        {
+                            Console.WriteLine("VM Already Stopped");
+                            return;
+                        }
+                        computeClient.VirtualMachines.Shutdown (serviceName, deploymantSlotName, instance.HostName, new VirtualMachineShutdownParameters { });
                     }
                 }
             }
