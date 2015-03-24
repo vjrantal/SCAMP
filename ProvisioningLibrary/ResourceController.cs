@@ -65,7 +65,7 @@ namespace ProvisioningLibrary5x
         public async Task<bool> UpdateResource(ScampResource resource)
         {
             var resRepo = await _repositoryFactory.GetResourceRepositoryAsync();
-            //resRepo.UpdateResource(resource);
+            resRepo.UpdateResource(resource);
             return true;
 
         }

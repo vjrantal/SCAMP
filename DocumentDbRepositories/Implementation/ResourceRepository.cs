@@ -32,6 +32,7 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<ScampResource> GetResource(string resourceId)
         {
+            //TODO Check
             var resources = from u in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
                             where u.Id == resourceId
                             select u;
@@ -101,5 +102,15 @@ namespace DocumentDbRepositories.Implementation
             return collection;
         }
 
+        public async  void  UpdateResource(ScampResource resource)
+        {
+            //TODO Check
+            var resources = from u in client.CreateDocumentQuery(collection.SelfLink)
+                            where u.Id == resource.Id 
+                            select u;
+            
+            await client.ReplaceDocumentAsync( resources.First().SelfLink,  resource);
+
+        }
     }
 }
