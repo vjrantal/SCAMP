@@ -38,7 +38,7 @@ namespace ProvisioningLibrary5x
             //Need to add the logic of choosing a subscription.
             //For now is the first in the store
             var subRepo = await _repositoryFactory.GetSubscriptionRepositoryAsync();
-            var c= await subRepo.GetAllSubscription();
+            var c= await subRepo.GetSubscriptions();
 
             return c.FirstOrDefault();
 
