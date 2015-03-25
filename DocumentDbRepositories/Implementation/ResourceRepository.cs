@@ -27,14 +27,14 @@ namespace DocumentDbRepositories.Implementation
 
             //Get, or Create, the Document Collection
             collection = await GetOrCreateCollectionAsync(database.SelfLink, collectionName);
-
         }
 
         public Task<ScampResource> GetResource(string resourceId)
         {
-            var resources = from u in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
-                            where u.Id == resourceId
-                            select u;
+            //TODO Check
+            var resources = from r in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
+                            where r.Id == resourceId && r.Type == "resource"
+                            select r;
             var resourceList = resources.ToList();
             if (resourceList.Count == 0)
                 return Task.FromResult((ScampResource)null);
@@ -43,19 +43,25 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<IEnumerable<ScampResourceGroup>> GetResources()
         {
-            var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                            select u;
+            var resources = from r in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
+                            where r.Type == "resource"
+                            select r;
             var resourceList = resources.ToList();
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList[0]);
+            return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
         }
 
         public Task<IEnumerable<ScampResourceGroup>> GetResourcesByOwner(string userId)
         {
             //TODO: need to add "join" to get by owner relationship
-            var resources = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                            select u;
+            var resources = from r in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+                            select r;
             var resourceList = resources.ToList();
             return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
+        }
+
+        public async Task CreateResource(ScampResource resource)
+        {
+            var created = await client.CreateDocumentAsync(collection.SelfLink, resource);
         }
 
         public Task<IEnumerable<ScampResourceGroup>> GetResourcesByGroup(string userId)
@@ -101,5 +107,15 @@ namespace DocumentDbRepositories.Implementation
             return collection;
         }
 
+        public async  void  UpdateResource(ScampResource resource)
+        {
+            //TODO Check
+            var resources = from u in client.CreateDocumentQuery(collection.SelfLink)
+                            where u.Id == resource.Id 
+                            select u;
+            
+            await client.ReplaceDocumentAsync( resources.First().SelfLink,  resource);
+
+        }
     }
 }

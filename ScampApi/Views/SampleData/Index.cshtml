@@ -7,5 +7,25 @@
 
 @using (Html.BeginForm())
 {
+
+
+    <div style="background: cadetblue">
+        Add subscription: <input type="checkbox" checked name="addSubscription" /><br />
+        
+        <p>This is the Azure Subscription used to spin resources</p>
+        Subscription Id: <input type="text" name="subscriptionId"/>
+        <br/>
+        Subscription Certificate:: <input type="text" name="subscriptionMngCert"/>
+
+        https://manage.windowsazure.com/publishsettings/index?client=powershell
+    </div>
+
+    <br/>
+    <div style="background:darkseagreen">
+        Add sample data: <input type="checkbox" checked name="addSampleData"/>
+        <p>This add sample data to DocDB</p>
+    
+    </div><br/>
+
     <input type="submit" value="Do It!" />
 }

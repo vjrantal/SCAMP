@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Framework.ConfigurationModel;
+using ProvisioningLibrary;
 
 namespace ProvisioningJobConsole
 {
@@ -17,8 +19,11 @@ namespace ProvisioningJobConsole
 
             var host = new JobHost(new JobHostConfiguration(storageCstr));
 
-            //AzureProvisioningLibrary.WebJobController w = new WebJobController();
-            //w.SubmitActionInQueue(1, ResourceAction.Start);
+
+            //IDictionary<string, string> settings = new Dictionary<string, string>();
+            //settings.Add("Provisioning:StorageConnectionString", storageCstr);
+            //ProvisioningLibrary.WebJobController w = new WebJobController(settings);
+            //w.SubmitActionInQueue("0e0b37d0-b2b7-40d2-8f5b-aa6afed05e55", ResourceAction.Start);
 
 
             // The following code ensures that the WebJob will be running continuously

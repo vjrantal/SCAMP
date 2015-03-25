@@ -29,88 +29,42 @@ namespace DocumentDbRepositories.Implementation
             collection = await GetOrCreateCollectionAsync(database.SelfLink, collectionName);
 
         }
-
         public Task<ScampResourceGroup> GetGroup(string groupID)
         {
-            // TODO - figure out why this mapping for Admins and Members 
             var groupQuery = from g in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                             where g.Id == groupID
+                             where g.Id == groupID && g.Type == "group"
                              select g;
             var group = groupQuery.ToList().FirstOrDefault();
-            //var groupQuery = client.CreateDocumentQuery<dynamic>(collection.SelfLink,
-            //    new SqlQuerySpec(
-            //        "SELECT * " +
-            //        "FROM g " +
-            //        "WHERE g.type='group' AND g.id = @groupid")
-            //    {
-            //        Parameters = new SqlParameterCollection
-            //        {
-            //            new SqlParameter("@groupid", groupID)
-            //        }
-            //    }
-            //        );
-            //var group = groupQuery.ToList().Select(g => new ScampResourceGroup
-            //{
-            //    Id = g.id,
-            //    Name = g.name,
-            //    Admins = ((IEnumerable<dynamic>)g.admins).Select(u =>
-            //            new ScampUser
-            //            {
-            //                Id = u.id,
-            //                Name =  u.name
-            //            })
-            //            .ToList(),
-            //    Members = null // TODO
-            //})
-            //.FirstOrDefault();
-
-            if (group == null)
-                return Task.FromResult((ScampResourceGroup)null);
-
-            var resourcesQuery = client.CreateDocumentQuery<dynamic>(collection.SelfLink,
-                new SqlQuerySpec(
-                    "SELECT * " +
-                    "FROM r " +
-                    "WHERE r.type='resource' AND r.parentgroup.id = @groupid")
-                {
-                    Parameters = new SqlParameterCollection
-                    {
-                        new SqlParameter("@groupid", groupID)
-                    }
-                }
-                    );
-            group.Resources = resourcesQuery.ToList()
-                .Select(r => new ScampResource
-                {
-                    Id = r.id,
-                    GroupId = r.resourcegroup.id,
-                    Name = r.Name,
-                    AzureResourceId = r.azureResourceId,
-                    SubscriptionId = r.subscriptionId,
-                    ResourceType = r.resourceType,
-                    State = r.state,
-                    Owners = ((IEnumerable<dynamic>)r.owners)
-                                .Select(o=> new ScampUser
-                                {
-                                    Id = o.id,
-                                    Name = o.name
-                                })
-                                .ToList()
-                })
-                .ToList();
 
             return Task.FromResult(group);
+        }
 
+        public Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID)
+        {
+            var groupQuery = from g in client.CreateDocumentQuery<ScampResourceGroupWithResources>(collection.SelfLink)
+                             where g.Id == groupID && g.Type == "group"
+                             select g;
+            var group = groupQuery.ToList().FirstOrDefault();
+            
+            if (group == null)
+                return Task.FromResult((ScampResourceGroupWithResources)null);
+
+            var resourcesQuery = from r in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
+                                 where r.Type == "resource" && r.ResourceGroup.Id == groupID
+                                 select r;
+
+            group.Resources = resourcesQuery.ToList();
+
+            return Task.FromResult(group);
         }
 
         public Task<IEnumerable<ScampResourceGroup>> GetGroups()
         {
             var groups = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
-                         where u.type == "group"
+                         where u.Type == "group"
                          select u;
             var grouplist = groups.ToList();
             return Task.FromResult((IEnumerable<ScampResourceGroup>)grouplist);
-
         }
 
         public async Task CreateGroup(ScampResourceGroup newGroup)
