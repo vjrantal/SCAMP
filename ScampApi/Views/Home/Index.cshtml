@@ -12,73 +12,21 @@
 }
 
 <div ng-app="scamp" ng-controller="homeCtrl" role="document">
-    <!--sidebar-->
     <div id="page-wrapper" class="open">
-        <div id="sidebar-wrapper">
-            <ul class="sidebar">
-                <li class="sidebar-main">
-                    <a {{action "toggleSidebar" target=view}}>
-                        Scamp
-                        <span class="menu-icon glyphicon glyphicon-transfer"></span>
-                    </a>
-                </li>
-                <li class="sidebar-title"><span>NAVIGATION</span></li>
-                <li class="sidebar-list">
-                    <a href="#/dashboard">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/resources">Resources <span class="menu-icon fa fa-cloud"></span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/logs">Logs <span class="menu-icon fa fa-list"></span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/settings">Settings <span class="menu-icon fa fa-cog"></span></a>
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                <div class="col-xs-4">
-                    <a href="https://github.com/SimpleCloudManagerProject/Scamp-API" target="_blank">
-                        Github
-                    </a>
-                </div>
-                <div class="col-xs-4">
-                    <a href="" target="_blank">
-                        About
-                    </a>
-                </div>
-                <div class="col-xs-4">
-                    <a href="#">
-                        Support
-                    </a>
-                </div>
-            </div>
+        <div id="sidebar-wrapper" ng-if="isLoggedOn" ng-include="'/App/Views/Sidebar.html'">
+            <!--sidebar-->
         </div>
-
-
         <div class="content-wrapper" role="main">
-            <!--header-->
-            <div class="row header">
-                <div class="col-xs-12">
-                    <div class="user pull-right">
-                        <div class="item dropdown">
-                            <a data-toggle="collapse" data-target=".navbar-collapse" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                                <img src="http://placekitten.com/g/40/40">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="meta">
-                        <div class="page" ng-bind="currentRouteName">
-                        </div>
-                    </div>
-                </div>
+            <div class="row header"  ng-include="'/App/Views/Header.html'">
+                <!--header-->
             </div>
             <div ng-view class="page-content">
+                <!--page content-->
             </div>
         </div>
 
     </div>
-
+</div>
 @section scripts{
 
     <script>
@@ -96,6 +44,7 @@
 
     <script src="~/app/scripts/app.js"></script>
     <script src="~/app/scripts/homectrl.js"></script>
+    <script src="~/app/scripts/homeSvc.js"></script>
     <script src="~/app/scripts/userdatactrl.js"></script>
     <script src="~/app/scripts/resourcesctrl.js"></script>
     <script src="~/app/scripts/resourcessvc.js"></script>
