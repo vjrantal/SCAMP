@@ -9,6 +9,11 @@ namespace ScampApi.ViewModels
         public string Id { get; set; }
         public string Name { get; set; }
 
+        public string email { get; set; }
+
+        public string IPKey { get; set; }
+
+        public bool IsSystemAdmin { get; set; }
         public IEnumerable<GroupSummary> Groups { get; internal set; }
         public IEnumerable<GroupResourceSummary> Resources { get; internal set; }
     }

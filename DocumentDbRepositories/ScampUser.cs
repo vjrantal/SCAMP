@@ -16,6 +16,15 @@ namespace DocumentDbRepositories
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "user"; } }
+
+        [JsonProperty(PropertyName = "email")]
+        public string email { get; set; }
+
+        [JsonProperty(PropertyName = "IPKey")]
+        public string IPKey { get; set; }
+
+        [JsonProperty(PropertyName = "IsSystemAdmin")]
+        public bool IsSystemAdmin { get; set; }
     }
     public class ScampUserReference
     {
