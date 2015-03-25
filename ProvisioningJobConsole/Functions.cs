@@ -99,7 +99,7 @@ namespace ProvisioningJobConsole
                 docDbResource.SubscriptionId = subscription.Id;
                 docDbResource.UserName = username;
                 docDbResource.UserPassword = password;
-                docDbResource.rdpPort = rdpPort.ToString();
+                docDbResource.RdpPort = rdpPort.ToString();
                 await resourceController.UpdateResource(docDbResource);
             }
           

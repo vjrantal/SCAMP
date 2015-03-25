@@ -11,16 +11,32 @@ namespace DocumentDbRepositories
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-		public string AzureResourceId { get; set; }
-		public string SubscriptionId { get; set; }
-		public string ResourceType { get; set; }
-		public string State { get; set; }
+        [JsonProperty(PropertyName = "resourceGroup")]
+        public ScampResourceGroupReference ResourceGroup { get; set; }
+        [JsonProperty(PropertyName = "azureResourceId")]
+        public string AzureResourceId { get; set; }
+        [JsonProperty(PropertyName = "subscriptionId")]
+        public string SubscriptionId { get; set; }
+        [JsonProperty(PropertyName = "resourceType")]
+        public string ResourceType { get; set; }
+        [JsonProperty(PropertyName = "state")]
+        public string State { get; set; }
+        [JsonProperty(PropertyName = "cloudServiceName")]
         public string CloudServiceName { get; set; }
+        [JsonProperty(PropertyName = "userName")]
         public string UserName { get; set; }
+        [JsonProperty(PropertyName = "userPassword")]
         public string UserPassword { get; set; }
-        public string rdpPort { get; set; }
-        public List<ScampUser> Owners { get; set; }
-        public string GroupId { get; set; }
+        [JsonProperty(PropertyName = "rdpPort")]
+        public string RdpPort { get; set; }
+
+        [JsonProperty(PropertyName = "owners")]
+        public List<ScampUserReference> Owners { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get { return "resource"; } }
+
     }
 }

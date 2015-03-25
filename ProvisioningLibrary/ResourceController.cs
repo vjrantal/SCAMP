@@ -47,7 +47,7 @@ namespace ProvisioningLibrary5x
         public async Task<string> GetCloudServiceName(ScampResource  scampResource )
         {
             var groupRepo = await _repositoryFactory.GetGroupRepositoryAsync();
-            var grp = await groupRepo.GetGroup(scampResource.GroupId);
+            var grp = await groupRepo.GetGroupWithResources(scampResource.ResourceGroup.Id);
             return grp.Name.ToLower().Replace(" ","-");
         }
 

@@ -27,37 +27,55 @@ namespace ScampApi.Controllers
         [ActionName("Index")]
         public async Task<IActionResult> Index_Post()
         {
-            var subscriptionId= Request.Form["subscriptionId"];
+            var subscriptionId = Request.Form["subscriptionId"];
             var subscriptionMngCert = Request.Form["subscriptionMngCert"];
-            
-            if(Request.Form["addSampleData"]== "on")
-            { 
+
+            if (Request.Form["addSampleData"] == "on")
+            {
+                var userRepo = await _repositoryFactory.GetUserRepositoryAsync();
+                var user1 = new ScampUser
+                {
+                    Id = Guid.NewGuid().ToString("d"),
+                    Name = "Some User1"
+                };
+                var user2 = new ScampUser
+                {
+                    Id = Guid.NewGuid().ToString("d"),
+                    Name = "Some User2"
+                };
+                await userRepo.CreateUser(user1);
+                await userRepo.CreateUser(user2);
+
                 var groupRepo = await _repositoryFactory.GetGroupRepositoryAsync();
-                await groupRepo.CreateGroup(new ScampResourceGroup
+                var group = new ScampResourceGroup
                 {
                     Id = Guid.NewGuid().ToString("d"),
                     Name = "Classrome 1 (SampleData)",
-                    Resources = new List<ScampResource>
-                    {
-                        new ScampResource
-                        {
-                            Id = Guid.NewGuid().ToString("d"),
-                            Name = "Wordpress virtual machine (SampleData)",
-                            ResourceType = "Virtual Machine",
-                            State = "Not provisioned"
-                        }
-                    }
+                    Admins = new List<ScampUserReference> { user1 },
+                    Members = new List<ScampUserReference> { user1, user2 },
+                };
+                await groupRepo.CreateGroup(group);
+
+                var resourceRepo = await _repositoryFactory.GetResourceRepositoryAsync();
+                await resourceRepo.CreateResource(new ScampResource
+                {
+                    Id = Guid.NewGuid().ToString("d"),
+                    ResourceGroup = new ScampResourceGroupReference { Id = group.Id },
+                    Name = "Wordpress virtual machine (SampleData)",
+                    ResourceType = "Virtual Machine",
+                    State = "Not provisioned"
                 });
             }
             if (Request.Form["addSubscription"] == "on")
             {
                 var subRepo = await _repositoryFactory.GetSubscriptionRepositoryAsync();
-                    await subRepo.CreateSubscription(new ScampSubscription
-                    {
-                        Id = Guid.NewGuid().ToString("d"),
-                        AzureSubscriptionID = subscriptionId,
-                        AzureManagementThumbnail = subscriptionMngCert
-                    });
+                await subRepo.CreateSubscription(new ScampSubscription
+                {
+                    Id = Guid.NewGuid().ToString("d"),
+                    AzureSubscriptionID = subscriptionId,
+                    AzureManagementThumbnail = subscriptionMngCert,
+
+                });
             }
             return Content("Done!");
         }

@@ -11,9 +11,17 @@ namespace DocumentDbRepositories
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
+        [JsonProperty(PropertyName = "azureSubscriptionId")]
         public string AzureSubscriptionID { get; set; }
-		public string AzureAdminUser { get; set; }
-		public string AzureAdminPassword { get; set; }
-		public string AzureManagementThumbnail { get; set; }
-	}
+        [JsonProperty(PropertyName = "azureAdminUser")]
+        public string AzureAdminUser { get; set; }
+        [JsonProperty(PropertyName = "azureAdminPassword")]
+        public string AzureAdminPassword { get; set; }
+        [JsonProperty(PropertyName = "azureManagementThumbnail")]
+        public string AzureManagementThumbnail { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get { return "subscription"; } }
+
+    }
 }

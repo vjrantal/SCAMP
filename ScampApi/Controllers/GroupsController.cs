@@ -33,40 +33,8 @@ namespace ScampApi.Controllers
         public async Task<Group> Get(string groupId)
         {
             var repository = await _repositoryFactory.GetGroupRepositoryAsync();
-            var group = await repository.GetGroup(groupId);
+            var group = await repository.GetGroupWithResources(groupId);
             return Map(group);
-
-            //return new Group
-            //{
-            //    GroupId = groupId,
-            //    Name = "Group" + groupId,
-            //    Resources = new[]
-            //    {
-            //        new GroupResourceSummary { GroupId = groupId, ResourceId = "1", Name = "GroupResource1", Links = { new Link { Rel = "groupResource", Href =  _linkHelper.GroupResource(groupId: groupId, resourceId: "1") } } }
-            //    },
-            //    Templates = new[]
-            //    {
-            //        new GroupTemplateSummary { GroupId = groupId, TemplateId = 1, Name = "GroupTemplate1", Links = { new Link { Rel = "groupTemplate", Href  = _linkHelper.GroupTemplate(groupId: groupId, templateId: 1) } } }
-            //    },
-            //    Admins = new[]
-            //    {
-            //        new UserSummary { UserId = "1", Name = "User1", Links =
-            //            {
-            //                new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
-            //                new Link {Rel="groupUser", Href = _linkHelper.GroupUser(groupId: groupId, userId: "1") }
-            //            }
-            //        }
-            //    },
-            //    Members = new[]
-            //    {
-            //        new UserSummary { UserId = "1", Name = "User1", Links =
-            //            {
-            //                new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
-            //                new Link {Rel="groupUser", Href = _linkHelper.GroupUser(groupId: groupId, userId: "1") }
-            //            }
-            //        }
-            //    }
-            //};
         }
 
         [HttpPost]
@@ -100,19 +68,19 @@ namespace ScampApi.Controllers
                 Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: docDbGroup.Id) } }
             };
         }
-        private Group Map(ScampResourceGroup docDbGroup)
+        private Group Map(ScampResourceGroupWithResources docDbGroup)
         {
             return new Group
             {
                 GroupId = docDbGroup.Id,
                 Name = docDbGroup.Name,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
-                Members = docDbGroup.Members.Select(MapToSummary),
-                Admins= docDbGroup.Admins.Select(MapToSummary),
-                Resources = docDbGroup.Resources.Select(MapToSummary)
+                Members = docDbGroup.Members?.Select(MapToSummary),
+                Admins= docDbGroup.Admins?.Select(MapToSummary),
+                Resources = docDbGroup.Resources?.Select(MapToSummary)
             };  
         }
-        private UserSummary MapToSummary(ScampUser docDbUser)
+        private UserSummary MapToSummary(ScampUserReference docDbUser)
         {
             return new UserSummary
             {
@@ -128,12 +96,12 @@ namespace ScampApi.Controllers
         {
             return new GroupResourceSummary
             {
-                GroupId = docDbResource.GroupId,
+                GroupId = docDbResource.ResourceGroup.Id,
                 ResourceId = docDbResource.Id,
                 Name = docDbResource.Name,
                 Links =
                 {
-                    new Link {Rel = "resource", Href = _linkHelper.GroupResource(docDbResource.GroupId, docDbResource.Id) }
+                    new Link {Rel = "resource", Href = _linkHelper.GroupResource(docDbResource.ResourceGroup.Id, docDbResource.Id) }
                 }
             };
         }
