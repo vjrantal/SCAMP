@@ -32,7 +32,11 @@ namespace ProvisioningJobConsole
             ScampSubscription subscription;
             string cloudServiceName, machineName;
 
-
+            if (docDbResource == null)
+            {
+                log.WriteLine("Resource not found");
+                return;
+            }
 
 
             if (string.IsNullOrEmpty(docDbResource.SubscriptionId))

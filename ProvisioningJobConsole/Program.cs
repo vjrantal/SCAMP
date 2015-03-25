@@ -23,7 +23,7 @@ namespace ProvisioningJobConsole
             //IDictionary<string, string> settings = new Dictionary<string, string>();
             //settings.Add("Provisioning:StorageConnectionString", storageCstr);
             //ProvisioningLibrary.WebJobController w = new WebJobController(settings);
-            //w.SubmitActionInQueue("54e490e1-5bbe-44c3-b3c6-c6cfe6880cde", ResourceAction.Start);
+            //w.SubmitActionInQueue("0e0b37d0-b2b7-40d2-8f5b-aa6afed05e55", ResourceAction.Start);
 
 
             // The following code ensures that the WebJob will be running continuously
