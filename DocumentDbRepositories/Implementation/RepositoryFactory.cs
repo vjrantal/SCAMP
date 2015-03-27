@@ -14,6 +14,7 @@ namespace DocumentDbRepositories.Implementation
         private readonly string _endpoint;
         private readonly string _databaseName;
         private readonly string _collectionName;
+        private string _connectionMode;
 
         public RepositoryFactory(IConfiguration configuration)
         {
@@ -21,29 +22,29 @@ namespace DocumentDbRepositories.Implementation
             _authKey = configuration["DocDb:authkey"];
             _databaseName = configuration["DocDb:databaseName"];
             _collectionName = configuration["DocDb:collectionName"];
+            _connectionMode = configuration["DocDb:ConnectionMode"];
         }
-        public async Task<UserRepository> GetUserRepositoryAsync()
+        public Task<UserRepository> GetUserRepositoryAsync()
         {
-            var repo = new UserRepository();
-            await repo.InitializeDBConnection(_endpoint, _authKey, _databaseName, _collectionName);
-            return repo;
+            return Get<UserRepository>();
         }
-        public async Task<GroupRepository> GetGroupRepositoryAsync()
+        public Task<GroupRepository> GetGroupRepositoryAsync()
         {
-            var repo = new GroupRepository();
-            await repo.InitializeDBConnection(_endpoint, _authKey, _databaseName, _collectionName);
-            return repo;
+            return Get<GroupRepository>();
         }
-        public async Task<ResourceRepository> GetResourceRepositoryAsync()
+        public Task<ResourceRepository> GetResourceRepositoryAsync()
         {
-            var repo = new ResourceRepository();
-            await repo.InitializeDBConnection(_endpoint, _authKey, _databaseName, _collectionName);
-            return repo;
+            return Get<ResourceRepository>();
         }
-        public async Task<SubscriptionRepository> GetSubscriptionRepositoryAsync()
+        public Task<SubscriptionRepository> GetSubscriptionRepositoryAsync()
         {
-            var repo = new SubscriptionRepository();
-            await repo.InitializeDBConnection(_endpoint, _authKey, _databaseName, _collectionName);
+            return Get<SubscriptionRepository>();
+        }
+
+        private async Task<TRepo> Get<TRepo>() where TRepo : RepositoryBase, new()
+        {
+            var repo = new TRepo();
+            await repo.InitializeDBConnection(_endpoint, _authKey, _databaseName, _collectionName, _connectionMode);
             return repo;
         }
     }

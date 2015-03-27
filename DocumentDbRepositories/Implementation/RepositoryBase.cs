@@ -14,19 +14,40 @@ namespace DocumentDbRepositories
         private DocumentCollection _collection;
         private bool _initialized = false;
 
-        public async Task InitializeDBConnection(string endpointUrl, string authKey, string databaseName, string collectionName)
+        public async Task InitializeDBConnection(string endpointUrl, string authKey, string databaseName, string collectionName, string connectionMode)
         {
-            var policy = new ConnectionPolicy()
-            {
-                ConnectionProtocol = Protocol.Tcp,
-                ConnectionMode = ConnectionMode.Direct
-            };
-            _client = new DocumentClient(new Uri(endpointUrl), authKey);//, policy);
+            ConnectionPolicy policy = GetConnectionPolocy(connectionMode);
+            _client = new DocumentClient(new Uri(endpointUrl), authKey, policy);
             _database = await GetOrCreateDatabaseAsync(_client, databaseName);
 
             //Get, or Create, the Document Collection
             _collection = await GetOrCreateCollectionAsync(_client, _database.SelfLink, collectionName);
             _initialized = true;
+        }
+
+        private static ConnectionPolicy GetConnectionPolocy(string connectionMode)
+        {
+            connectionMode = connectionMode.ToLower();
+            if (connectionMode == "http")
+            {
+                return new ConnectionPolicy()
+                {
+                    ConnectionProtocol = Protocol.Https,
+                    ConnectionMode = ConnectionMode.Gateway
+                };
+            }
+            else if (connectionMode == "tcp")
+            {
+                return new ConnectionPolicy()
+                {
+                    ConnectionProtocol = Protocol.Tcp,
+                    ConnectionMode = ConnectionMode.Direct
+                };
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("ConnectionMode setting must be 'http' or 'tcp'");
+            }
         }
 
         private async Task<Database> GetOrCreateDatabaseAsync(DocumentClient client, string id)
