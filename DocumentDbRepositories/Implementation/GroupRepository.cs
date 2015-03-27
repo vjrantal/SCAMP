@@ -9,29 +9,11 @@ using Microsoft.Azure.Documents.Linq;
 namespace DocumentDbRepositories.Implementation
 {
 
-    public class GroupRepository
+    public class GroupRepository : RepositoryBase
     {
-        private DocumentClient client;
-        private Database database;
-        private DocumentCollection collection;
-
-        public async Task InitializeDBConnection(string endpointUrl, string authKey, string databaseName, string collectionName)
-        {
-            var policy = new ConnectionPolicy()
-            {
-                ConnectionProtocol = Protocol.Tcp,
-                ConnectionMode = ConnectionMode.Direct
-            };
-            client = new DocumentClient(new Uri(endpointUrl), authKey);//, policy);
-            database = await GetOrCreateDatabaseAsync(databaseName);
-
-            //Get, or Create, the Document Collection
-            collection = await GetOrCreateCollectionAsync(database.SelfLink, collectionName);
-
-        }
         public Task<ScampResourceGroup> GetGroup(string groupID)
         {
-            var groupQuery = from g in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+            var groupQuery = from g in Client.CreateDocumentQuery<ScampResourceGroup>(Collection.SelfLink)
                              where g.Id == groupID && g.Type == "group"
                              select g;
             var group = groupQuery.ToList().FirstOrDefault();
@@ -41,7 +23,7 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID)
         {
-            var groupQuery = from g in client.CreateDocumentQuery<ScampResourceGroupWithResources>(collection.SelfLink)
+            var groupQuery = from g in Client.CreateDocumentQuery<ScampResourceGroupWithResources>(Collection.SelfLink)
                              where g.Id == groupID && g.Type == "group"
                              select g;
             var group = groupQuery.ToList().FirstOrDefault();
@@ -49,7 +31,7 @@ namespace DocumentDbRepositories.Implementation
             if (group == null)
                 return Task.FromResult((ScampResourceGroupWithResources)null);
 
-            var resourcesQuery = from r in client.CreateDocumentQuery<ScampResource>(collection.SelfLink)
+            var resourcesQuery = from r in Client.CreateDocumentQuery<ScampResource>(Collection.SelfLink)
                                  where r.Type == "resource" && r.ResourceGroup.Id == groupID
                                  select r;
 
@@ -60,7 +42,7 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<IEnumerable<ScampResourceGroup>> GetGroups()
         {
-            var groups = from u in client.CreateDocumentQuery<ScampResourceGroup>(collection.SelfLink)
+            var groups = from u in Client.CreateDocumentQuery<ScampResourceGroup>(Collection.SelfLink)
                          where u.Type == "group"
                          select u;
             var grouplist = groups.ToList();
@@ -69,7 +51,7 @@ namespace DocumentDbRepositories.Implementation
 
         public async Task CreateGroup(ScampResourceGroup newGroup)
         {
-            var created = await client.CreateDocumentAsync(collection.SelfLink, newGroup);
+            var created = await Client.CreateDocumentAsync(Collection.SelfLink, newGroup);
         }
 
         public Task AddResource(string groupID)
@@ -88,28 +70,5 @@ namespace DocumentDbRepositories.Implementation
             //TODO: stuff
             throw new NotImplementedException();
         }
-
-        private async Task<Database> GetOrCreateDatabaseAsync(string id)
-        {
-            Database database = client.CreateDatabaseQuery().Where(db => db.Id == id).ToArray().FirstOrDefault();
-            if (database == null)
-            {
-                database = await client.CreateDatabaseAsync(new Database { Id = id });
-            }
-
-            return database;
-        }
-
-        private async Task<DocumentCollection> GetOrCreateCollectionAsync(string dbLink, string id)
-        {
-            DocumentCollection collection = client.CreateDocumentCollectionQuery(dbLink).Where(c => c.Id == id).ToArray().FirstOrDefault();
-            if (collection == null)
-            {
-                collection = await client.CreateDocumentCollectionAsync(dbLink, new DocumentCollection { Id = id });
-            }
-
-            return collection;
-        }
-
     }
 }

@@ -48,11 +48,14 @@ namespace ScampApi
             services.AddInstance(Configuration);
 
             services.AddTransient<RepositoryFactory>();
+            services.AddTransient<DocumentDbInitializer>();
         }
 
         // Configure is called after ConfigureServices is called.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var docDbInitializer = app.ApplicationServices.GetService<DocumentDbInitializer>();
+            docDbInitializer.Initialize().Wait();
 
             app.UseOAuthBearerAuthentication(options =>
             {
