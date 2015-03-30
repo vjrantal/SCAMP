@@ -11,17 +11,24 @@ using DocumentDbRepositories;
 
 namespace DocumentDbRepositories.Implementation
 {
-
-    public class UserRepository : RepositoryBase
+    public class UserRepository 
     {
-		public async Task CreateUser(ScampUser newUser)
+        private readonly DocumentClient _client;
+        private readonly DocumentCollection _collection;
+
+        public UserRepository(DocumentClient client, DocumentCollection collection)
+        {
+            _client = client;
+            _collection = collection;
+        }
+        public async Task CreateUser(ScampUser newUser)
 		{
-			var created = await Client.CreateDocumentAsync(Collection.SelfLink, newUser);
+			var created = await _client.CreateDocumentAsync(_collection.SelfLink, newUser);
 		}
 
 		public Task<ScampUser> GetUser(string userId)
         {
-            var users = from u in Client.CreateDocumentQuery<ScampUser>(Collection.SelfLink)
+            var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
                         where u.Id == userId
                         select u;
             var userList = users.ToList();
@@ -32,7 +39,7 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<ScampUser> GetUserByIPID(string IPID)
         {
-            var users = from u in Client.CreateDocumentQuery<ScampUser>(Collection.SelfLink)
+            var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
                         where u.IPKey == IPID
                         select u;
             var userList = users.ToList();

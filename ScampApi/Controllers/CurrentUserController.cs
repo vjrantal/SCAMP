@@ -16,12 +16,12 @@ namespace ScampApi.Controllers.Controllers
     public class CurrentUserController : Controller
     {
         private ILinkHelper _linkHelper;
-        private RepositoryFactory _repositoryFactory;
+        private readonly UserRepository _userRepository;
 
-        public CurrentUserController(ILinkHelper linkHelper, RepositoryFactory repositoryFactory)
+        public CurrentUserController(ILinkHelper linkHelper, UserRepository userRepository)
         {
-            _repositoryFactory = repositoryFactory; // TODO - revisit this. would be nice to inject repository here
             _linkHelper = linkHelper;
+            _userRepository = userRepository;
         }
         // GET: api/currentUser
         [HttpGet(Name = "User.CurrentUser")]
@@ -36,8 +36,7 @@ namespace ScampApi.Controllers.Controllers
             string IPID = string.Format("{0}:{1}", tenantID, objectID);
 
             // fetch user from database
-            var repository = await _repositoryFactory.GetUserRepositoryAsync();
-            tmpUser = await repository.GetUserByIPID(IPID);
+            tmpUser = await _userRepository.GetUserByIPID(IPID);
             if (tmpUser == null) // insert if user doesn't exist
             {
                 // build user object
@@ -50,7 +49,7 @@ namespace ScampApi.Controllers.Controllers
                     IsSystemAdmin = true // temporary value
                 };
                 // insert into database   
-                await repository.CreateUser(tmpUser);
+                await _userRepository.CreateUser(tmpUser);
             }
 
             //TODO: we're going to need this for authorizing requests, so we should probably cache it

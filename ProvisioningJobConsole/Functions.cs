@@ -7,6 +7,9 @@ using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.DependencyInjection.Fallback;
+using Microsoft.Framework.Runtime.Infrastructure;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using Microsoft.WindowsAzure.Management.Models;
 using ProvisioningLibrary;
@@ -18,15 +21,21 @@ namespace ProvisioningJobConsole
     {
         // This function will get triggered/executed when a new message is written 
         // on an Azure Queue called queue.
-        public async  static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
+        public async static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
         {
 
             // Setup configuration sources.
-           var configuration = new Configuration()
+            var configuration = new Configuration()
                 .AddEnvironmentVariables("APPSETTING_");
-            
+            var services = new ServiceCollection();
+            services.AddDocumentDbRepositories(configuration);
+            var serviceProvider = services.BuildServiceProvider();
+            //var serviceProvider = new ServicePro
+
+            // TODO - shouldn't be depending on ResourceController here
             //TODO Enable Dependency Injection
-            var resourceController = new ResourceController(new RepositoryFactory(configuration));
+            //var resourceController = new ResourceController(new RepositoryFactory(configuration));
+            var resourceController = serviceProvider.GetService<ResourceController>();
 
             var docDbResource = await resourceController.GetResource(message.ResourceId);
             ScampSubscription subscription;

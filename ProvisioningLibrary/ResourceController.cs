@@ -10,24 +10,26 @@ namespace ProvisioningLibrary5x
 {
     public class ResourceController
     {
-        private readonly RepositoryFactory _repositoryFactory;
+        private readonly ResourceRepository _resourceRepository;
+        private readonly SubscriptionRepository _subscriptionRepository;
+        private readonly GroupRepository _groupRepository;
 
-        public ResourceController(RepositoryFactory repositoryFactory)
+        public ResourceController(ResourceRepository resourceRepository, SubscriptionRepository subscriptionRepository, GroupRepository groupRepository)
         {
-            _repositoryFactory = repositoryFactory;
+            _resourceRepository = resourceRepository;
+            _subscriptionRepository = subscriptionRepository;
+            _groupRepository = groupRepository;
         }
 
         public async Task<ScampResource> GetResource(string resourceId)
         {
-            var resRepo = await _repositoryFactory.GetResourceRepositoryAsync();
-            var res = await resRepo.GetResource(resourceId);
+            var res = await _resourceRepository.GetResource(resourceId);
             return  res;
         }
 
         public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
-            var subRepo = await _repositoryFactory.GetSubscriptionRepositoryAsync();
-            var subscription= await subRepo.GetSubscription(subscriptionId);
+            var subscription= await _subscriptionRepository.GetSubscription(subscriptionId);
            
             return subscription;
         }
@@ -37,8 +39,7 @@ namespace ProvisioningLibrary5x
 
             //Need to add the logic of choosing a subscription.
             //For now is the first in the store
-            var subRepo = await _repositoryFactory.GetSubscriptionRepositoryAsync();
-            var c= await subRepo.GetSubscriptions();
+            var c= await _subscriptionRepository.GetSubscriptions();
 
             return c.FirstOrDefault();
 
@@ -46,8 +47,7 @@ namespace ProvisioningLibrary5x
 
         public async Task<string> GetCloudServiceName(ScampResource  scampResource )
         {
-            var groupRepo = await _repositoryFactory.GetGroupRepositoryAsync();
-            var grp = await groupRepo.GetGroupWithResources(scampResource.ResourceGroup.Id);
+            var grp = await _groupRepository.GetGroupWithResources(scampResource.ResourceGroup.Id);
             return grp.Name.ToLower().Replace(" ","-");
         }
 
@@ -64,8 +64,7 @@ namespace ProvisioningLibrary5x
         }
         public async Task<bool> UpdateResource(ScampResource resource)
         {
-            var resRepo = await _repositoryFactory.GetResourceRepositoryAsync();
-            resRepo.UpdateResource(resource);
+            await _resourceRepository.UpdateResource(resource);
             return true;
 
         }

@@ -8,12 +8,20 @@ using Microsoft.Azure.Documents.Linq;
 
 namespace DocumentDbRepositories.Implementation
 {
-    public class ResourceRepository : RepositoryBase
+    public class ResourceRepository
     {
+        private readonly DocumentClient _client;
+        private readonly DocumentCollection _collection;
+
+        public ResourceRepository(DocumentClient client, DocumentCollection collection)
+        {
+            _client = client;
+            _collection = collection;
+        }
         public Task<ScampResource> GetResource(string resourceId)
         {
             //TODO Check
-            var resources = from r in Client.CreateDocumentQuery<ScampResource>(Collection.SelfLink)
+            var resources = from r in _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
                             where r.Id == resourceId && r.Type == "resource"
                             select r;
             var resourceList = resources.ToList();
@@ -24,7 +32,7 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<IEnumerable<ScampResourceGroup>> GetResources()
         {
-            var resources = from r in Client.CreateDocumentQuery<ScampResource>(Collection.SelfLink)
+            var resources = from r in _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
                             where r.Type == "resource"
                             select r;
             var resourceList = resources.ToList();
@@ -34,7 +42,7 @@ namespace DocumentDbRepositories.Implementation
         public Task<IEnumerable<ScampResourceGroup>> GetResourcesByOwner(string userId)
         {
             //TODO: need to add "join" to get by owner relationship
-            var resources = from r in Client.CreateDocumentQuery<ScampResourceGroup>(Collection.SelfLink)
+            var resources = from r in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
                             select r;
             var resourceList = resources.ToList();
             return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
@@ -42,13 +50,13 @@ namespace DocumentDbRepositories.Implementation
 
         public async Task CreateResource(ScampResource resource)
         {
-            var created = await Client.CreateDocumentAsync(Collection.SelfLink, resource);
+            var created = await _client.CreateDocumentAsync(_collection.SelfLink, resource);
         }
 
         public Task<IEnumerable<ScampResourceGroup>> GetResourcesByGroup(string userId)
         {
             //TODO: need to add "join" to get by group relationship
-            var resources = from u in Client.CreateDocumentQuery<ScampResourceGroup>(Collection.SelfLink)
+            var resources = from u in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
                             select u;
             var resourceList = resources.ToList();
             return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
@@ -69,11 +77,11 @@ namespace DocumentDbRepositories.Implementation
         public async Task UpdateResource(ScampResource resource)
         {
             //TODO Check
-            var resources = from u in Client.CreateDocumentQuery(Collection.SelfLink)
+            var resources = from u in _client.CreateDocumentQuery(_collection.SelfLink)
                             where u.Id == resource.Id 
                             select u;
             
-            await Client.ReplaceDocumentAsync( resources.First().SelfLink,  resource);
+            await _client.ReplaceDocumentAsync( resources.First().SelfLink,  resource);
         }
     }
 }

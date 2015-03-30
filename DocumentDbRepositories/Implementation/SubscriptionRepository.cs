@@ -12,16 +12,24 @@ using DocumentDbRepositories;
 namespace DocumentDbRepositories.Implementation
 {
 
-    public class SubscriptionRepository : RepositoryBase
+    public class SubscriptionRepository
     {
+        private readonly DocumentClient _client;
+        private readonly DocumentCollection _collection;
+
+        public SubscriptionRepository(DocumentClient client, DocumentCollection collection)
+        {
+            _client = client;
+            _collection = collection;
+        }
         public async Task CreateSubscription(ScampSubscription newSubscription)
         {
-            var created = await Client.CreateDocumentAsync(Collection.SelfLink, newSubscription);
+            var created = await _client.CreateDocumentAsync(_collection.SelfLink, newSubscription);
         }
 
         public Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
-            var subscriptions = from u in Client.CreateDocumentQuery<ScampSubscription>(Collection.SelfLink)
+            var subscriptions = from u in _client.CreateDocumentQuery<ScampSubscription>(_collection.SelfLink)
                                 where u.Id == subscriptionId
                                 select u;
             var subList = subscriptions.ToList();
@@ -33,7 +41,7 @@ namespace DocumentDbRepositories.Implementation
 
         public Task<List<ScampSubscription>> GetSubscriptions()
         {
-            var subscriptions = from u in Client.CreateDocumentQuery<ScampSubscription>(Collection.SelfLink)
+            var subscriptions = from u in _client.CreateDocumentQuery<ScampSubscription>(_collection.SelfLink)
                                 select u;
             var subList = subscriptions.ToList();
             if (subList.Count == 0)
