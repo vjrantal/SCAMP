@@ -58,7 +58,7 @@ namespace ScampApi.Controllers
                 var group = new ScampResourceGroup
                 {
                     Id = Guid.NewGuid().ToString("d"),
-                    Name = "Classrome 1 (SampleData)",
+                    Name = "Classroom Sample",
                     Admins = new List<ScampUserReference> { user1 },
                     Members = new List<ScampUserReference> { user1, user2 },
                 };
@@ -68,7 +68,7 @@ namespace ScampApi.Controllers
                 {
                     Id = Guid.NewGuid().ToString("d"),
                     ResourceGroup = new ScampResourceGroupReference { Id = group.Id },
-                    Name = "Wordpress virtual machine (SampleData)",
+                    Name = "ScampDev",
                     ResourceType = "Virtual Machine",
                     State = "Not provisioned"
                 });

@@ -3,27 +3,31 @@ using System.Collections.Generic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Framework.ConfigurationModel;
 using ProvisioningLibrary;
+using ProvisioningJobConsole;
 
 namespace ProvisioningJobConsole
 {
     public class Program
     {
-        public static  IConfiguration Configuration { get; set; }
+        public static IConfiguration Configuration { get; set; }
         static void Main()
         {
             // Setup configuration sources.
             Configuration = new Configuration()
                 .AddEnvironmentVariables("APPSETTING_");
 
+
+        
+
             var storageCstr = GetConnectionString();
 
             var host = new JobHost(new JobHostConfiguration(storageCstr));
 
-
+            // TEST Lines
             //IDictionary<string, string> settings = new Dictionary<string, string>();
             //settings.Add("Provisioning:StorageConnectionString", storageCstr);
             //ProvisioningLibrary.WebJobController w = new WebJobController(settings);
-            //w.SubmitActionInQueue("0e0b37d0-b2b7-40d2-8f5b-aa6afed05e55", ResourceAction.Start);
+            //w.SubmitActionInQueue("ee2a86c8-3873-42be-91fc-2f5ec95a8477", ResourceAction.Start );
 
 
             // The following code ensures that the WebJob will be running continuously
@@ -33,7 +37,7 @@ namespace ProvisioningJobConsole
         private static string GetConnectionString()
         {
 
-            var  rv = Configuration["Provisioning:StorageConnectionString"];
+            var rv = Configuration["Provisioning:StorageConnectionString"];
 
 
             if (string.IsNullOrEmpty(rv))

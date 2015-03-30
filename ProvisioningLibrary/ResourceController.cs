@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
@@ -24,31 +25,31 @@ namespace ProvisioningLibrary5x
         public async Task<ScampResource> GetResource(string resourceId)
         {
             var res = await _resourceRepository.GetResource(resourceId);
-            return  res;
+            return res;
         }
 
         public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
-            var subscription= await _subscriptionRepository.GetSubscription(subscriptionId);
-           
+            var subscription = await _subscriptionRepository.GetSubscription(subscriptionId);
+
             return subscription;
         }
 
-        public async  Task<ScampSubscription> GetAvailabeDeploymentSubscription()
+        public async Task<ScampSubscription> GetAvailabeDeploymentSubscription()
         {
 
             //Need to add the logic of choosing a subscription.
             //For now is the first in the store
-            var c= await _subscriptionRepository.GetSubscriptions();
+            var c = await _subscriptionRepository.GetSubscriptions();
 
             return c.FirstOrDefault();
 
         }
 
-        public async Task<string> GetCloudServiceName(ScampResource  scampResource )
+        public async Task<string> GetCloudServiceName(ScampResource scampResource)
         {
             var grp = await _groupRepository.GetGroupWithResources(scampResource.ResourceGroup.Id);
-            return grp.Name.ToLower().Replace(" ","-");
+            return Regex.Replace(grp.Name.ToLower(), "[^a-zA-Z0-9]", "");
         }
 
         public string GetServiceLocation()
@@ -56,12 +57,12 @@ namespace ProvisioningLibrary5x
             return LocationNames.NorthEurope;
         }
 
-        public string GetStorageAccountName()
-        {
-            //TODO Find better algorythm
-            var r = new Random();
-            return "Scamp-" + r.Next(1000,1000) ;
-        }
+        //public string GetStorageAccountName()
+        //{
+        //    //TODO Find better algorythm
+        //    var r = new Random();
+        //    return "Scamp" + r.Next(1000,1000) ;
+        //}
         public async Task<bool> UpdateResource(ScampResource resource)
         {
             await _resourceRepository.UpdateResource(resource);

@@ -77,11 +77,11 @@ namespace DocumentDbRepositories.Implementation
         public async Task UpdateResource(ScampResource resource)
         {
             //TODO Check
-            var resources = from u in _client.CreateDocumentQuery(_collection.SelfLink)
+            var dbRes= (from u in _client.CreateDocumentQuery(_collection.SelfLink)
                             where u.Id == resource.Id 
-                            select u;
-            
-            await _client.ReplaceDocumentAsync( resources.First().SelfLink,  resource);
+                            select u).ToList().FirstOrDefault();
+
+            await _client.ReplaceDocumentAsync(dbRes.SelfLink,  resource);
         }
     }
 }
