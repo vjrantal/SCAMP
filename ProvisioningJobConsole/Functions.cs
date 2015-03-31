@@ -7,6 +7,8 @@ using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.DependencyInjection.Fallback;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using Microsoft.WindowsAzure.Management.Models;
 using ProvisioningLibrary;
@@ -18,15 +20,22 @@ namespace ProvisioningJobConsole
     {
         // This function will get triggered/executed when a new message is written 
         // on an Azure Queue called queue.
-        public async  static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
+        public async static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
         {
 
             // Setup configuration sources.
-           var configuration = new Configuration()
-                .AddEnvironmentVariables("APPSETTING_");
-            
+            var configuration = new Configuration()
+                 .AddEnvironmentVariables("APPSETTING_");
+            var services = new ServiceCollection();
+            services.AddDocumentDbRepositories(configuration);
+            services.AddTransient<ResourceController>();
+            var serviceProvider = services.BuildServiceProvider();
+            //var serviceProvider = new ServicePro
+
+            // TODO - shouldn't be depending on ResourceController here
             //TODO Enable Dependency Injection
-            var resourceController = new ResourceController(new RepositoryFactory(configuration));
+            //var resourceController = new ResourceController(new RepositoryFactory(configuration));
+            var resourceController = serviceProvider.GetService<ResourceController>();
 
             var docDbResource = await resourceController.GetResource(message.ResourceId);
             ScampSubscription subscription;
@@ -34,7 +43,7 @@ namespace ProvisioningJobConsole
 
             if (docDbResource == null)
             {
-                log.WriteLine("Resource not found");
+                Console.WriteLine("Resource not found");
                 return;
             }
 
@@ -42,7 +51,7 @@ namespace ProvisioningJobConsole
             if (string.IsNullOrEmpty(docDbResource.SubscriptionId))
             {
                 //need to create a VM
-                log.WriteLine("Creating VM");
+                Console.WriteLine("Creating VM");
 
                 subscription = await resourceController.GetAvailabeDeploymentSubscription();
                 message.Action = ResourceAction.Create;
@@ -55,46 +64,51 @@ namespace ProvisioningJobConsole
                 machineName = docDbResource.Name;
                 cloudServiceName = docDbResource.CloudServiceName;
             }
-        
-            var provisioningController = new ProvisioningController(subscription.AzureManagementThumbnail , subscription.AzureSubscriptionID);
-            
-           
+
+            var provisioningController = new ProvisioningController(subscription.AzureManagementThumbnail, subscription.AzureSubscriptionID);
+
+
 
 
             //TODO Get Connection string from DB
 
-            if (message.Action == ResourceAction.Stop )
+            if (message.Action == ResourceAction.Stop)
             {
-                log.WriteLine("Stopping VM");
-                var x=provisioningController.StartStopVirtualMachine(machineName ,cloudServiceName , VirtualMachineAction.Stop);
+                Console.WriteLine("Stopping VM");
+                var x = provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Stop);
                 x.Wait();
+                docDbResource.State = "Stopped";
+                await resourceController.UpdateResource(docDbResource);
             }
             if (message.Action == ResourceAction.Start)
             {
-                log.WriteLine("Starting VM");
-               var x=provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Start);
+                Console.WriteLine("Starting VM");
+                var x = provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Start);
                 x.Wait();
+                docDbResource.State = "Started";
+                await resourceController.UpdateResource(docDbResource);
             }
-            if (message.Action == ResourceAction.Create )
+            if (message.Action == ResourceAction.Create)
             {
                 var r = new Random();
-                string username = "gabrielc";
+                //Need to find a way to assign Usename and Pwd
+                string username =  "ScampAdmin";
                 string password = "Enter.321";
                 string location = resourceController.GetServiceLocation();
-                string storageAccountName = resourceController.GetStorageAccountName();
+                string storageAccountName = cloudServiceName;
                 int rdpPort = r.Next(3000, 4000);
 
-               
-                if(! await provisioningController.IsCloudServiceAlreadyCreated(cloudServiceName))
+
+                if (!await provisioningController.IsCloudServiceAlreadyCreated(cloudServiceName))
                 {
-                    log.WriteLine("Creating Cloud Services");
-                    var x= provisioningController.CreateCloudService(cloudServiceName, location);
+                    Console.WriteLine("Creating Cloud Services");
+                    var x = provisioningController.CreateCloudService(cloudServiceName, location);
                     x.Wait();
-                    log.WriteLine("Creating Storage");
+                    Console.WriteLine("Creating Storage");
                     var y = provisioningController.CreateStorageAccount(location, storageAccountName);
                     y.Wait();
                 }
-                log.WriteLine("Creating Virtual Machine");
+                Console.WriteLine("Creating Virtual Machine");
                 var z = provisioningController.CreateVirtualMachine(machineName, cloudServiceName, storageAccountName,
                     username, password, "Visual-Studio-2015-Ultimate", VirtualMachineRoleSize.Small, rdpPort);
                 z.Wait();
@@ -106,9 +120,9 @@ namespace ProvisioningJobConsole
                 docDbResource.RdpPort = rdpPort.ToString();
                 await resourceController.UpdateResource(docDbResource);
             }
-          
 
-            log.WriteLine(message);
+
+            Console.WriteLine(message);
         }
 
     }

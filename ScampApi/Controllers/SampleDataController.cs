@@ -12,11 +12,21 @@ namespace ScampApi.Controllers
     [Route("sampledata")]
     public class SampleDataController : Controller
     {
-        private readonly RepositoryFactory _repositoryFactory;
+        private readonly GroupRepository _groupRepository;
+        private readonly ResourceRepository _resourceRepository;
+        private readonly SubscriptionRepository _subscriptionRepository;
+        private readonly UserRepository _userRepository;
 
-        public SampleDataController(RepositoryFactory repositoryFactory)
+        public SampleDataController(
+            UserRepository userRepository,
+            GroupRepository groupRepository,
+            ResourceRepository resourceRepository,
+            SubscriptionRepository subscriptionRepository)
         {
-            _repositoryFactory = repositoryFactory;
+            _userRepository = userRepository;
+            _groupRepository = groupRepository;
+            _resourceRepository = resourceRepository;
+            _subscriptionRepository = subscriptionRepository;
         }
         [HttpGet]
         public IActionResult Index()
@@ -32,7 +42,6 @@ namespace ScampApi.Controllers
 
             if (Request.Form["addSampleData"] == "on")
             {
-                var userRepo = await _repositoryFactory.GetUserRepositoryAsync();
                 var user1 = new ScampUser
                 {
                     Id = Guid.NewGuid().ToString("d"),
@@ -43,33 +52,30 @@ namespace ScampApi.Controllers
                     Id = Guid.NewGuid().ToString("d"),
                     Name = "Some User2"
                 };
-                await userRepo.CreateUser(user1);
-                await userRepo.CreateUser(user2);
+                await _userRepository.CreateUser(user1);
+                await _userRepository.CreateUser(user2);
 
-                var groupRepo = await _repositoryFactory.GetGroupRepositoryAsync();
                 var group = new ScampResourceGroup
                 {
                     Id = Guid.NewGuid().ToString("d"),
-                    Name = "Classrome 1 (SampleData)",
+                    Name = "Classroom Sample",
                     Admins = new List<ScampUserReference> { user1 },
                     Members = new List<ScampUserReference> { user1, user2 },
                 };
-                await groupRepo.CreateGroup(group);
+                await _groupRepository.CreateGroup(group);
 
-                var resourceRepo = await _repositoryFactory.GetResourceRepositoryAsync();
-                await resourceRepo.CreateResource(new ScampResource
+                await _resourceRepository.CreateResource(new ScampResource
                 {
                     Id = Guid.NewGuid().ToString("d"),
                     ResourceGroup = new ScampResourceGroupReference { Id = group.Id },
-                    Name = "Wordpress virtual machine (SampleData)",
+                    Name = "ScampDev",
                     ResourceType = "Virtual Machine",
                     State = "Not provisioned"
                 });
             }
             if (Request.Form["addSubscription"] == "on")
             {
-                var subRepo = await _repositoryFactory.GetSubscriptionRepositoryAsync();
-                await subRepo.CreateSubscription(new ScampSubscription
+                await _subscriptionRepository.CreateSubscription(new ScampSubscription
                 {
                     Id = Guid.NewGuid().ToString("d"),
                     AzureSubscriptionID = subscriptionId,

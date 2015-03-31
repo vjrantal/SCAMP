@@ -14,26 +14,24 @@ namespace ScampApi.Controllers
     public class GroupsController : Controller
     {
         private ILinkHelper _linkHelper;
-        private RepositoryFactory _repositoryFactory;
+        private readonly GroupRepository _groupRepository;
 
-        public GroupsController(ILinkHelper linkHelper, RepositoryFactory repositoryFactory)
+        public GroupsController(ILinkHelper linkHelper, GroupRepository groupRepository)
         {
             _linkHelper = linkHelper;
-            _repositoryFactory = repositoryFactory; // TODO - revisit this. would be nice to inject repository here
+            _groupRepository = groupRepository;
         }
         [HttpGet(Name = "Groups.GetAll")]
         public async Task<IEnumerable<GroupSummary>> Get()
         {
-            var repository = await _repositoryFactory.GetGroupRepositoryAsync();
-            var groups = await repository.GetGroups();
+            var groups = await _groupRepository.GetGroups();
             return groups.Select(MapToSummary);
         }
 
         [HttpGet("{groupId}", Name = "Groups.GetSingle")]
         public async Task<Group> Get(string groupId)
         {
-            var repository = await _repositoryFactory.GetGroupRepositoryAsync();
-            var group = await repository.GetGroupWithResources(groupId);
+            var group = await _groupRepository.GetGroupWithResources(groupId);
             return Map(group);
         }
 

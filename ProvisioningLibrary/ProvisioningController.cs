@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 
 namespace ProvisioningLibrary
 {
-    public class ProvisioningController 
+    public class ProvisioningController
     {
         private readonly SubscriptionCloudCredentials _credentials;
         public ProvisioningController(string certificate, string subscriptionId)
         {
 
-            _credentials = GetCloudCredentials(certificate,subscriptionId);
+            _credentials = GetCloudCredentials(certificate, subscriptionId);
 
         }
-        private X509Certificate2 GetCertificate(string certificate )
+        private X509Certificate2 GetCertificate(string certificate)
         {
             //          The custom portal will need a management certificate to perform activities against the Azure API, and the easiest approach to obtain a management certificate is to download
             //          http://go.microsoft.com/fwlink/?LinkID=301775
@@ -31,27 +31,27 @@ namespace ProvisioningLibrary
 
             return new X509Certificate2(Convert.FromBase64String(certificate));
         }
-        private SubscriptionCloudCredentials GetCloudCredentials(string certificate,string  subscriptionId )
+        private SubscriptionCloudCredentials GetCloudCredentials(string certificate, string subscriptionId)
         {
-           return new CertificateCloudCredentials(subscriptionId, GetCertificate(certificate));
+            return new CertificateCloudCredentials(subscriptionId, GetCertificate(certificate));
         }
 
-        public IEnumerable<string>  GetVirtualMachineImagesList()
+        public IEnumerable<string> GetVirtualMachineImagesList()
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
                 var operatingSystemImageListResult =
                     computeClient.VirtualMachineOSImages.ListAsync().Result;
 
-               
+
 
                 return from image in operatingSystemImageListResult
-                       select   image.Name ;
+                       select image.Name;
             }
         }
-        public async Task<string> CreateVirtualMachine(string virtualMachineName,string cloudServiceName,string storageAccountName,string username,string password,string imageFilter, string virtualMachineSize, int rdpPort)
+        public async Task<string> CreateVirtualMachine(string virtualMachineName, string cloudServiceName, string storageAccountName, string username, string password, string imageFilter, string virtualMachineSize, int rdpPort)
         {
-           using (var computeClient = new ComputeManagementClient(_credentials))
+            using (var computeClient = new ComputeManagementClient(_credentials))
             {
                 // get the list of images from the api
                 var operatingSystemImageListResult =
@@ -149,32 +149,32 @@ namespace ProvisioningLibrary
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
                 var details = await computeClient.HostedServices.GetDetailedAsync(virtualMachineName);
-               
+
                 return details.Deployments[0].RoleInstances[0].InstanceStatus;
             }
         }
-        public async Task StartStopVirtualMachine(string cloudServiceName, string virtualMachineName, VirtualMachineAction action)
+        public async Task StartStopVirtualMachine(string virtualMachineName, string cloudServiceName, VirtualMachineAction action)
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
                 HostedServiceGetDetailedResponse vm;
                 try
                 {
-                     vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+                    vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine( "Virtual Machine not found");
+                    Console.WriteLine("Virtual Machine not found");
                     return;
                 }
-                
 
-                var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
+
+                var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
 
                 if (deployment != null)
                 {
                     var deploymantSlotName = deployment.Name;
-                    var serviceName= vm.ServiceName;
+                    var serviceName = vm.ServiceName;
                     var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
 
                     if (action == VirtualMachineAction.Start)
@@ -185,8 +185,8 @@ namespace ProvisioningLibrary
                             return;
                         }
                         //TODO this is strange but for now i leave it a is. Need to be refactored.
-                        await  computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
-                    
+                        await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
+
                     }
                     else
                     {
@@ -195,7 +195,7 @@ namespace ProvisioningLibrary
                             Console.WriteLine("VM Already Stopped");
                             return;
                         }
-                        computeClient.VirtualMachines.Shutdown (serviceName, deploymantSlotName, instance.HostName, new VirtualMachineShutdownParameters { });
+                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, new VirtualMachineShutdownParameters { });
                     }
                 }
             }
@@ -224,7 +224,7 @@ namespace ProvisioningLibrary
 
                         AccountType = "Standard_LRS",
                         Label = "Sample Storage Account",
-                        Location = location ,
+                        Location = location,
                         Name = accountName
                     });
             }
@@ -238,24 +238,24 @@ namespace ProvisioningLibrary
             {
 
                 var list = await computeManagementClient.HostedServices.ListAsync();
-                var check = list.HostedServices.First(x => x.ServiceName == cloudServiceName);
+                var check = list.HostedServices.FirstOrDefault(x => x.ServiceName == cloudServiceName);
                 if (check != null)
                 {
-                    Console.WriteLine("Cloud Service alreaady available");
+                    Console.WriteLine("Cloud Service alreaady created");
                     return true;
                 }
             }
             return false;
-        } 
+        }
         public async Task<string> CreateCloudService(string cloudServiceName, string location)
-        {   
+        {
             using (var computeManagementClient = new ComputeManagementClient(_credentials))
             {
                 var createHostedServiceResult = await computeManagementClient.HostedServices.CreateAsync(
                     new HostedServiceCreateParameters
                     {
                         Label = cloudServiceName + " CloudService",
-                        Location =location,
+                        Location = location,
                         ServiceName = cloudServiceName
                     });
             }
@@ -270,7 +270,7 @@ namespace ProvisioningLibrary
             var search = listResult.CloudServices.First(x => x.Name == cloudServiceName);
             return search == null;
         }
-        internal async Task<bool> IsStorageAccountNameAvailable( string storageAccountName)
+        internal async Task<bool> IsStorageAccountNameAvailable(string storageAccountName)
         {
             var management = CloudContext.Clients.CreateStorageManagementClient(_credentials);
             var result = await management.StorageAccounts.CheckNameAvailabilityAsync(storageAccountName);

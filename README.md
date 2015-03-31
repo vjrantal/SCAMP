@@ -64,6 +64,7 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
                 "APPSETTING_DocDb:endpoint": "< URL from https://portal.azure.com >",
                 "APPSETTING_DocDb:databaseName": "scamp",
                 "APPSETTING_DocDb:collectionName": "scampdata",
+                "APPSETTING_DocDb:connectionMode" : "http|tcp",
                 "APPSETTING_Provisioning:StorageConnectionString": "<storage connection string>"
             }
         }
@@ -100,6 +101,7 @@ In your Package Manager Console, before you debug - add $env variabiels.
     PM> $env:APPSETTING_DocDb:authkey = "<key here>"
     PM> $env:APPSETTING_DocDb:databaseName = "<db name here, e.g. scamp>"
     PM> $env:APPSETTING_DocDb:collectionName = "<collection name>"
+    PM> $env:APPSETTING_DocDb:connectionMode = "http|tcp"
     PM> $env:APPSETTING_Provisioning:StorageConnectionString = "<azure storage account connection string>"
 
 Or, these can be set also from Project Properties -> Debug -> Environment Variables to set.
@@ -114,6 +116,7 @@ APPSETTING_DocDb:endpoint
 APPSETTING_DocDb:authkey
 APPSETTING_DocDb:databaseName
 APPSETTING_DocDb:collectionName
+APPSETTING_DocDb:connectionMode
 APPSETTING_Provisioning:StorageConnectionString
 ````
 
@@ -125,6 +128,7 @@ APPSETTING_Provisioning:StorageConnectionString
 - **DocDB:authkey** this is the DocumentDB key that comes from the [Azure Preview Portal](https://portal.azure.com)
 - **DocDb:databaseName** this is '**scamp**' by default the Scamp code will create this if it doesn't exist already
 - **DocDb:collectionName** this is '**scampdata**' by default the Scamp code will create this if it doesn't exist already.
+- **DocDb:connectionMode** specify http for HTTP Mode, or tcp for direct connection to DocumentDB. tcp is recommended if firewalls/proxies allow it. http is likely simplest for local dev
 - **Provisioning:StorageConnectionString** this is an Azure Storage Account connection string in the format of:
 
 ```
