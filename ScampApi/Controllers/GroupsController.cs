@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
@@ -10,21 +11,27 @@ using ScampApi.ViewModels;
 
 namespace ScampApi.Controllers
 {
+    [Authorize]
     [Route("api/groups")]
     public class GroupsController : Controller
     {
-        private ILinkHelper _linkHelper;
+        private readonly ILinkHelper _linkHelper;
         private readonly GroupRepository _groupRepository;
+        private readonly UserRepository _userRepository;
+        private readonly ISecurityHelper _securityHelper;
 
-        public GroupsController(ILinkHelper linkHelper, GroupRepository groupRepository)
+        public GroupsController(ILinkHelper linkHelper, ISecurityHelper securityHelper,  GroupRepository groupRepository, UserRepository userRepository)
         {
             _linkHelper = linkHelper;
             _groupRepository = groupRepository;
+            _userRepository = userRepository;
+            _securityHelper = securityHelper;
         }
         [HttpGet(Name = "Groups.GetAll")]
         public async Task<IEnumerable<GroupSummary>> Get()
         {
-            var groups = await _groupRepository.GetGroups();
+            //LINKED TO UI
+            var groups = await _groupRepository.GetGroups(await _securityHelper.GetUserReference());
             return groups.Select(MapToSummary);
         }
 
@@ -90,12 +97,12 @@ namespace ScampApi.Controllers
                 }
             };
         }
-        private GroupResourceSummary MapToSummary(ScampResource docDbResource)
+        private ScampResourceSummary MapToSummary(ScampResource docDbResource)
         {
-            return new GroupResourceSummary
+            return new ScampResourceSummary
             {
-                GroupId = docDbResource.ResourceGroup.Id,
-                ResourceId = docDbResource.Id,
+                ResourceGroup = new ScampResourceGroupReference() {Id= docDbResource.ResourceGroup.Id},
+                Id  = docDbResource.Id,
                 Name = docDbResource.Name,
                 Links =
                 {

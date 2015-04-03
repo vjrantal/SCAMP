@@ -31,6 +31,7 @@ namespace ScampApi.Controllers.Controllers
         [HttpPost("{actionname}")]
         public void Post(string  resourceId, string actionname)
         {
+            //LINKED TO UI
             _webJobController.SubmitActionInQueue(resourceId, actionname);
         }
 

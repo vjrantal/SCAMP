@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using AutoMapper;
+using DocumentDbRepositories;
+using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
@@ -10,18 +16,35 @@ namespace ScampApi.Controllers
     public class GroupResourcesController : Controller
     {
         private ILinkHelper _linkHelper;
+        private ResourceRepository _resourceRepository;
+        private ISecurityHelper _securityHelper;
 
-        public GroupResourcesController(ILinkHelper linkHelper)
+        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, ResourceRepository resourceRepository)
         {
             _linkHelper = linkHelper;
+            _resourceRepository = resourceRepository;
+            _securityHelper = securityHelper;
         }
         [HttpGet]
-        public IEnumerable<GroupResourceSummary> GetAll(string groupId)
+        public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
         {
-            return new[] {
-                new GroupResourceSummary { GroupId = groupId, ResourceId = "1", Name = "GroupResource1" },
-                new GroupResourceSummary { GroupId = groupId, ResourceId = "2", Name = "GroupResource2" },
-                };
+            //LINKED TO UI
+            var res =await   _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
+
+            var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
+            var rnd = new Random();
+            ressummary.ForEach(summary =>
+            {
+                summary.Links.Add(new Link
+                {
+                    Rel = "resource",
+                    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
+                });
+                summary.Remaining = rnd.Next(0, 100);
+            });
+
+            return ressummary;
+ 
         }
 
         [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]

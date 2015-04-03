@@ -53,13 +53,25 @@ namespace DocumentDbRepositories.Implementation
             var created = await _client.CreateDocumentAsync(_collection.SelfLink, resource);
         }
 
-        public Task<IEnumerable<ScampResourceGroup>> GetResourcesByGroup(string userId)
+        public Task<IEnumerable<ScampResource>> GetResourcesByGroup(ScampUserReference user, string groupId)
         {
-            //TODO: need to add "join" to get by group relationship
-            var resources = from u in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
-                            select u;
+            bool isGroupAdmin = IsGroupAdmin(user, groupId);
+
+            var resources = _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
+                .Where(u => u.Type == "resource" && u.ResourceGroup.Id == groupId);
+            if (!isGroupAdmin)
+            {
+                resources = resources.Where(u => u.Owners[0].Id == user.Id);
+            }
             var resourceList = resources.ToList();
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
+            return Task.FromResult((IEnumerable<ScampResource>)resourceList);
+        }
+
+        private bool IsGroupAdmin(ScampUserReference user, string groupId)
+        {
+            return (from g in _client.CreateDocumentQuery<ScampResourceGroupWithResources>(_collection.SelfLink)
+                    where g.Admins[0].Id == user.Id && g.Id == groupId && g.Type == "group"
+                    select g).ToList().Any();
         }
 
         public Task AddResource(string groupID)

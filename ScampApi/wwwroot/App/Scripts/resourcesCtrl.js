@@ -1,9 +1,11 @@
 ﻿'use strict';
 angular.module('scamp')
-.controller('resourcesCtrl', ['$scope', '$location', 'resourcesSvc', 'adalAuthenticationService','$sce', function ($scope, $location, resourcesSvc, adalService,$sce) {
+.controller('resourcesCtrl', ['$scope', '$location', 'resourcesSvc', 'groupsSvc', 'adalAuthenticationService', '$sce', function ($scope, $location, resourcesSvc, groupsSvc, adalService, $sce) {
     $scope.error = "";
     $scope.loadingMessage = "Loading...";
     $scope.resourceList = null;
+    $scope.groupList = null;
+    $scope.currentGroup = null;
     $scope.editingInProgress = false;
     $scope.newresourceCaption = "";
 
@@ -33,6 +35,20 @@ angular.module('scamp')
     //        newResource.save();
     //    });
     //}
+    $scope.onchangeGroup = function (item) {
+        resourcesSvc.getItems($scope.currentGroup.groupId).then(function (results) {
+            $scope.resourceList = results.data;
+            $scope.loadingMessage = "";
+            // TODO CHECK: Without this the first time grid is not updated.
+            $scope.$apply();
+
+            },
+        function (err) {
+            $scope.error = err;
+            $scope.loadingMessage = "";
+        });
+    };
+
 
     $scope.editSwitch = function (resource) {
         resource.edit = !resource.edit;
@@ -48,10 +64,19 @@ angular.module('scamp')
 
 
     $scope.populate = function () {
-        resourcesSvc.getItems().then(function (results) {
-            $scope.resourceList = results;
+        groupsSvc.getItems().then(function (results) {
+            
+            $scope.groupList = results.data;
+               
+            if ($scope.groupList.length > 0) {
+                $scope.currentGroup = $scope.groupList[0];
+                $scope.onchangeGroup($scope.currentGroup);
+                
+            }
             $scope.loadingMessage = "";
-        },
+
+            
+            },
         function (err) {
             $scope.error = err;
             $scope.loadingMessage = "";

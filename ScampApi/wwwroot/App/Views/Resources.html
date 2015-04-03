@@ -4,6 +4,12 @@
   
     <div class="row">
         <div class="col-lg-8">
+            <div class="list-group">
+                <span class="list-group-addon">Group</span>
+                <select id='list-group-dropdown' ng-model="currentGroup" ng-options="item.name for item in groupList"
+                        ng-change="onchangeGroup(currentGroup)"></select>
+            </div>
+
             <div class="widget">
                 <div class="widget-header">
                     <i class="fa fa-tasks"></i> Resources <span class="pull-right">Manage</span>
@@ -12,41 +18,41 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th class="text-center">ID</th>
-                                    <th>Action</th>
-                                    <th>Name</th>
-                                    <th>State</th>
-                                    <th>Group</th>
-                                    <th>Usage</th>
-                                </tr>
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <th>Action</th>
+                                <th>Name</th>
+                                <th>State</th>
+                                <th>Group</th>
+                                <th>Usage</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr data-ng-repeat="item in resourceList">
-                                    <td class="text-center">{{item.id}}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" ref="#">
-                                                Action
-                                                <span class="caret"></span>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#">Start</a></li>
-                                                <li><a href="#">Stop</a></li>
-                                                <li><a href="#">Delete</a></li>
-                                            </ul>
+                            <tr data-ng-repeat="item in resourceList">
+                                <td class="text-center">{{item.id}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" ref="#">
+                                            Action
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Start</a></li>
+                                            <li><a href="#">Stop</a></li>
+                                            <li><a href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.state}}</td>
+                                <td>{{item.resourceType}}</td>
+                                <td class="resource">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" ng-style="{width: item.remaining}">
                                         </div>
-                                    </td>
-                                    <td>{{item.name}}</td>
-                                    <td>{{item.state}}</td>
-                                    <td>{{item.groupName}}</td>
-                                    <td class="resource">
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" ng-style="{width: item.remaining * 100}"  >
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
