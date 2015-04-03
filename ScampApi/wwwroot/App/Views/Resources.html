@@ -8,6 +8,10 @@
                 <span class="list-group-addon">Group</span>
                 <select id='list-group-dropdown' ng-model="currentGroup" ng-options="item.name for item in groupList"
                         ng-change="onchangeGroup(currentGroup)"></select>
+                <div ng-click="addGroup()">
+                    <i class="fa fa-plus"></i>
+                    Add Group (Debug Only)
+                </div>
             </div>
 
             <div class="widget">
@@ -23,7 +27,7 @@
                                 <th>Action</th>
                                 <th>Name</th>
                                 <th>State</th>
-                                <th>Group</th>
+                                <th>Type</th>
                                 <th>Usage</th>
                             </tr>
                             </thead>
