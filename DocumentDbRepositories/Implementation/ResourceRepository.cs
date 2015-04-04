@@ -50,6 +50,7 @@ namespace DocumentDbRepositories.Implementation
 
         public async Task CreateResource(ScampResource resource)
         {
+
             var created = await _client.CreateDocumentAsync(_collection.SelfLink, resource);
         }
 
@@ -94,6 +95,14 @@ namespace DocumentDbRepositories.Implementation
                             select u).ToList().FirstOrDefault();
 
             await _client.ReplaceDocumentAsync(dbRes.SelfLink,  resource);
+        }
+
+        public async Task DeleteResource(string resourceId)
+        {
+            var dbRes = (from u in _client.CreateDocumentQuery(_collection.SelfLink)
+                        where u.Id == resourceId
+                        select u).ToList().FirstOrDefault();
+            await _client.DeleteDocumentAsync(dbRes.SelfLink);
         }
     }
 }

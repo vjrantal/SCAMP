@@ -13,6 +13,7 @@ using Microsoft.Framework.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using ScampApi.Infrastructure;
 using Microsoft.AspNet.StaticFiles;
+using ProvisioningLibrary;
 using ScampApi.ViewModels;
 using IConfiguration = Microsoft.Framework.ConfigurationModel.IConfiguration;
 
@@ -47,8 +48,9 @@ namespace ScampApi
             });
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILinkHelper, LinkHelper>();
-            services.AddTransient<ISecurityHelper, SecurityHelper>();
-            
+            services.AddScoped <ISecurityHelper, SecurityHelper>();
+
+            services.AddSingleton <IWebJobController, WebJobController>();
 
             services.AddInstance(Configuration);
 

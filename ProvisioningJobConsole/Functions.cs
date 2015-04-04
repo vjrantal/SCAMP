@@ -29,12 +29,13 @@ namespace ProvisioningJobConsole
             var services = new ServiceCollection();
             services.AddDocumentDbRepositories(configuration);
             services.AddTransient<ResourceController>();
+
             var serviceProvider = services.BuildServiceProvider();
-            //var serviceProvider = new ServicePro
+
+
 
             // TODO - shouldn't be depending on ResourceController here
-            //TODO Enable Dependency Injection
-            //var resourceController = new ResourceController(new RepositoryFactory(configuration));
+
             var resourceController = serviceProvider.GetService<ResourceController>();
 
             var docDbResource = await resourceController.GetResource(message.ResourceId);

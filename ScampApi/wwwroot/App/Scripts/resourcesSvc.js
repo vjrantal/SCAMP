@@ -9,16 +9,19 @@ angular.module('scamp')
         getItem : function(id){
             return $http.get('/api/resources/' + id);
         },
-        postItem : function(item){
-            return $http.post('/api/resources/', item);
+        postItem: function (groupId,item) {
+            return $http.post('api/groups/' + groupId + '/resources', item);
         },
-        putItem : function(item){
-            return $http.put('/api/resources/', item);
+        sendAction: function (groupId, resouceId, action) {
+            return $http.post('api/groups/' + groupId + '/resources/'+resouceId +"/"+action);
         },
-        deleteItem : function(id){
+        putItem : function(groupId,item){
+            return $http.put('api/groups/' + groupId + '/resources', item);
+        },
+        deleteItem: function (groupId, itemId) {
             return $http({
                 method: 'DELETE',
-                url: '/api/resources/' + id
+                url: 'api/groups/' + groupId + '/resources/' + itemId
             });
         }
     };

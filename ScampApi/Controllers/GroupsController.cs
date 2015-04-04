@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using DocumentDbRepositories;
@@ -8,6 +9,7 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
+using Group = ScampApi.ViewModels.Group;
 
 namespace ScampApi.Controllers
 {
@@ -30,8 +32,16 @@ namespace ScampApi.Controllers
         [HttpGet(Name = "Groups.GetAll")]
         public async Task<IEnumerable<GroupSummary>> Get()
         {
+            IEnumerable<ScampResourceGroup> groups;
             //LINKED TO UI
-            var groups = await _groupRepository.GetGroups(await _securityHelper.GetUserReference());
+            if (await _securityHelper.IsSysAdmin())
+            {
+                 groups = await _groupRepository.GetGroups();
+            }
+            else
+            {
+                 groups = await _groupRepository.GetGroupsByUser( await _securityHelper.GetUserReference());
+            }
             return groups.Select(MapToSummary);
         }
 
@@ -43,10 +53,37 @@ namespace ScampApi.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody]Group group)
+        public async Task<GroupSummary> Post([FromBody]Group userInputGroup)
         {
-            // TODO implement adding a group
-            throw new NotImplementedException();
+            //Create a group
+            if (!await CanCreateGroup()) return null;
+            //Cleaning the object
+            var group = new ScampResourceGroup() 
+            {
+                Name = Regex.Replace(userInputGroup.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
+                Id = Guid.NewGuid().ToString()
+                
+
+            };
+            var admin = await _securityHelper.GetUserReference();
+            group.Admins.Add(admin);
+            await _groupRepository.CreateGroup(group);
+            var resp = new GroupSummary()
+            {
+                GroupId = group.Id,
+                Name = group.Name 
+            };
+
+            return resp;
+
+        }
+
+        private async  Task<bool> CanCreateGroup()
+        {
+            if (await _securityHelper.IsSysAdmin()) return true;
+             
+            //TODO Who else can create a group? Do we need a flag on profile?
+            return true;
         }
 
         [HttpPut("{groupId}")]
@@ -80,8 +117,8 @@ namespace ScampApi.Controllers
                 GroupId = docDbGroup.Id,
                 Name = docDbGroup.Name,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
-                Members = docDbGroup.Members?.Select(MapToSummary),
-                Admins= docDbGroup.Admins?.Select(MapToSummary),
+                Members = docDbGroup.Members?.Select(MapToSummary).ToList(),
+                Admins= docDbGroup.Admins?.Select(MapToSummary).ToList(), 
                 Resources = docDbGroup.Resources?.Select(MapToSummary)
             };  
         }

@@ -16,10 +16,13 @@ namespace ScampApi.Infrastructure
     {
         private readonly HttpContext Context;
         private readonly UserRepository _userRepository;
-        public SecurityHelper(IHttpContextAccessor httpContextAccessor, UserRepository userRepository)
+        private readonly GroupRepository _groupRepository;
+
+        public SecurityHelper(IHttpContextAccessor httpContextAccessor, UserRepository userRepository, GroupRepository groupRepository )
         {
             Context = httpContextAccessor.Value;
             _userRepository = userRepository;
+            _groupRepository = groupRepository;
         }
 
         public async Task<ScampUserReference> GetUserReference()
@@ -62,6 +65,19 @@ namespace ScampApi.Infrastructure
                 await _userRepository.CreateUser(tmpUser);
             }
             return tmpUser;
+        }
+        public async Task<bool> IsGroupAdmin(string groupId)
+        {
+            var user = await GetUser();
+            var grp = await _groupRepository.GetGroup(groupId);
+            var checkAdmin = grp.Admins.ToList().Any(q => q.Id == user.Id);
+            return checkAdmin;
+        }
+        public async Task<bool> IsSysAdmin()
+        {
+            var user = await GetUser();
+            if (user.IsSystemAdmin) return true;
+            return false;
         }
     }
 }
