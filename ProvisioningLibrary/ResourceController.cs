@@ -69,5 +69,10 @@ namespace ProvisioningLibrary5x
             return true;
 
         }
+
+        public async Task DeleteResource(ScampResource docDbResource)
+        {
+           await  _resourceRepository.DeleteResource(docDbResource.Id);
+        }
     }
 }

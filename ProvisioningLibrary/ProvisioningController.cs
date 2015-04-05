@@ -49,7 +49,7 @@ namespace ProvisioningLibrary
                        select image.Name;
             }
         }
-        public async Task<string> CreateVirtualMachine(string virtualMachineName, string cloudServiceName, string storageAccountName, string username, string password, string imageFilter, string virtualMachineSize, int rdpPort)
+        public async Task<string> CreateVirtualMachine(string virtualMachineName, string cloudServiceName, string storageAccountName, string username, string password, string imageFilter, string virtualMachineSize, int rdpPort, bool isCloudServiceAlreadyCreated)
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
@@ -80,6 +80,7 @@ namespace ProvisioningLibrary
                     AdminUserName = username,
                     ComputerName = virtualMachineName,
                     HostName = string.Format("{0}.cloudapp.net", cloudServiceName)
+                  
                 };
 
                 // make sure i enable powershell & rdp access
@@ -94,7 +95,10 @@ namespace ProvisioningLibrary
                         //},
                         new InputEndpoint
                         {
-                            Name = "Remote Desktop", LocalPort = 3389, Protocol = "tcp", Port = rdpPort,
+                            Name = "Remote Desktop",
+                            LocalPort = 3389,
+                            Protocol = "tcp",
+                            Port = rdpPort,
                         }
                     }
                 };
@@ -105,7 +109,7 @@ namespace ProvisioningLibrary
                     SourceImageName = imageName,
                     HostCaching = VirtualHardDiskHostCaching.ReadWrite,
                     MediaLink = new Uri(string.Format(CultureInfo.InvariantCulture,
-                        "https://{0}.blob.core.windows.net/vhds/{1}.vhd", storageAccountName, imageName),
+                        "https://{0}.blob.core.windows.net/vhds/{1}.vhd", storageAccountName, virtualMachineName),
                         UriKind.Absolute)
                 };
                 // create the role for the vm in the cloud service
@@ -115,31 +119,73 @@ namespace ProvisioningLibrary
                     RoleSize = virtualMachineSize,
                     RoleType = VirtualMachineRoleType.PersistentVMRole.ToString(),
                     OSVirtualHardDisk = vhd,
+                    ProvisionGuestAgent = true,
+
                     ConfigurationSets = new List<ConfigurationSet>
                     {
                         windowsConfigSet,
                         endpoints
-                    },
-                    ProvisionGuestAgent = true
+                    }
                 };
-
-                // create the deployment parameters
-                var createDeploymentParameters = new VirtualMachineCreateDeploymentParameters
+                var isDeploymentCreated = false;
+                if (isCloudServiceAlreadyCreated)
                 {
-                    Name = cloudServiceName,
-                    Label = cloudServiceName,
-                    DeploymentSlot = DeploymentSlot.Production,
-                    Roles = new List<Role> { role }
-                };
+                    var vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+                    isDeploymentCreated = vm.Deployments.ToList().Any(x => x.Name == cloudServiceName);
+                }
 
-                // deploy the virtual machine
-                var deploymentResult = await computeClient.VirtualMachines.CreateDeploymentAsync(
-                    cloudServiceName,
-                    createDeploymentParameters);
+                if (isDeploymentCreated)
+                {
+                    AddRole(cloudServiceName, cloudServiceName, role, DeploymentSlot.Production);
+                }
+                else
+                {
+                    // create the deployment parameters
+                    var createDeploymentParameters = new VirtualMachineCreateDeploymentParameters
+                    {
+                        Name = cloudServiceName,
+                        Label = cloudServiceName,
+                        DeploymentSlot = DeploymentSlot.Production,
+                        Roles = new List<Role> {role}
+                    };
+
+
+                    // deploy the virtual machine
+                    var deploymentResult = await computeClient.VirtualMachines.CreateDeploymentAsync(
+                        cloudServiceName,
+                        createDeploymentParameters);
+                }
 
                 // return the name of the virtual machine
                 return virtualMachineName;
             }
+        }
+        private void AddRole( string cloudServiceName, string deploymentName, Role role, DeploymentSlot slot = DeploymentSlot.Production)
+        {
+            try
+            {
+                using (var computeClient = new ComputeManagementClient(_credentials))
+                {
+                
+                VirtualMachineCreateParameters createParams = new VirtualMachineCreateParameters
+                {
+                    RoleName = role.RoleName,
+                    RoleSize = role.RoleSize,
+                    OSVirtualHardDisk = role.OSVirtualHardDisk,
+                    ConfigurationSets = role.ConfigurationSets,
+                    AvailabilitySetName = role.AvailabilitySetName,
+                    DataVirtualHardDisks = role.DataVirtualHardDisks,
+                    ProvisionGuestAgent = role.ProvisionGuestAgent 
+
+                };
+                computeClient.VirtualMachines.Create(cloudServiceName, deploymentName, createParams);
+            }
+        }
+            catch (CloudException e)
+            {
+                throw;
+            }
+
         }
 
         public async Task<string> GetVirtualMachineStatus(string virtualMachineName)
@@ -218,6 +264,10 @@ namespace ProvisioningLibrary
                 accountName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
             using (var storageClient = new StorageManagementClient(_credentials))
             {
+                //Check if is already created
+                var list = await storageClient.StorageAccounts.ListAsync();
+                if (list.Any(x => x.Name == accountName)) return accountName;
+
                 var result = await storageClient.StorageAccounts.CreateAsync(
                     new StorageAccountCreateParameters
                     {
@@ -258,6 +308,7 @@ namespace ProvisioningLibrary
                         Location = location,
                         ServiceName = cloudServiceName
                     });
+                
             }
 
             return cloudServiceName;
