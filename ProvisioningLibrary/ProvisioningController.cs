@@ -104,14 +104,7 @@ namespace ProvisioningLibrary
                 };
 
                 // set up the hard disk with the os
-                var vhd = new OSVirtualHardDisk
-                {
-                    SourceImageName = imageName,
-                    HostCaching = VirtualHardDiskHostCaching.ReadWrite,
-                    MediaLink = new Uri(string.Format(CultureInfo.InvariantCulture,
-                        "https://{0}.blob.core.windows.net/vhds/{1}.vhd", storageAccountName, virtualMachineName),
-                        UriKind.Absolute)
-                };
+                var vhd = SetOsVirtualHardDisk(virtualMachineName, storageAccountName, imageName);
                 // create the role for the vm in the cloud service
                 var role = new Role
                 {
@@ -160,6 +153,21 @@ namespace ProvisioningLibrary
                 return virtualMachineName;
             }
         }
+
+        private static OSVirtualHardDisk SetOsVirtualHardDisk(string virtualMachineName, string storageAccountName,
+            string imageName)
+        {
+            var vhd = new OSVirtualHardDisk
+            {
+                SourceImageName = imageName,
+                HostCaching = VirtualHardDiskHostCaching.ReadWrite,
+                MediaLink = new Uri(string.Format(CultureInfo.InvariantCulture,
+                    "https://{0}.blob.core.windows.net/vhds/{1}.vhd", storageAccountName, virtualMachineName),
+                    UriKind.Absolute)
+            };
+            return vhd;
+        }
+
         private void AddRole( string cloudServiceName, string deploymentName, Role role, DeploymentSlot slot = DeploymentSlot.Production)
         {
             try
