@@ -14,16 +14,12 @@ namespace ScampApi.Controllers.Controllers
     {
 
 
-        IDictionary<string, string> settings = new Dictionary<string, string>();
-        WebJobController _webJobController;
 
-        public UserResourcesController(IConfiguration config)
+        IWebJobController _webJobController;
+
+        public UserResourcesController(IConfiguration config, IWebJobController webJobController)
         {
-
-            var storageCstr = config.Get("Provisioning:StorageConnectionString");
-            settings.Add("Provisioning:StorageConnectionString", storageCstr);
-
-            _webJobController = new WebJobController(settings);
+            _webJobController = webJobController;
         }
 
 
