@@ -87,10 +87,25 @@ namespace ScampApi.Controllers
         }
 
         [HttpPut("{groupId}")]
-        public void Put(int groupId, [FromBody]Group value)
+        public void Put(string groupId, [FromBody]Group value)
         {
-            // TODO implement updating a group
-            throw new NotImplementedException();
+			_groupRepository.UpdateGroup(groupId, new ScampResourceGroup
+			{
+				Admins = value.Admins.ConvertAll((a => new ScampUserReference()
+				{
+					Id = a.UserId,
+					Name = a.Name
+				})),
+				Members = value.Members.ConvertAll((a => new ScampUserReference()
+				{
+					Id = a.UserId,
+					Name = a.Name
+				})),
+				Id = value.GroupId,
+				Name = value.Name
+			});
+            //// TODO implement updating a group
+            //throw new NotImplementedException();
         }
 
         [HttpDelete("{groupId}")]
