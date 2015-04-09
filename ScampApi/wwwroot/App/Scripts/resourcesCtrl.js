@@ -42,6 +42,7 @@ angular.module('scamp')
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Start").success(function (results) {
             $scope.loadingMessage = "";
         }).error(function (err) {
+            console.log('Error attempting to Start a resource');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
@@ -50,6 +51,7 @@ angular.module('scamp')
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Stop").success(function (results) {
             $scope.loadingMessage = "";
         }).error(function (err) {
+            console.log('Error attempting to Stop a resource');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
@@ -92,6 +94,7 @@ angular.module('scamp')
 
             },
         function (err) {
+            console.log('Error attempting to change group');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
@@ -123,6 +126,7 @@ angular.module('scamp')
 
             },
             function(err) {
+                console.log('Error retrieving group list');
                 $scope.error = err;
                 $scope.loadingMessage = "";
             });
