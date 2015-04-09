@@ -66,20 +66,19 @@ The Key Vault cmdlets and scripts require Azure Resource Manager, so type the fo
 
 	Switch-AzureMode AzureResourceManager
 
-	New-AzureKeyVault -VaultName 'ScampKeyVault' -ResourceGroupName 'ScampResourceGroup' -Location 'Nort Europe'
+	New-AzureKeyVault -VaultName 'ScampKeyVault' -ResourceGroupName 'ScampResourceGroup' -Location 'North Europe'
 
 - **VaultName** will be the **KeyVault:Url** that you will use later in the debugSettings.json file.
 - ResourceGroupName is the Resource Group Name in Azure.
 - Location parameter, use the command [Get-AzureLocation](https://msdn.microsoft.com/library/azure/dn654582.aspx). If you need more information, type: `Get-Help Get-AzureLocation`
 
 Applications that use a key vault must authenticate and has permission granted.
+
 1. Sign in to the Azure Management Portal.
 2. On the left, click **Active Directory**, and then select the directory you have used previously.
-3. On the Quick Start page, click **CONFIGURE**.
+3. On the Quick Start page, click Applications then your app and finally click **CONFIGURE**.
 4. Scroll to the **keys** section, select the duration, and then click **SAVE**. The page refreshes and now shows a key value. This value will be **KeyVault:AuthClientSecret** in the config.
 5. Copy the client ID value from this page. This value will be  **KeyVault:AuthClientId** in the config.
-
-
 
 ### Step 5:  Enable the OAuth2 implicit grant for your application
 
@@ -115,9 +114,9 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
                 "APPSETTING_DocDb:collectionName": "scampdata",
                 "APPSETTING_DocDb:connectionMode" : "http|tcp",
                 "APPSETTING_Provisioning:StorageConnectionString": "<storage connection string>",
-								"APPSETTING_KeyVault:Url": "https://{name}.vault.azure.net/",
-        				"APPSETTING_KeyVault:AuthClientId": "{Active Directory Client ID}",
-        				"APPSETTING_KeyVault:AuthClientSecret": "{Active directory secret}"
+		"APPSETTING_KeyVault:Url": "https://{name}.vault.azure.net/",
+        	"APPSETTING_KeyVault:AuthClientId": "{Active Directory Client ID}",
+        	"APPSETTING_KeyVault:AuthClientSecret": "{Active directory secret}"
             }
         }
     ]
