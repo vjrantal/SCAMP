@@ -20,9 +20,6 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "email")]
         public string email { get; set; }
 
-        [JsonProperty(PropertyName = "IPKey")]
-        public string IPKey { get; set; }
-
         [JsonProperty(PropertyName = "IsSystemAdmin")]
         public bool IsSystemAdmin { get; set; }
     }
