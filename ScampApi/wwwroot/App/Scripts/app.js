@@ -25,9 +25,13 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
         controller: "settingsAdminsCtrl",
         templateUrl: "/App/Views/SettingsAdmins.html",
         requireADLogin: true
-    }).when("/settings/subs/new", {
-        controller: "settingsSubNewCtrl",
-        templateUrl: "/App/Views/SettingsSubNew.html",
+    }).when("/settings/subs/edit/", {
+        controller: "settingsSubSetupCtrl",
+        templateUrl: "/App/Views/SettingsSubSetup.html",
+        requireADLogin: true
+    }).when("/settings/subs/edit/:subId", {
+        controller: "settingsSubSetupCtrl",
+        templateUrl: "/App/Views/SettingsSubSetup.html",
         requireADLogin: true
     }).when("/settings/subs/:subId", {
         controller: "settingsSubDetailsCtrl",

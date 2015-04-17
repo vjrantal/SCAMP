@@ -17,10 +17,4 @@ angular.module('scamp')
         $location.path("/subdetails/$subID")
     };
 
-    // forwards to add new subscription view
-    $scope.newSub = function () {
-        console.log(settingsSubsSvc);
-        $scope.subscriptionList = settingsSubsSvc.getSubscriptions();
-    };
-
 }]);
