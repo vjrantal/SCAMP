@@ -1,1 +1,18 @@
 ﻿<div>System Admins</div>
+
+<div id="admins" ng-init="getSystemAdmins()">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="widget">
+                <div class="widget-header">
+                    <i class="fa fa-tasks"></i> System Admins <span class="pull-right"><a href="#/settings/subs/edit/">Add User</a></span>
+                </div>
+                <div data-ng-repeat="admin in adminList">
+                    <div class="row">
+                        <div>{{admin.name}}: {{admin.email}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
