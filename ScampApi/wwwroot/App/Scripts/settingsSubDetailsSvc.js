@@ -5,17 +5,18 @@ angular.module('scamp')
     return {
 
         // gets specified subscription details
-        getSub: function (subID) {
+        getSub: function (subId) {
             return {
                 subname: "Primary Subscription",
-                subID: subID,
+                subID: subId,
                 subAdmin: "johndoe@hotmail.com",
                 LastChgd: "10/10/2015",
-                limits : [
+                svcLimits : [
                     {
                         type: "cloud service",
                         current: 20,
-                        maximum: 25
+                        maximum: 25,
+                        msg: "recommend quota increase"
                     },
                     {
                         type: "storage accounts",
@@ -43,42 +44,52 @@ angular.module('scamp')
                     {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "Bob Smith",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "Jane Doe",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }, {
                         timestamp: "10/10/2015 12:00:00pm",
                         level: "info",
+                        performedBy: "System",
                         description: "blah blah blah"
                     }
                 ]

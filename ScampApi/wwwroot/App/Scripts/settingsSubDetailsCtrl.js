@@ -1,6 +1,6 @@
 ﻿'use strict';
 angular.module('scamp')
-.controller('settingsSubDetailsCtrl', ['$scope', 'adalAuthenticationService', '$location', $routeParams, 'settingsSubDetailsSvc', function ($scope, adalService, $location, $routeParams, settingsSubDetailsSvc) {
+.controller('settingsSubDetailsCtrl', ['$scope', 'adalAuthenticationService', '$location', '$routeParams', 'settingsSubDetailsSvc', function ($scope, adalService, $location, $routeParams, settingsSubDetailsSvc) {
     $scope.currentRouteName = 'settingsSubDetails';
     $scope.error = "";
     $scope.loadingMessage = "Loading...";
