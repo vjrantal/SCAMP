@@ -17,12 +17,14 @@ namespace ScampApi.Controllers.Controllers
     {
         private ILinkHelper _linkHelper;
         private readonly SystemSettingsRepository _settingsRepository;
+        private readonly UserRepository _userRepository;
         private ISecurityHelper _securityHelper;
 
-        public SystemSettingsController(ILinkHelper linkHelper, SystemSettingsRepository settingsRepository)
+        public SystemSettingsController(ILinkHelper linkHelper, SystemSettingsRepository settingsRepository, UserRepository userRepository)
         {
             _linkHelper = linkHelper;
             _settingsRepository = settingsRepository;
+            _userRepository = userRepository;
         }
 
         // Retrieve a list of system administrators
@@ -53,6 +55,28 @@ namespace ScampApi.Controllers.Controllers
 
             return rtnList;
         }
-       
+
+        // grant a user system administrator permission
+        [HttpPost]
+        [ActionName("admin")]
+        public async void grantAdmin([FromBody]string userId)
+        {
+            // get user if it exists
+            ScampUser user = await _userRepository.GetUser(userId);
+            //TODO: make sure we got a user and throw a 404 if not 
+            //if (user == null)
+            //    throw new HttpResponseException(HttpStatusCode.NotFound);
+
+            // is user already an admin?
+            if (!user.IsSystemAdmin)
+            {
+                // if not, grant them permission
+                user.IsSystemAdmin = true;
+
+                // save updated setting
+                user = await _userRepository.UpdateUser(user);
+            }
+
+        }
     }
 }

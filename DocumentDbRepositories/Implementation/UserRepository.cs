@@ -47,5 +47,14 @@ namespace DocumentDbRepositories.Implementation
                 return Task.FromResult((ScampUser)null);
             return Task.FromResult(userList[0]);
         }
+
+        public async Task<ScampUser> UpdateUser(ScampUser user)
+        {
+            //TODO: likely need to do more here
+            Document updated = await _client.ReplaceDocumentAsync(user);
+
+            // cast 
+            return (ScampUser)updated;
+        }
     }
 }

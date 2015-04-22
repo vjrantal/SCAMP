@@ -16,9 +16,30 @@ angular.module('scamp')
         }
     );
     
-    //$scope.getSystemAdmins = function () {
-    //    $scope.adminList = systemSettings.getSystemAdmins();
-    //    console.log($scope.adminList);
-    //};
+    // revoke system administrator permissions for the selected user
+    $scope.confirmDeleteAdmin = function (user) {
+
+        // make sure we have more than 1 system admin
+        if ($scope.adminList.length > 1)
+        {
+            var wndRsp = window.confirm("Are you sure you want to remove " + user.name + " as a System Administrator?")
+            if (wndRsp == true) {
+                systemSettingsSvc.revokeAdmin(user.id).then(
+                    // get succeeded
+                    function (data) {
+                        window.alert("System Administrator Permissions revoked")
+                    },
+                    // get failed
+                    function (statusCode) {
+                        console.log(statusCode);
+                    }
+                );
+            } else {
+                window.alert("Operation Cancelled.");
+            }
+        } else { // if had < 2 system admins
+            window.alert("There has to be at least one System Administrator. Action not allowed.")
+        }
+    };
 
 }]);

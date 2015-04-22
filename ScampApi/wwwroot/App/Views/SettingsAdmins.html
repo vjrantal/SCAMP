@@ -7,9 +7,9 @@
                 <div class="widget-header">
                     <i class="fa fa-tasks"></i> System Admins <span class="pull-right"><a href="#/settings/subs/edit/">Add User</a></span>
                 </div>
-                <div data-ng-repeat="admin in adminList">
+                <div data-ng-repeat="adminUser in adminList">
                     <div class="row">
-                        <div>{{admin.name}}</div>
+                        <i class="fa fa-times" ng-click="confirmDeleteAdmin(adminUser)" alt="Remove As System Admin"></i>&nbsp;&nbsp;&nbsp;&nbsp;{{adminUser.name}}
                     </div>
                 </div>
             </div>
