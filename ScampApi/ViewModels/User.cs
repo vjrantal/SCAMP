@@ -16,5 +16,6 @@ namespace ScampApi.ViewModels
         public bool IsSystemAdmin { get; set; }
         public IEnumerable<GroupSummary> Groups { get; internal set; }
         public IEnumerable<ScampResourceSummary> Resources { get; internal set; }
+
     }
 }
