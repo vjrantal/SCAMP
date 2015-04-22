@@ -46,10 +46,10 @@ namespace DocumentDbRepositories.Implementation
             return Task.FromResult(userList[0]);           
         }
 
-        public Task<ScampUser> GetUserByIPID(string IPID)
+        public Task<ScampUser> GetUserByID(string IPID)
         {
             var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                        where u.IPKey == IPID
+                        where u.Id == IPID
                         select u;
             var userList = users.ToList();
             if (userList.Count == 0)

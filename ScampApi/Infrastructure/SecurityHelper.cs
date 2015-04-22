@@ -47,20 +47,25 @@ namespace ScampApi.Infrastructure
         }
         public async Task<ScampUser> GetUserByIPID(string IPID)
         {
-            var tmpUser = await _userRepository.GetUserByIPID(IPID);
+            var tmpUser = await _userRepository.GetUserByID(IPID);
             if (tmpUser == null) // insert if user doesn't exist
             {
                 // build user object
                 tmpUser = new ScampUser()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = IPID,
                     Name =
                         string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
                             Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                    email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value,
-                    IPKey = IPID,
+					// get email address
+					email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value,
+                    
                     IsSystemAdmin = true // temporary value
                 };
+                // get email address if we can
+                // TODO: need to decide how/if we're going to capture the email address. upn doesn't always work
+                //tmpUser.email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("upn")).Value;
+
                 // insert into database   
                 await _userRepository.CreateUser(tmpUser);
             }
