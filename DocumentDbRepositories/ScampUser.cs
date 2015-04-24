@@ -8,7 +8,7 @@ using Microsoft.Azure.Documents;
 
 namespace DocumentDbRepositories
 {
-    public class ScampUser : Document
+    public class ScampUser : Resource
     {
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
@@ -19,8 +19,8 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "email")]
         public string email { get; set; }
 
-        [JsonProperty(PropertyName = "IsSystemAdmin")]
-        public bool IsSystemAdmin { get; set; }
+        [JsonProperty(PropertyName = "isSystemAdmin")]
+        public bool isSystemAdmin { get; set; }
     }
 
     public class ScampUserReference

@@ -6,7 +6,7 @@ angular.module('scamp')
         getSystemAdmins: function () {
             var deferred = $q.defer();
 
-            $http({ method: 'GET', url: '/api/settings/admin' }).
+            $http({ method: 'GET', url: '/api/settings/admins' }).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
@@ -23,16 +23,33 @@ angular.module('scamp')
 
             var deferred = $q.defer();
            
-            $http.post('/api/settings/admin', id).
+            $http.delete('/api/settings/admins/'+ id).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
                 error(function (data, status, headers, config) {
-                    deferred.reject(status);
+                    console.log("error on revokeAdmin");
+                    deferred.reject(status, data);
                 })
 
             return deferred.promise;
-        }
+        },
 
-    };
+        // revoke user's SCAMP system admin permissions
+        grandAdmin: function (id) {
+        console.log("adding system admin permissions on id:" + id);
+
+        var deferred = $q.defer();
+           
+        $http.delete('/api/settings/admins/'+ id).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, headers, config) {
+                deferred.reject(status);
+            })
+
+        return deferred.promise;
+    }
+};
 }]);

@@ -32,8 +32,8 @@ namespace ScampApi.Infrastructure
         public async Task<ScampUser> GetUser()
         {
             //TODO ADD Some cache
-            var IPID = GetIPIDByContext();
-            return await GetUserByIPID(IPID);
+            var userId = GetIPIDByContext();
+            return await GetUserByIPID(userId);
         }
 
         public string GetIPIDByContext()
@@ -45,19 +45,19 @@ namespace ScampApi.Infrastructure
             string IPID = string.Format("{0}:{1}", tenantID, objectID);
             return IPID;
         }
-        public async Task<ScampUser> GetUserByIPID(string IPID)
+        public async Task<ScampUser> GetUserByIPID(string userId)
         {
-            var tmpUser = await _userRepository.GetUserByID(IPID);
+            var tmpUser = await _userRepository.GetUserbyId(userId);
             if (tmpUser == null) // insert if user doesn't exist
             {
                 // build user object
                 tmpUser = new ScampUser()
                 {
-                    Id = IPID,
+                    Id = userId,
                     Name =
                         string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
                             Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                    IsSystemAdmin = true // temporary value
+                    isSystemAdmin = true // temporary value
                 };
                 // get email address if we can
                 // TODO: need to decide how/if we're going to capture the email address. upn doesn't always work
@@ -75,11 +75,12 @@ namespace ScampApi.Infrastructure
             var checkAdmin = grp.Admins.ToList().Any(q => q.Id == user.Id);
             return checkAdmin;
         }
+
         public async Task<bool> IsSysAdmin()
         {
-            var user = await GetUser();
-            if (user.IsSystemAdmin) return true;
-            return false;
+            ScampUser user = await GetUser();
+
+            return user.isSystemAdmin;
         }
     }
 }

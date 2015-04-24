@@ -27,7 +27,7 @@ namespace DocumentDbRepositories.Implementation
         public Task<List<ScampUser>> GetSystemAdministrators()
         {
             var admins = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                         where u.IsSystemAdmin == true
+                         where u.isSystemAdmin == true
                          select u;
             var adminList = admins.ToList();
             if (adminList.Count == 0)

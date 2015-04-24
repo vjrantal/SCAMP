@@ -11,9 +11,7 @@ namespace ScampApi.ViewModels
 
         public string email { get; set; }
 
-        public string IPKey { get; set; }
-
-        public bool IsSystemAdmin { get; set; }
+        public bool isSystemAdmin { get; set; }
         public IEnumerable<GroupSummary> Groups { get; internal set; }
         public IEnumerable<ScampResourceSummary> Resources { get; internal set; }
 
