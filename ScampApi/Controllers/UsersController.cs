@@ -5,6 +5,8 @@ using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
 
+using System.Net.Http;
+
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ScampApi.Controllers.Controllers
@@ -52,6 +54,29 @@ namespace ScampApi.Controllers.Controllers
                 //Resources = new[] { new ScampResourceSummary { GroupId = "Id1", ResourceId = "1", Name = "GroupResource1", Links = { new Link { Rel = "groupResource", Href = _linkHelper.GroupResource(groupId: "Id1", resourceId: "1") } } } }
             };
         }
+
+        [HttpGet("byname/{searchparm}", Name = "Users.SearchByName")]
+        public User GetByName(string searchparm)
+        {
+            //TODO: implement search
+            string searchStr = "https://scamp.search.windows.net/indexes/userindex/docs?api-version=2015-02-28&search=brent";
+            HttpRequestMessage myMessage = new HttpRequestMessage(HttpMethod.Get, new Uri(searchStr));
+            myMessage.Headers.Add("api-key", "77361A25F5BF4B500AA44074F0B8E35D");
+            //myMessage.Headers.Add("Content-Type", "application/json");
+
+
+            HttpContent response = myMessage.Content;
+
+            string result = response.ReadAsStringAsync().Result;
+            return new User
+            {
+                Id = "1",
+                Name = "User1",
+                Groups = new[] { new GroupSummary { GroupId = "Id1", Name = "Group1", Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: "Id1") } } } },
+                //Resources = new[] { new ScampResourceSummary { GroupId = "Id1", ResourceId = "1", Name = "GroupResource1", Links = { new Link { Rel = "groupResource", Href = _linkHelper.GroupResource(groupId: "Id1", resourceId: "1") } } } }
+            };
+        }
+
 
         // POST api/values
         [HttpPost("{userId}")]

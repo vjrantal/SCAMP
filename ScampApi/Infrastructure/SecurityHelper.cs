@@ -42,7 +42,7 @@ namespace ScampApi.Infrastructure
             string tenantID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("tenantid")).Value;
             string objectID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier")).Value;
             // create SCAMP UserID
-            string IPID = string.Format("{0}:{1}", tenantID, objectID);
+            string IPID = string.Format("{0}-{1}", tenantID, objectID);
             return IPID;
         }
         public async Task<ScampUser> GetUserByIPID(string userId)
