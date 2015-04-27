@@ -33,7 +33,7 @@ namespace ScampApi.Infrastructure
         {
             //TODO ADD Some cache
             var userId = GetIPIDByContext();
-            return await GetUserByIPID(userId);
+            return await GetUserById(userId);
         }
 
         public string GetIPIDByContext()
@@ -45,7 +45,8 @@ namespace ScampApi.Infrastructure
             string IPID = string.Format("{0}-{1}", tenantID, objectID);
             return IPID;
         }
-        public async Task<ScampUser> GetUserByIPID(string userId)
+
+        public async Task<ScampUser> GetUserById(string userId)
         {
             var tmpUser = await _userRepository.GetUserbyId(userId);
             if (tmpUser == null) // insert if user doesn't exist
@@ -57,11 +58,10 @@ namespace ScampApi.Infrastructure
                     Name =
                         string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
                             Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                    isSystemAdmin = true // temporary value
+                    isSystemAdmin = tmpUser.isSystemAdmin,
+					// get email address
+					email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
                 };
-                // get email address if we can
-                // TODO: need to decide how/if we're going to capture the email address. upn doesn't always work
-                //tmpUser.email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("upn")).Value;
 
                 // insert into database   
                 await _userRepository.CreateUser(tmpUser);
