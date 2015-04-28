@@ -41,7 +41,7 @@ namespace ScampApi.Controllers.Controllers
 			{
 				Id = tmpUser.Id,
 				Name = tmpUser.Name,
-				IsSystemAdmin = tmpUser.IsSystemAdmin,
+				isSystemAdmin = tmpUser.isSystemAdmin,
 				email = tmpUser.email
             };
         }

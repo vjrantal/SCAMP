@@ -26,35 +26,30 @@ namespace DocumentDbRepositories.Implementation
 			var created = await _client.CreateDocumentAsync(_collection.SelfLink, newUser);
 		}
 
-		public Task<IEnumerable<ScampUser>> GetUsers()
-		{
-			var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-						where u.Type == "user"
-						select u;
-
-			return Task.FromResult((IEnumerable<ScampUser>) users.ToList());
-		}
-
-		public Task<ScampUser> GetUser(string userId)
+		public Task<ScampUser> GetUserbyId(string userId)
         {
-            var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                        where u.Id == userId && u.Type == "user"
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
+            // get specified user by ID
+            var queryResult = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
+                              where u.Id == userId
+                              select u;
+            var user = queryResult.ToList().FirstOrDefault();
+
+            if (user == null)
                 return Task.FromResult((ScampUser)null);
-            return Task.FromResult(userList[0]);           
+
+            return Task.FromResult((ScampUser)user);
         }
 
-        public Task<ScampUser> GetUserByID(string IPID)
+        public async Task UpdateUser(ScampUser user)
         {
-            var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                        where u.Id == IPID
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
-                return Task.FromResult((ScampUser)null);
-            return Task.FromResult(userList[0]);
+            //TODO: likely need to do more here
+
+            //ScampUser tmpUser = (dynamic)userDoc;
+            user.isSystemAdmin = false;
+            var savedUser = await _client.ReplaceDocumentAsync(user.SelfLink, user);
+
+            // exception handling, etc... 
+
         }
     }
 }

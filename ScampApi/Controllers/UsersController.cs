@@ -8,6 +8,8 @@ using DocumentDbRepositories.Implementation;
 using DocumentDbRepositories;
 using System.Threading.Tasks;
 
+using System.Net.Http;
+
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ScampApi.Controllers.Controllers
@@ -26,9 +28,11 @@ namespace ScampApi.Controllers.Controllers
         [HttpGet(Name = "Users.GetAll")]
         public async Task<IEnumerable<UserSummary>> Get()
         {
-			//LINKED TO UI
-			return from u in await _userRepository.GetUsers()
-			select map(u);
+            throw new NotImplementedException();
+
+            //LINKED TO UI
+   //         return from u in await _userRepository.GetUsers()
+			//select map(u);
 
             //return new[] {
             //    new UserSummary {
@@ -51,8 +55,6 @@ namespace ScampApi.Controllers.Controllers
         [HttpGet("{userId}", Name = "Users.GetSingle")]
         public User Get(string userId)
         {
-
-
             return new User
             {
                 Id = "1",
@@ -61,6 +63,13 @@ namespace ScampApi.Controllers.Controllers
                 //Resources = new[] { new ScampResourceSummary { GroupId = "Id1", ResourceId = "1", Name = "GroupResource1", Links = { new Link { Rel = "groupResource", Href = _linkHelper.GroupResource(groupId: "Id1", resourceId: "1") } } } }
             };
         }
+
+        [HttpGet("byname/{searchparm}", Name = "Users.SearchByName")]
+        public User GetByName(string searchparm)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // POST api/values
         [HttpPost("{userId}")]
