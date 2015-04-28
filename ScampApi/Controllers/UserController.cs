@@ -73,7 +73,7 @@ namespace ScampApi.Controllers.Controllers
 
         // get a list of the user's resources
         // GET /api/user/{userid}/resources/
-        [HttpGet("resources", Name = "User.GetResourcesForUser")]
+        [HttpGet("{userId}/resources", Name = "User.GetResourcesForUser")]
         public async Task<List<ScampResourceSummary>> GetResourcesforUser(string userId)
         {
             List<ScampResourceSummary> resourceList = new List<ScampResourceSummary>();
