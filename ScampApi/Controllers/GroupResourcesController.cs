@@ -36,7 +36,7 @@ namespace ScampApi.Controllers
         public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
         {
             //LINKED TO UI
-            var res =await   _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
+            var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
             var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
             var rnd = new Random();

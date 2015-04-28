@@ -41,6 +41,17 @@ namespace DocumentDbRepositories
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "resource"; } }
+    }
 
+    public class ScampResourceReference
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+        [JsonProperty(PropertyName = "resourceGroup")]
+        public ScampResourceGroupReference ResourceGroup { get; set; }
+        [JsonProperty(PropertyName = "state")]
+        public string State { get; set; }
     }
 }
