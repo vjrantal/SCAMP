@@ -36,17 +36,17 @@ namespace ScampApi.Controllers
         public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
         {
             //LINKED TO UI
-            var res =await   _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
+            var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
             var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
             var rnd = new Random();
             ressummary.ForEach(summary =>
             {
-                summary.Links.Add(new Link
-                {
-                    Rel = "resource",
-                    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
-                });
+                //summary.Links.Add(new Link
+                //{
+                //    Rel = "resource",
+                //    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
+                //});
                 summary.Remaining = rnd.Next(0, 100);
             });
 
@@ -96,8 +96,8 @@ namespace ScampApi.Controllers
                 Id = Guid.NewGuid().ToString("d"),
                 ResourceGroup = grpRef,
                 Name = Regex.Replace(groupResource.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
-                ResourceType = "Virtual Machine",
-                State = "Not provisioned - Need to be started"
+                ResourceType = ResourceType.VirtualMachine,
+                State = ResourceState.Allocated
             };
 
             await _resourceRepository.CreateResource(res);
@@ -120,7 +120,7 @@ namespace ScampApi.Controllers
             if(checkPermission)
             {
                 var res =await  _resourceRepository.GetResource(resourceId);
-                res.State = "Deleting";
+                res.State = ResourceState.Deleting;
                 await  _resourceRepository.UpdateResource( res);
                 _webJobController.SubmitActionInQueue(resourceId,ResourceAction.Delete );
             }

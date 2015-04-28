@@ -1,6 +1,6 @@
 'use strict';
 angular.module('scamp')
-.controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'adalAuthenticationService', function ($scope, $modal, $location, dashboardSvc, groupsSvc, adalService) {
+.controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService) {
 	$scope.currentRouteName = 'Dashboard';
 	$scope.userList = null;
 
@@ -44,6 +44,21 @@ angular.module('scamp')
 			}
 		});
 	};
+
+    // get the list of current system administrators
+	$scope.testGetCurrentUserResources = function () {
+	    userSvc.getResourceList($scope.userProfile.id).then(
+            // get succeeded
+            function (data) {
+                console.log(data);
+            },
+            // get failed
+            function (statusCode) {
+                console.log(statusCode);
+            }
+        );
+	}
+
 }]);
 
 
