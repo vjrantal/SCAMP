@@ -73,8 +73,8 @@ namespace ScampApi.Controllers
                     Id = Guid.NewGuid().ToString("d"),
                     ResourceGroup = new ScampResourceGroupReference { Id = group.Id },
                     Name = "ScampDev",
-                    ResourceType = "Virtual Machine",
-                    State = "Not provisioned"
+                    ResourceType = ResourceType.VirtualMachine,
+                    State = ResourceState.Allocated
                 });
             }
             if (Request.Form["addSubscription"] == "on")

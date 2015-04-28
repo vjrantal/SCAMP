@@ -74,19 +74,45 @@ namespace ScampApi.Controllers.Controllers
         // get a list of the user's resources
         // GET /api/user/{userid}/resources/
         [HttpGet("resources", Name = "User.GetResourcesForUser")]
-        public async Task<List<ScampResourceReference>> GetResourcesforUser(string userid)
+        public async Task<List<ScampResourceSummary>> GetResourcesforUser(string userId)
         {
-            List<ScampResourceReference> resourceList = new List<ScampResourceReference>();
+            List<ScampResourceSummary> resourceList = new List<ScampResourceSummary>();
             ScampUser currentUser = await _securityHelper.GetCurrentUser();
 
-            // ensure requestor has system admin permissions
-            if (!currentUser.isSystemAdmin && currentUser.Id == userid)
+            // request must be systemAdmin, or the requesting user
+            if (!currentUser.isSystemAdmin && currentUser.Id != userId)
                 throw new AccessViolationException("Access Denied");
 
-            //TODO: execute query
-            //resourceList = await _resourceRepository.GetResources(currentUser.Resources);
+            // execute query
+            ScampUser user = await _userRepository.GetUserbyId(userId);
 
-            // return results
+            if (user != null)
+            {
+                foreach(ScampUserGroupMbrship groupMbrship in user.GroupMembership)
+                {
+                    foreach(ScampUserGroupResources resource in groupMbrship.Resources)
+                    {
+                        ScampResourceSummary tmpSummary = new ScampResourceSummary()
+                        {
+                            Id = resource.Id,
+                            ResourceGroup = new ScampResourceGroupReference()
+                            {
+                                Id = groupMbrship.Id,
+                                Name = groupMbrship.Name
+                            },
+                            Name = resource.Name,
+                            ResourceType = resource.type,
+                            State = resource.state,
+                            //TODO: replace with the REAL value
+                            Remaining = new Random().Next(0, 100)
+                        };
+
+                        resourceList.Add(tmpSummary);
+                    }
+                }
+            }
+            //TODO: return "not found" 
+
             return resourceList;
         }
 

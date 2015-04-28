@@ -165,10 +165,10 @@ namespace ScampApi.Controllers
 				ResourceGroup = new ScampResourceGroupReference() { Id = docDbResource.ResourceGroup.Id },
 				Id = docDbResource.Id,
 				Name = docDbResource.Name,
-				Links =
-				{
-					new Link {Rel = "resource", Href = _linkHelper.GroupResource(docDbResource.ResourceGroup.Id, docDbResource.Id) }
-				}
+				//Links =
+				//{
+				//	new Link {Rel = "resource", Href = _linkHelper.GroupResource(docDbResource.ResourceGroup.Id, docDbResource.Id) }
+				//}
 			};
 		}
 	}
