@@ -20,43 +20,48 @@ namespace DocumentDbRepositories.Implementation
             _client = client;
             _collection = collection;
         }
-        public Task<ScampResourceGroup> GetGroup(string groupID)
+        public async Task<ScampResourceGroup> GetGroup(string groupID)
         {
             var groupQuery = from g in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
                              where g.Id == groupID && g.Type == "group"
                              select g;
-            var group = groupQuery.ToList().FirstOrDefault();
+            var group = await groupQuery.AsDocumentQuery().FirstOrDefaultAsync();
 
-            return Task.FromResult(group);
+            return group;
         }
 
-        public Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID)
+        public async Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID)
         {
             var groupQuery = from g in _client.CreateDocumentQuery<ScampResourceGroupWithResources>(_collection.SelfLink)
                              where g.Id == groupID && g.Type == "group"
                              select g;
-            var group = groupQuery.ToList().FirstOrDefault();
-
-            if (group == null)
-                return Task.FromResult((ScampResourceGroupWithResources)null);
+            var groupTask = groupQuery.AsDocumentQuery().FirstOrDefaultAsync();
 
             var resourcesQuery = from r in _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
                                  where r.Type == "resource" && r.ResourceGroup.Id == groupID
                                  select r;
 
-            group.Resources = resourcesQuery.ToList();
+            var resourcesTask = resourcesQuery.AsDocumentQuery().ToListAsync();
 
-            return Task.FromResult(group);
+            await Task.WhenAll(groupTask, resourcesTask);
+
+            var group = groupTask.Result;
+            if (group == null)
+                return null;
+
+            group.Resources = resourcesTask.Result;
+
+            return group;
         }
-        public Task<IEnumerable<ScampResourceGroup>> GetGroups()
+        public async Task<IEnumerable<ScampResourceGroup>> GetGroups()
         {
             var groups =
                 _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
                     .Where(u => u.Type == "group");
-            var grouplist = groups.ToList();
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)grouplist);
+            var grouplist = await groups.AsDocumentQuery().ToListAsync();
+            return grouplist;
         }
-        public Task<IEnumerable<ScampResourceGroup>> GetGroupsByUser(ScampUserReference user)
+        public async Task<IEnumerable<ScampResourceGroup>> GetGroupsByUser(ScampUserReference user)
         {
             // Want to be able to write this in LINQ (but get a runtime exception):
             //var groups =
@@ -81,7 +86,7 @@ namespace DocumentDbRepositories.Implementation
                     }
                 }
             );
-            return Task.FromResult((IEnumerable<ScampResourceGroup>)groups);
+            return await groups.AsDocumentQuery().ToListAsync();
         }
 
         public async Task CreateGroup(ScampResourceGroup newGroup)
@@ -95,14 +100,14 @@ namespace DocumentDbRepositories.Implementation
             throw new NotImplementedException();
         }
 
-        public Task UpdateGroup(string groupID, ScampResourceGroup group)
+        public async Task UpdateGroup(string groupID, ScampResourceGroup group)
         {
-			// TODO: Security
-			Document document = _client.CreateDocumentQuery(_collection.SelfLink)
-				.Where(d => d.Id == groupID)
-				.AsEnumerable()
-				.FirstOrDefault();
-			return _client.ReplaceDocumentAsync(document.SelfLink, group);
+            // TODO: Security
+            Document document = await _client.CreateDocumentQuery(_collection.SelfLink)
+                .Where(d => d.Id == groupID)
+                .AsDocumentQuery()
+                .FirstOrDefaultAsync();
+            await _client.ReplaceDocumentAsync(document.SelfLink, group);
         }
         public Task AddAdmin(string groupID)
         {
