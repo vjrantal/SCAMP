@@ -87,7 +87,7 @@ namespace ProvisioningJobConsole
             {
                 Console.WriteLine("Stopping VM");
                 await provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Stop);
-                docDbResource.State = "Stopped";
+                docDbResource.State = ResourceState.Stopping;
                 await resourceController.UpdateResource(docDbResource);
             }
             if (message.Action == ResourceAction.Start)
@@ -95,7 +95,7 @@ namespace ProvisioningJobConsole
                 Console.WriteLine("Starting VM");
                 var x = provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Start);
                 x.Wait();
-                docDbResource.State = "Started";
+                docDbResource.State = ResourceState.Starting;
                 await resourceController.UpdateResource(docDbResource);
             }
             if (message.Action == ResourceAction.Create)
@@ -108,7 +108,7 @@ namespace ProvisioningJobConsole
                 string storageAccountName = cloudServiceName;
                 int rdpPort = r.Next(3000, 4000);
 
-                docDbResource.State = "Creating base services";
+                docDbResource.State = ResourceState.Starting;
                 await resourceController.UpdateResource(docDbResource);
 
                 var isCloudServiceAlreadyCreated =
@@ -117,28 +117,28 @@ namespace ProvisioningJobConsole
                 if (!isCloudServiceAlreadyCreated)
                 {
                     Console.WriteLine("Creating Cloud Services");
-                    docDbResource.State = "Creating Cloud Services";
-                    await resourceController.UpdateResource(docDbResource);
+                    //docDbResource.State = Resource;
+                    //await resourceController.UpdateResource(docDbResource);
                     var x = provisioningController.CreateCloudService(cloudServiceName, location);
                     x.Wait();
                     Console.WriteLine("Creating Storage");
                    
-                    docDbResource.State = "Creating Storage";
-                    await resourceController.UpdateResource(docDbResource);
+                    //docDbResource.State = "Creating Storage";
+                    //await resourceController.UpdateResource(docDbResource);
 
                     await provisioningController.CreateStorageAccount(location, storageAccountName);
                 }
                 //TODO Need to delete disk in case is already there
                 Console.WriteLine("Creating Virtual Machine");
 
-                docDbResource.State = "Creating Virtual Machine";
-                await resourceController.UpdateResource(docDbResource);
+                //docDbResource.State = "Creating Virtual Machine";
+                //await resourceController.UpdateResource(docDbResource);
 
                 var z = await provisioningController.CreateVirtualMachine(machineName, cloudServiceName, storageAccountName,
                     username, password, "Visual-Studio-2015-Ultimate", VirtualMachineRoleSize.Small, rdpPort, isCloudServiceAlreadyCreated);
                 
                 docDbResource.CloudServiceName = cloudServiceName;
-                docDbResource.State = "Created - Starting";
+                //docDbResource.State = "Created - Starting";
                 docDbResource.SubscriptionId = subscription.Id;
                 docDbResource.UserName = username;
                 //docDbResource.UserPassword = password;

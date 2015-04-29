@@ -39,6 +39,16 @@ namespace DocumentDbRepositories.Implementation
 			return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
 		}
 
+        // given a list of resourceId's, return the resource references
+        public async Task<List<ScampResourceReference>> GetResources(List<string> resourceIds)
+        {
+            List<ScampResourceReference> rtnList = new List<ScampResourceReference>();
+
+            //TODO: build and execute the query
+
+            return rtnList;
+        }
+
 		public Task<IEnumerable<ScampResourceGroup>> GetResourcesByOwner(string userId)
 		{
 			//TODO: need to add "join" to get by owner relationship

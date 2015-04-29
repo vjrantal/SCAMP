@@ -27,13 +27,17 @@ namespace ScampApi.Infrastructure
 
         public async Task<ScampUserReference> GetUserReference()
         {
-            return  Mapper.Map<ScampUserReference>(await GetUser());
+            return  Mapper.Map<ScampUserReference>(await GetCurrentUser());
         } 
-        public async Task<ScampUser> GetUser()
+
+        // retrieves the current user and stores it in cache for future calls
+        public async Task<ScampUser> GetCurrentUser()
         {
-            //TODO ADD Some cache
             var userId = GetIPIDByContext();
-            return await GetUserById(userId);
+            //TODO check if user is in cache
+            ScampUser tmpUser = await GetUserById(userId);
+            // TODO put the user object into cache
+            return tmpUser;
         }
 
         public string GetIPIDByContext()
@@ -70,7 +74,7 @@ namespace ScampApi.Infrastructure
         }
         public async Task<bool> IsGroupAdmin(string groupId)
         {
-            var user = await GetUser();
+            var user = await GetCurrentUser();
             var grp = await _groupRepository.GetGroup(groupId);
             var checkAdmin = grp.Admins.ToList().Any(q => q.Id == user.Id);
             return checkAdmin;
@@ -78,7 +82,7 @@ namespace ScampApi.Infrastructure
 
         public async Task<bool> IsSysAdmin()
         {
-            ScampUser user = await GetUser();
+            ScampUser user = await GetCurrentUser();
 
             return user.isSystemAdmin;
         }
