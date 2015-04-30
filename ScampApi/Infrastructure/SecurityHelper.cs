@@ -15,10 +15,10 @@ namespace ScampApi.Infrastructure
     public class SecurityHelper : ISecurityHelper
     {
         private readonly HttpContext Context;
-        private readonly UserRepository _userRepository;
-        private readonly GroupRepository _groupRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public SecurityHelper(IHttpContextAccessor httpContextAccessor, UserRepository userRepository, GroupRepository groupRepository )
+        public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository )
         {
             Context = httpContextAccessor.Value;
             _userRepository = userRepository;
@@ -62,9 +62,9 @@ namespace ScampApi.Infrastructure
                     Name =
                         string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
                             Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                    isSystemAdmin = tmpUser.isSystemAdmin,
+                    IsSystemAdmin = false,
 					// get email address
-					email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
+					Email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
                 };
 
                 // insert into database   
@@ -84,7 +84,7 @@ namespace ScampApi.Infrastructure
         {
             ScampUser user = await GetCurrentUser();
 
-            return user.isSystemAdmin;
+            return user.IsSystemAdmin;
         }
     }
 }

@@ -11,42 +11,45 @@ using DocumentDbRepositories;
 
 namespace DocumentDbRepositories.Implementation
 {
-    public class UserRepository 
-    {
-        private readonly DocumentClient _client;
-        private readonly DocumentCollection _collection;
 
-        public UserRepository(DocumentClient client, DocumentCollection collection)
+    internal class UserRepository : IUserRepository
+    {
+        DocDb docdb;
+        public UserRepository(DocDb docdb)
         {
-            _client = client;
-            _collection = collection;
+            this.docdb = docdb;
         }
         public async Task CreateUser(ScampUser newUser)
 		{
-			var created = await _client.CreateDocumentAsync(_collection.SelfLink, newUser);
+            if (!(await docdb.IsInitialized))
+                return;
+
+            var created = await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newUser);
 		}
 
-		public Task<ScampUser> GetUserbyId(string userId)
+		public async Task<ScampUser> GetUserbyId(string userId)
         {
+            if (!(await docdb.IsInitialized))
+                return null;
+
             // get specified user by ID
-            var queryResult = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
+            var queryResult = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
                               where u.Id == userId
                               select u;
             var user = queryResult.ToList().FirstOrDefault();
-
-            if (user == null)
-                return Task.FromResult((ScampUser)null);
-
-            return Task.FromResult((ScampUser)user);
+            return user;
         }
 
         public async Task UpdateUser(ScampUser user)
         {
+            if (!(await docdb.IsInitialized))
+                return;
+
             //TODO: likely need to do more here
 
             //ScampUser tmpUser = (dynamic)userDoc;
-            user.isSystemAdmin = false;
-            var savedUser = await _client.ReplaceDocumentAsync(user.SelfLink, user);
+            user.IsSystemAdmin = false;
+            var savedUser = await docdb.Client.ReplaceDocumentAsync(user.SelfLink, user);
 
             // exception handling, etc... 
 

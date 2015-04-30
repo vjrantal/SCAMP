@@ -12,27 +12,25 @@ using DocumentDbRepositories;
 namespace DocumentDbRepositories.Implementation
 {
 
-    public class SystemSettingsRepository
+    internal class SystemSettingsRepository : ISystemSettingsRepository
     {
-        private readonly DocumentClient _client;
-        private readonly DocumentCollection _collection;
+        DocDb docdb;
 
-        public SystemSettingsRepository(DocumentClient client, DocumentCollection collection)
+        public SystemSettingsRepository(DocDb docdb)
         {
-            _client = client;
-            _collection = collection;
+            this.docdb = docdb;
         }
 
         // get a list of system administrators
-        public Task<List<ScampUser>> GetSystemAdministrators()
+        public async Task<List<ScampUser>> GetSystemAdministrators()
         {
-            var admins = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                         where u.isSystemAdmin == true
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var admins = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
+                         where u.IsSystemAdmin == true
                          select u;
-            var adminList = admins.ToList();
-            if (adminList.Count == 0)
-                return Task.FromResult((List<ScampUser>)null);
-            return Task.FromResult(adminList);
+            return admins.ToList();
         }
     }
 }

@@ -10,7 +10,6 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.DependencyInjection.Fallback;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using ProvisioningLibrary;
-using ProvisioningLibrary5x;
 
 namespace ProvisioningJobConsole
 {
@@ -77,9 +76,7 @@ namespace ProvisioningJobConsole
                 {
                     await provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Stop);
                 }
-                catch (Exception e)
-                {
-                }
+                catch {  }
 
                 await resourceController.DeleteResource(docDbResource);
             }

@@ -8,40 +8,48 @@ using Microsoft.Azure.Documents.Linq;
 
 namespace DocumentDbRepositories.Implementation
 {
-	public class ResourceRepository
+	internal class ResourceRepository : IResourceRepository
 	{
-		private readonly DocumentClient _client;
-		private readonly DocumentCollection _collection;
+        DocDb docdb;
 
-		public ResourceRepository(DocumentClient client, DocumentCollection collection)
+		public ResourceRepository(DocDb docdb)
 		{
-			_client = client;
-			_collection = collection;
+            this.docdb = docdb;
 		}
-		public Task<ScampResource> GetResource(string resourceId)
+		public async Task<ScampResource> GetResource(string resourceId)
 		{
+            if (!(await docdb.IsInitialized))
+                return null;
+
 			//TODO Check
-			var resources = from r in _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
+			var resources = from r in docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
 							where r.Id == resourceId && r.Type == "resource"
 							select r;
 			var resourceList = resources.ToList();
 			if (resourceList.Count == 0)
-				return Task.FromResult((ScampResource)null);
-			return Task.FromResult(resourceList[0]);
+				return null;
+
+			return resourceList[0];
 		}
 
-		public Task<IEnumerable<ScampResourceGroup>> GetResources()
+		public async Task<IEnumerable<ScampResource>> GetResources()
 		{
-			var resources = from r in _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var resources = from r in docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
 							where r.Type == "resource"
 							select r;
 			var resourceList = resources.ToList();
-			return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
+			return resourceList;
 		}
 
         // given a list of resourceId's, return the resource references
         public async Task<List<ScampResourceReference>> GetResources(List<string> resourceIds)
         {
+            if (!(await docdb.IsInitialized))
+                return null;
+
             List<ScampResourceReference> rtnList = new List<ScampResourceReference>();
 
             //TODO: build and execute the query
@@ -49,38 +57,46 @@ namespace DocumentDbRepositories.Implementation
             return rtnList;
         }
 
-		public Task<IEnumerable<ScampResourceGroup>> GetResourcesByOwner(string userId)
+		public async Task<IEnumerable<ScampResource>> GetResourcesByOwner(string userId)
 		{
-			//TODO: need to add "join" to get by owner relationship
-			var resources = from r in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            //TODO: need to add "join" to get by owner relationship
+            var resources = from r in docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
 							select r;
-			var resourceList = resources.ToList();
-			return Task.FromResult((IEnumerable<ScampResourceGroup>)resourceList);
+
+            return resources.ToList();
 		}
 
 		public async Task CreateResource(ScampResource resource)
 		{
+            if (!(await docdb.IsInitialized))
+                return;
 
-			var created = await _client.CreateDocumentAsync(_collection.SelfLink, resource);
+            var created = await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, resource);
 		}
 
-		public Task<IEnumerable<ScampResource>> GetResourcesByGroup(ScampUserReference user, string groupId)
+		public async Task<IEnumerable<ScampResource>> GetResourcesByGroup(ScampUserReference user, string groupId)
 		{
-			bool isGroupAdmin = IsGroupAdmin(user, groupId);
+            if (!(await docdb.IsInitialized))
+                return null;
 
-			var resources = _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
-				.Where(u => u.Type == "resource" && u.ResourceGroup.Id == groupId);
-			if (!isGroupAdmin)
-			{
+            var resources = docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
+    				.Where(u => u.Type == "resource" && u.ResourceGroup.Id == groupId);
+
+            // if not admin add where clause
+            if (!IsGroupAdmin(user, groupId))
 				resources = resources.Where(u => u.Owners[0].Id == user.Id);
-			}
+
 			var resourceList = resources.ToList();
-			return Task.FromResult((IEnumerable<ScampResource>)resourceList);
+			return resourceList;
 		}
 
 		private bool IsGroupAdmin(ScampUserReference user, string groupId)
-		{	// check all group's admin
-			return _client.CreateDocumentQuery<dynamic>(_collection.SelfLink, new SqlQuerySpec
+		{
+            // check all group's admin
+			return docdb.Client.CreateDocumentQuery<dynamic>(docdb.Collection.SelfLink, new SqlQuerySpec
 			{
 				QueryText = "SELECT g FROM Groups g JOIN u IN g.admins WHERE g.id = @groupId AND g.type='group' AND u.id = @userId",
 				Parameters = new SqlParameterCollection()
@@ -93,8 +109,8 @@ namespace DocumentDbRepositories.Implementation
 
 		public Task AddResource(string groupID)
 		{
-			//TODO: stuff
-			throw new NotImplementedException();
+            //TODO: stuff
+            throw new NotImplementedException();
 		}
 
 		public void AddOwner(string groupID)
@@ -105,20 +121,26 @@ namespace DocumentDbRepositories.Implementation
 
 		public async Task UpdateResource(ScampResource resource)
 		{
-			//TODO Check
-			var dbRes = (from u in _client.CreateDocumentQuery(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return;
+            
+            //TODO Check
+            var dbRes = (from u in docdb.Client.CreateDocumentQuery(docdb.Collection.SelfLink)
 						 where u.Id == resource.Id
 						 select u).ToList().FirstOrDefault();
 
-			await _client.ReplaceDocumentAsync(dbRes.SelfLink, resource);
+			await docdb.Client.ReplaceDocumentAsync(dbRes.SelfLink, resource);
 		}
 
 		public async Task DeleteResource(string resourceId)
 		{
-			var dbRes = (from u in _client.CreateDocumentQuery(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return;
+
+            var dbRes = (from u in docdb.Client.CreateDocumentQuery(docdb.Collection.SelfLink)
 						 where u.Id == resourceId
 						 select u).ToList().FirstOrDefault();
-			await _client.DeleteDocumentAsync(dbRes.SelfLink);
+			await docdb.Client.DeleteDocumentAsync(dbRes.SelfLink);
 		}
 	}
 }

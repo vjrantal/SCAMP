@@ -198,3 +198,6 @@ debugSettings.json
 /EnvVars.ps1
 wrap/
 DocumentDbRepo46/private.config
+
+# exclude emacs files
+*~
