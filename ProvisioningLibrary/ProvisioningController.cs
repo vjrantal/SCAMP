@@ -169,30 +169,30 @@ namespace ProvisioningLibrary
             return vhd;
         }
 
-        private void AddRole( string cloudServiceName, string deploymentName, Role role, DeploymentSlot slot = DeploymentSlot.Production)
+        private void AddRole(string cloudServiceName, string deploymentName, Role role, DeploymentSlot slot = DeploymentSlot.Production)
         {
             try
             {
                 using (var computeClient = new ComputeManagementClient(_credentials))
                 {
-                
-                VirtualMachineCreateParameters createParams = new VirtualMachineCreateParameters
-                {
-                    RoleName = role.RoleName,
-                    RoleSize = role.RoleSize,
-                    OSVirtualHardDisk = role.OSVirtualHardDisk,
-                    ConfigurationSets = role.ConfigurationSets,
-                    AvailabilitySetName = role.AvailabilitySetName,
-                    DataVirtualHardDisks = role.DataVirtualHardDisks,
-                    ProvisionGuestAgent = role.ProvisionGuestAgent 
 
-                };
-                computeClient.VirtualMachines.Create(cloudServiceName, deploymentName, createParams);
+                    VirtualMachineCreateParameters createParams = new VirtualMachineCreateParameters
+                    {
+                        RoleName = role.RoleName,
+                        RoleSize = role.RoleSize,
+                        OSVirtualHardDisk = role.OSVirtualHardDisk,
+                        ConfigurationSets = role.ConfigurationSets,
+                        AvailabilitySetName = role.AvailabilitySetName,
+                        DataVirtualHardDisks = role.DataVirtualHardDisks,
+                        ProvisionGuestAgent = role.ProvisionGuestAgent
+
+                    };
+                    computeClient.VirtualMachines.Create(cloudServiceName, deploymentName, createParams);
+                }
             }
-        }
             catch (CloudException e)
             {
-                throw;
+                throw e;
             }
 
         }

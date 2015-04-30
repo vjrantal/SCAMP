@@ -10,37 +10,39 @@ using Microsoft.Azure.Documents.Linq;
 namespace DocumentDbRepositories.Implementation
 {
 
-    public class GroupRepository
+    internal class GroupRepository : IGroupRepository
     {
-        private readonly DocumentClient _client;
-        private readonly DocumentCollection _collection;
+        DocDb docdb;
 
-        public GroupRepository(DocumentClient client, DocumentCollection collection)
+        public GroupRepository(DocDb docdb)
         {
-            _client = client;
-            _collection = collection;
+            this.docdb = docdb;
         }
+
         public async Task<ScampResourceGroup> GetGroup(string groupID)
         {
-            var groupQuery = from g in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
                              where g.Id == groupID && g.Type == "group"
                              select g;
-            var group = await groupQuery.AsDocumentQuery().FirstOrDefaultAsync();
-
-            return group;
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
 
         public async Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID)
         {
-            var groupQuery = from g in _client.CreateDocumentQuery<ScampResourceGroupWithResources>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var groupQuery = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroupWithResources>(docdb.Collection.SelfLink)
                              where g.Id == groupID && g.Type == "group"
                              select g;
             var groupTask = groupQuery.AsDocumentQuery().FirstOrDefaultAsync();
 
-            var resourcesQuery = from r in _client.CreateDocumentQuery<ScampResource>(_collection.SelfLink)
+            var resourcesQuery = from r in docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
                                  where r.Type == "resource" && r.ResourceGroup.Id == groupID
                                  select r;
-
             var resourcesTask = resourcesQuery.AsDocumentQuery().ToListAsync();
 
             await Task.WhenAll(groupTask, resourcesTask);
@@ -50,48 +52,55 @@ namespace DocumentDbRepositories.Implementation
                 return null;
 
             group.Resources = resourcesTask.Result;
-
             return group;
         }
+
         public async Task<IEnumerable<ScampResourceGroup>> GetGroups()
         {
-            var groups =
-                _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query =
+                docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
                     .Where(u => u.Type == "group");
-            var grouplist = await groups.AsDocumentQuery().ToListAsync();
-            return grouplist;
+            return await query.AsDocumentQuery().ToListAsync();
         }
+
         public async Task<IEnumerable<ScampResourceGroup>> GetGroupsByUser(ScampUserReference user)
         {
+            if (!(await docdb.IsInitialized))
+                return null;
+
             // Want to be able to write this in LINQ (but get a runtime exception):
             //var groups =
-            //    (from grp in _client.CreateDocumentQuery<ScampResourceGroup>(_collection.SelfLink)
+            //    (from grp in docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
             //    where grp.Type == "group"
             //    from admin in grp.Admins
             //    where admin.Id == user.Id
             //    select grp)
             //    .ToList();
-            var groups = _client.CreateDocumentQuery<ScampResourceGroup>(
-                _collection.SelfLink,
-                new SqlQuerySpec
-                {
-                    QueryText = " SELECT VALUE g" +
+            var sql = new SqlQuerySpec
+            {
+                QueryText = " SELECT VALUE g" +
                                 " FROM groups g " +
                                 " JOIN admin in g.admins" +
                                 " WHERE g.type = 'group'" +
                                 " AND admin.id = @adminId",
-                    Parameters = new SqlParameterCollection
+                Parameters = new SqlParameterCollection
                     {
                        new SqlParameter { Name = "@adminId", Value = user.Id }
                     }
-                }
-            );
-            return await groups.AsDocumentQuery().ToListAsync();
+            };
+            var query = docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink, sql);
+            return await query.AsDocumentQuery().ToListAsync();
         }
 
         public async Task CreateGroup(ScampResourceGroup newGroup)
         {
-            var created = await _client.CreateDocumentAsync(_collection.SelfLink, newGroup);
+            if (!(await docdb.IsInitialized))
+                return;
+
+            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newGroup);
         }
 
         public Task AddResource(string groupID)
@@ -102,13 +111,17 @@ namespace DocumentDbRepositories.Implementation
 
         public async Task UpdateGroup(string groupID, ScampResourceGroup group)
         {
+
+            if (!(await docdb.IsInitialized))
+                return;
+
             // TODO: Security
-            Document document = await _client.CreateDocumentQuery(_collection.SelfLink)
-                .Where(d => d.Id == groupID)
-                .AsDocumentQuery()
-                .FirstOrDefaultAsync();
-            await _client.ReplaceDocumentAsync(document.SelfLink, group);
+            var query = docdb.Client.CreateDocumentQuery(docdb.Collection.SelfLink)
+                .Where(d => d.Id == groupID);
+            var document = await query.AsDocumentQuery().FirstOrDefaultAsync();
+			await docdb.Client.ReplaceDocumentAsync(document.SelfLink, group);
         }
+
         public Task AddAdmin(string groupID)
         {
             //TODO: stuff

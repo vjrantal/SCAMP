@@ -18,11 +18,11 @@ namespace ScampApi.Controllers
     public class GroupsController : Controller
     {
         private readonly ILinkHelper _linkHelper;
-        private readonly GroupRepository _groupRepository;
-        private readonly UserRepository _userRepository;
+        private readonly IGroupRepository _groupRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ISecurityHelper _securityHelper;
 
-        public GroupsController(ILinkHelper linkHelper, ISecurityHelper securityHelper, GroupRepository groupRepository, UserRepository userRepository)
+        public GroupsController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository)
         {
             _linkHelper = linkHelper;
             _groupRepository = groupRepository;
@@ -140,7 +140,7 @@ namespace ScampApi.Controllers
         private async Task<bool> CurrentUserCanViewGroup(ScampResourceGroupWithResources group)
         {
             var currentUser = await _securityHelper.GetCurrentUser();
-            return currentUser.isSystemAdmin                       // sys admin
+            return currentUser.IsSystemAdmin                       // sys admin
                 || group.Admins.Any(u => u.Id == currentUser.Id)   // group admin
                 || group.Members.Any(u => u.Id == currentUser.Id); // group member
         }
