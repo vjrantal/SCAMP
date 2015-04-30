@@ -134,9 +134,9 @@ angular.module('scamp')
 .filter('notAdmin', function () {
 	return function (users, admins) {
 		var filtered = [];
-		var u, a;
+		var a;
 		var found = false;
-		for (u of users) {
+		for (var u in users) {
 			if (!userInArray(u.userId, admins))
 				filtered.push(u);
 		}
@@ -145,8 +145,7 @@ angular.module('scamp')
 });
 
 function userInArray(userId, array) {
-	var u;
-	for (u of array) {
+	for (var u in array) {
 		if (userId == u.userId) {
 			return true;
 		}

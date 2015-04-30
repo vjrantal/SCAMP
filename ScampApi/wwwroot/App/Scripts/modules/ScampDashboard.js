@@ -8,6 +8,13 @@
         {maxUsage: 101,cssClass: "danger"}
     ];
 
+    var chartsToRender = [
+                { fieldName: 'usageEscalation', domElement: 'usageDonutChart' },
+                { fieldName: 'groupName', domElement: 'groupDonutChart' },
+                { fieldName: 'resourceTypeDesc', domElement: 'typeDonutChart' },
+                { fieldName: 'stateDescription', domElement: 'stateDonutChart' }
+    ];
+
     function setResources(rspData){
         scope.resources = rspData.filter(function (item) {
             return scope.rscStateDescMapping[item.state];//Make sure the state code is valid
@@ -15,6 +22,9 @@
             var alertClassArr = resourceUsageEscalationLevels.filter(function (el) { return rsc.remaining < el.maxUsage; });
 
             rsc.usageEscalation = alertClassArr && alertClassArr.length > 0 ? alertClassArr[0].cssClass : "danger";
+            rsc.groupName = rsc.resourceGroup.name;
+            rsc.stateDescription = scope.rscStateDescMapping[rsc.state].description;
+            rsc.resourceTypeDesc = scope.resourceTypes[rsc.resourceType];
 
             return rsc;
         });
@@ -38,13 +48,11 @@
         };
 
         (function renderCharts() {
-            renderChart('usageEscalation', function (val, key) {
-                return { label: key, value: val.length }
-            }, 'usageDonutChart', rspData);
-
-            renderChart('resourceGroup', function (val, key) {
-                return { label: key, value: val.length }
-            }, 'groupDonutChart', rspData);
+            chartsToRender.forEach(function (item) {
+                renderChart(item.fieldName, function (val, key) {
+                    return { label: key, value: val.length }
+                }, item.domElement, rspData);
+            });
         })();
    }
 }
