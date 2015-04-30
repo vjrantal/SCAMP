@@ -11,7 +11,6 @@ using DocumentDbRepositories;
 
 namespace DocumentDbRepositories.Implementation
 {
-
     internal class UserRepository : IUserRepository
     {
         DocDb docdb;
@@ -33,11 +32,10 @@ namespace DocumentDbRepositories.Implementation
                 return null;
 
             // get specified user by ID
-            var queryResult = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
+            var query = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
                               where u.Id == userId
                               select u;
-            var user = queryResult.ToList().FirstOrDefault();
-            return user;
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
 
         public async Task UpdateUser(ScampUser user)
@@ -52,7 +50,6 @@ namespace DocumentDbRepositories.Implementation
             var savedUser = await docdb.Client.ReplaceDocumentAsync(user.SelfLink, user);
 
             // exception handling, etc... 
-
         }
     }
 }

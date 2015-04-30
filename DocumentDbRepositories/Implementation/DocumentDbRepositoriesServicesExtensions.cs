@@ -11,12 +11,12 @@ namespace DocumentDbRepositories.Implementation
 {
     public static class DocumentDbRepositoriesServicesExtensions
     {
-        static DocDb current = null;
+        public static DocDb Current = null;
         public static void AddDocumentDbRepositories(this IServiceCollection services, IConfiguration configuration)
         {
-            if (current == null)
+            if (Current == null)
             {
-                current = new DocDb(services, configuration);
+                Current = new DocDb(services, configuration);
             }
         }
     }

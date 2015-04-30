@@ -26,7 +26,7 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return;
 
-            var created = await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newSubscription);
+            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newSubscription);
         }
 
         public async Task<ScampSubscription> GetSubscription(string subscriptionId)
@@ -34,14 +34,10 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return null;
 
-            var subscriptions = from u in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
+            var query = from u in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
                                 where u.Id == subscriptionId
                                 select u;
-            var subList = subscriptions.ToList();
-            if (subList.Count == 0)
-                return null;
-
-            return subList[0];
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
 
         public async Task<List<ScampSubscription>> GetSubscriptions()
@@ -49,10 +45,9 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return null;
 
-            var subscriptions = from u in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
+            var query = from u in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
                                 select u;
-
-            return subscriptions.ToList();
+            return await query.AsDocumentQuery().ToListAsync();
         }
     }
 }

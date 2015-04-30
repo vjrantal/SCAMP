@@ -15,6 +15,7 @@ namespace ScampMonitorTest
         {
             Run().Wait();
         }
+
         static async Task Run()
         {
             var ws = new ClientWebSocket();

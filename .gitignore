@@ -198,6 +198,8 @@ debugSettings.json
 /EnvVars.ps1
 wrap/
 DocumentDbRepo46/private.config
+ProvisioningJobConsole/Properties/
+ScampApi/Properties/
 
 # exclude emacs files
 *~

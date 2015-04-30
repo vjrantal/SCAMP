@@ -30,7 +30,8 @@ namespace DocumentDbRepositories.Implementation
             var admins = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
                          where u.IsSystemAdmin == true
                          select u;
-            return admins.ToList();
+            var adminList = await admins.AsDocumentQuery().ToListAsync();
+            return adminList;
         }
     }
 }
