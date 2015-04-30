@@ -62,7 +62,7 @@ namespace ScampApi.Infrastructure
                     Name =
                         string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
                             Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                    isSystemAdmin = tmpUser.isSystemAdmin,
+                    isSystemAdmin = false, // default to non-admin
 					// get email address
 					email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
                 };
