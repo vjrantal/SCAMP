@@ -1,26 +1,41 @@
 'use strict';
+
 angular.module('scamp')
 .controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService) {
-	$scope.currentRouteName = 'Dashboard';
+    var scampDashboard = new ScampDashboard($scope);
+    $scope.currentRouteName = 'Dashboard';
 	$scope.userList = null;
+	$scope.rscStateDescMapping = {
+	    0: {description: "Allocated", allowableActions : ["Start", "Delete"] },
+	    1: {description: "Starting", allowableActions : [] },
+	    2: {description: "Running", allowableActions : ["Stop"] },
+	    3: {description: "Stopping", allowableActions : [] },
+	    4: {description: "Stopped", allowableActions: ["Start", "Delete"] },
+	    5: {description: "Suspended", allowableActions: ["Start", "Delete"] },
+	    6: {description: "Deleting", allowableActions: [] }
+	};
+
+	$scope.resourceTypes = {
+	    1: "Virtual Machine",
+	    2: "Web App"
+	};
 
 	$scope.populate = function () {
-		console.log(dashboardSvc);
-		dashboardSvc.getItems().success(function (results) {
-			$scope.userList = results;
-			$scope.loadingMessage = "";
-		}).error(function (err) {
-			$scope.error = err;
-			$scope.loadingMessage = "";
-		})
+	    scampDashboard.initializeGrid();
 
-		groupsSvc.getItems().success(function (results) {
-			$scope.groupList = results;
-			$scope.loadingMessage = "";
-		}).error(function (err) {
-			$scope.error = err;
-			$scope.loadingMessage = "";
-		});
+	    var userGUID = $scope.userProfile.id;
+	    $scope.dashboardStatus = 'loading';
+
+	    userSvc.getResourceList(userGUID).then(
+            // resource REST call was a success
+            function (data) {
+                scampDashboard.render(data);
+            },
+            // resource REST call failed
+            function (statusCode) {
+                console.error(statusCode);
+            }
+        );
 	};
 
 	$scope.manageGroup = function (groupId) {
@@ -57,7 +72,7 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
-	}
+	};
 
 }]);
 
