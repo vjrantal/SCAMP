@@ -22,10 +22,10 @@ namespace DocumentDbRepositories
         public string Type { get { return "user"; } }
 
         [JsonProperty(PropertyName = "email")]
-        public string email { get; set; }
+        public string Email { get; set; }
 
         [JsonProperty(PropertyName = "isSystemAdmin")]
-        public bool isSystemAdmin { get; set; }
+        public bool IsSystemAdmin { get; set; }
 
         [JsonProperty(PropertyName = "groupmbrship")]
         public List<ScampUserGroupMbrship> GroupMembership { get; set; }

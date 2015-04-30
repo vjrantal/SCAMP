@@ -16,11 +16,11 @@ namespace ScampApi.Controllers.Controllers
     public class SettingsAdminController : Controller
     {
         private ILinkHelper _linkHelper;
-        private readonly SystemSettingsRepository _settingsRepository;
-        private readonly UserRepository _userRepository;
+        private readonly ISystemSettingsRepository _settingsRepository;
+        private readonly IUserRepository _userRepository;
         private ISecurityHelper _securityHelper;
 
-        public SettingsAdminController(ILinkHelper linkHelper, SystemSettingsRepository settingsRepository, UserRepository userRepository, ISecurityHelper securityHelper)
+        public SettingsAdminController(ILinkHelper linkHelper, ISystemSettingsRepository settingsRepository, IUserRepository userRepository, ISecurityHelper securityHelper)
         {
             _linkHelper = linkHelper;
             _settingsRepository = settingsRepository;
@@ -48,7 +48,7 @@ namespace ScampApi.Controllers.Controllers
                     {
                         Id = tmpUser.Id,
                         Name = tmpUser.Name,
-                        isSystemAdmin = tmpUser.isSystemAdmin
+                        IsSystemAdmin = tmpUser.IsSystemAdmin
                     });
                 }
             }        
@@ -90,10 +90,10 @@ namespace ScampApi.Controllers.Controllers
             //TODO: make sure we got a user and throw a 404 if not 
 
             // only perform update if value needs to be changed
-            if (user.isSystemAdmin != isAdmin)
+            if (user.IsSystemAdmin != isAdmin)
             {
                 // if not, grant them permission
-                user.isSystemAdmin = isAdmin;
+                user.IsSystemAdmin = isAdmin;
 
                 // save updated setting
                 await _userRepository.UpdateUser(user);

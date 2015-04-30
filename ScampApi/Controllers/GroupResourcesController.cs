@@ -19,12 +19,12 @@ namespace ScampApi.Controllers
     public class GroupResourcesController : Controller
     {
         private ILinkHelper _linkHelper;
-        private ResourceRepository _resourceRepository;
+        private IResourceRepository _resourceRepository;
         private ISecurityHelper _securityHelper;
-        private GroupRepository _groupRepository;
+        private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, ResourceRepository resourceRepository, GroupRepository groupRepository, IWebJobController webJobController)
+        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;

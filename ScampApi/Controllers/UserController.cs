@@ -20,10 +20,10 @@ namespace ScampApi.Controllers.Controllers
     {
         private readonly ISecurityHelper _securityHelper;
         private readonly ILinkHelper _linkHelper;
-        private readonly ResourceRepository _resourceRepository;
-        private readonly UserRepository _userRepository;
+        private readonly IResourceRepository _resourceRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(ILinkHelper linkHelper, ISecurityHelper securityHelper, ResourceRepository resourceRepository, UserRepository userRepository)
+        public UserController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
@@ -48,8 +48,8 @@ namespace ScampApi.Controllers.Controllers
             {
                 Id = tmpUser.Id,
                 Name = tmpUser.Name,
-                isSystemAdmin = tmpUser.isSystemAdmin,
-                email = tmpUser.email
+                IsSystemAdmin = tmpUser.IsSystemAdmin,
+                Email = tmpUser.Email
             };
         }
 
@@ -65,8 +65,8 @@ namespace ScampApi.Controllers.Controllers
             {
                 Id = tmpUser.Id,
                 Name = tmpUser.Name,
-                isSystemAdmin = tmpUser.isSystemAdmin,
-                email = tmpUser.email
+                IsSystemAdmin = tmpUser.IsSystemAdmin,
+                Email = tmpUser.Email
             };
         }
 
@@ -80,7 +80,7 @@ namespace ScampApi.Controllers.Controllers
             ScampUser currentUser = await _securityHelper.GetCurrentUser();
 
             // request must be systemAdmin, or the requesting user
-            if (!currentUser.isSystemAdmin && currentUser.Id != userId)
+            if (!currentUser.IsSystemAdmin && currentUser.Id != userId)
                 throw new AccessViolationException("Access Denied");
 
             // execute query

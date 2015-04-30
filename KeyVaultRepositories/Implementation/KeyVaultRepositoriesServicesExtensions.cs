@@ -25,8 +25,9 @@ namespace KeyVaultRepositories.Implementation
        private readonly IConfiguration _configuration;
        private readonly KeyVaultClient _keyVaultClient;
        private readonly string _keyVaultUrl;
-       private static X509Certificate2 clientAssertionCertPfx;
-
+#if !DEBUG
+        private static X509Certificate2 clientAssertionCertPfx;
+#endif
         public KeyVaultScampClient(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -51,6 +52,8 @@ namespace KeyVaultRepositories.Implementation
         {
             return _keyVaultUrl;
         }
+
+#if !DEBUG
         public  string GetAccessTokenCert(string authority, string resource, string scope)
         {
             var clientId = _configuration["KeyVault:AuthClientId"];
@@ -63,6 +66,8 @@ namespace KeyVaultRepositories.Implementation
 
             return result.AccessToken;
         }
+#endif
+
         public  string GetAccessToken(string authority, string resource, string scope)
         {
             var clientId = _configuration["KeyVault:AuthClientId"];
