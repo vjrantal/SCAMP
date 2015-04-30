@@ -29,7 +29,8 @@ namespace ProvisioningLibrary
             //          Inside the XML File
             //          ManagementCertificate="...base64 encoded certificate data..." />
 
-            return new X509Certificate2(Convert.FromBase64String(certificate));
+            byte[] tmp = Convert.FromBase64String(certificate);
+            return new X509Certificate2(tmp);
         }
         private SubscriptionCloudCredentials GetCloudCredentials(string certificate, string subscriptionId)
         {
@@ -222,14 +223,20 @@ namespace ProvisioningLibrary
                     return;
                 }
 
-
-                var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
+                var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
+                //var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
 
                 if (deployment != null)
                 {
                     var deploymantSlotName = deployment.Name;
                     var serviceName = vm.ServiceName;
-                    var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
+
+                    // GSUHackfest Note #1 by Brent - April 30th
+                    // the line that has been commented out worked for Gabriele's tests with a machine he
+                    // provisioned via SCAMP. But it didn't work with VMs deployed via the Azure portal. 
+                    // we'll need to revist this later to try and reconcile the differences. 
+                    //var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
+                    var instance = deployment.RoleInstances.First(x => x.RoleName == virtualMachineName);
 
                     if (action == VirtualMachineAction.Start)
                     {
@@ -239,8 +246,9 @@ namespace ProvisioningLibrary
                             return;
                         }
                         //TODO this is strange but for now i leave it a is. Need to be refactored.
-                        await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
-
+                        // refer to "GSUHackfest Note #1" above
+                        //await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
+                        await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.RoleName);
                     }
                     else
                     {
@@ -249,7 +257,9 @@ namespace ProvisioningLibrary
                             Console.WriteLine("VM Already Stopped");
                             return;
                         }
-                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, new VirtualMachineShutdownParameters { });
+                        // refer to "GSUHackfest Note #1" above
+                        //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, new VirtualMachineShutdownParameters { });
+                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, new VirtualMachineShutdownParameters { });
                     }
                 }
             }

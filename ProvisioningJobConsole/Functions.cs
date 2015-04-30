@@ -19,7 +19,6 @@ namespace ProvisioningJobConsole
         // on an Azure Queue called queue.
         public async static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
         {
-
             // Setup configuration sources.
             var configuration = new Configuration()
                  .AddEnvironmentVariables("APPSETTING_");
@@ -35,7 +34,8 @@ namespace ProvisioningJobConsole
             // TODO - shouldn't be depending on ResourceController here
             var keyVaultController = serviceProvider.GetService<IKeyRepository>();
             var resourceController = serviceProvider.GetService<ResourceController>();
-            
+
+            Console.WriteLine("Retrieving Resource: " + message.ResourceId);
             var docDbResource = await resourceController.GetResource(message.ResourceId);
             ScampSubscription subscription;
             string cloudServiceName, machineName;
@@ -59,6 +59,7 @@ namespace ProvisioningJobConsole
             }
             else
             {
+                Console.WriteLine("Retrieving Subscription: " + docDbResource.SubscriptionId);
                 subscription = await resourceController.GetSubscription(docDbResource.SubscriptionId);
                 machineName = docDbResource.Name;
                 cloudServiceName = docDbResource.CloudServiceName;
@@ -82,6 +83,7 @@ namespace ProvisioningJobConsole
             }
             if (message.Action == ResourceAction.Stop)
             {
+                Trace.WriteLine("Stopping VM");
                 Console.WriteLine("Stopping VM");
                 await provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Stop);
                 docDbResource.State = ResourceState.Stopping;
