@@ -24,15 +24,15 @@ namespace DocumentDbRepositories.Implementation
         }
 
         // get a list of system administrators
-        public Task<List<ScampUser>> GetSystemAdministrators()
+        public async Task<List<ScampUser>> GetSystemAdministrators()
         {
             var admins = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
                          where u.isSystemAdmin == true
                          select u;
-            var adminList = admins.ToList();
+            var adminList = await admins.AsDocumentQuery().ToListAsync();
             if (adminList.Count == 0)
-                return Task.FromResult((List<ScampUser>)null);
-            return Task.FromResult(adminList);
+                return null;
+            return adminList;
         }
     }
 }

@@ -27,26 +27,23 @@ namespace DocumentDbRepositories.Implementation
             var created = await _client.CreateDocumentAsync(_collection.SelfLink, newSubscription);
         }
 
-        public Task<ScampSubscription> GetSubscription(string subscriptionId)
+        public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
             var subscriptions = from u in _client.CreateDocumentQuery<ScampSubscription>(_collection.SelfLink)
                                 where u.Id == subscriptionId
                                 select u;
-            var subList = subscriptions.ToList();
-            if (subList.Count == 0)
-                return Task.FromResult((ScampSubscription)null);
-            return Task.FromResult(subList[0]);
-
+            var subscription = await subscriptions.AsDocumentQuery().FirstOrDefaultAsync();
+            return subscription;
         }
 
-        public Task<List<ScampSubscription>> GetSubscriptions()
+        public async Task<List<ScampSubscription>> GetSubscriptions()
         {
             var subscriptions = from u in _client.CreateDocumentQuery<ScampSubscription>(_collection.SelfLink)
                                 select u;
-            var subList = subscriptions.ToList();
+            var subList = await subscriptions.AsDocumentQuery().ToListAsync();
             if (subList.Count == 0)
-                return Task.FromResult((List<ScampSubscription>)null);
-            return Task.FromResult(subList);
+                return null;
+            return subList;
         }
     }
 }

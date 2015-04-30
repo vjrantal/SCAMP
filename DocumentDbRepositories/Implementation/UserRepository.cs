@@ -11,7 +11,7 @@ using DocumentDbRepositories;
 
 namespace DocumentDbRepositories.Implementation
 {
-    public class UserRepository 
+    public class UserRepository
     {
         private readonly DocumentClient _client;
         private readonly DocumentCollection _collection;
@@ -26,18 +26,15 @@ namespace DocumentDbRepositories.Implementation
 			var created = await _client.CreateDocumentAsync(_collection.SelfLink, newUser);
 		}
 
-		public Task<ScampUser> GetUserbyId(string userId)
+		public async Task<ScampUser> GetUserbyId(string userId)
         {
             // get specified user by ID
             var queryResult = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
                               where u.Id == userId
                               select u;
-            var user = queryResult.ToList().FirstOrDefault();
+            var user = await queryResult.AsDocumentQuery().FirstOrDefaultAsync();
 
-            if (user == null)
-                return Task.FromResult((ScampUser)null);
-
-            return Task.FromResult((ScampUser)user);
+            return user;
         }
 
         public async Task UpdateUser(ScampUser user)
