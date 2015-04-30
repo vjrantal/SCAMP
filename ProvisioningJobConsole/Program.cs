@@ -16,9 +16,6 @@ namespace ProvisioningJobConsole
             Configuration = new Configuration()
                 .AddEnvironmentVariables("APPSETTING_");
 
-
-        
-
             var storageCstr = GetConnectionString();
 
             JobHostConfiguration config = new JobHostConfiguration(storageCstr);
@@ -26,12 +23,10 @@ namespace ProvisioningJobConsole
             config.Queues.MaxDequeueCount = 4;
             config.Queues.MaxPollingInterval = TimeSpan.FromSeconds(15);
             JobHost host = new JobHost(config);
-
             
             // TEST Lines
-            ProvisioningLibrary.WebJobController w = new WebJobController(Configuration);
-            w.SubmitActionInQueue("8fd8fbfc-8fb6-4e95-ae17-aa4779423cb8", ResourceAction.Start );
-
+            //ProvisioningLibrary.WebJobController w = new WebJobController(Configuration);
+            //w.SubmitActionInQueue("8fd8fbfc-8fb6-4e95-ae17-aa4779423cb8", ResourceAction.Start );
 
             // The following code ensures that the WebJob will be running continuously
             host.RunAndBlock();
