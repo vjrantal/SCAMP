@@ -38,7 +38,7 @@ angular.module('scamp')
     //    });
     //}
     $scope.startResource = function(item) {
-        
+        console.log("Attempting to start resource" + item.id + " in group " + $scope.currentGroup.groupId)
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Start").success(function (results) {
             $scope.loadingMessage = "";
         }).error(function (err) {
