@@ -74,19 +74,10 @@ namespace ScampApi.Controllers
             };
         }
 
-        [HttpPost("{resourceId}/{actionname}")]
-        public async void Post(string groupId, string resourceId, string actionname)
-        {
-            await StartStopResource(resourceId, actionname, null);
-        }
 
-        [HttpPost("{resourceId}/{actionname}/{duration}")]
+        // allows you to take the specified action (start, stop) on a specified resource
+        [HttpPost("{resourceId}/{actionname}/{duration:int?}")]
         public async Task Post(string groupId, string resourceId, string actionname, uint? duration = null)
-        {
-            await StartStopResource(resourceId, actionname, duration);
-        }
-
-        private async Task StartStopResource(string resourceId, string actionname, uint? duration = null)
         {
             ScampResource res = await _resourceRepository.GetResource(resourceId);
             if (res == null)
