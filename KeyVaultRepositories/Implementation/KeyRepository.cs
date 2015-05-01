@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.KeyVault.Client;
+using System.Threading.Tasks;
 
 namespace KeyVaultRepositories.Implementation
 {
@@ -16,31 +17,29 @@ namespace KeyVaultRepositories.Implementation
             var secretKey = string.Format("{0}-{1}", resourceId, key);
             return secretKey;
         }
-        public string  GetSecret(string resourceId, string key)
+        public async Task<string> GetSecret(string resourceId, string key)
         {
             //TODO Add some caching
             var secretKey = SecretKey(resourceId, key);
             var client = _keyVaultClient.GetClient();
-            var secret= client.GetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey).GetAwaiter().GetResult();
+            var secret = await client.GetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey);
             return secret.SecureValue.ConvertToString();
         }
-        public bool UpsertSecret(string resourceId, string key, string value)
-        {
-            var secretKey = SecretKey(resourceId, key);
-            var client=_keyVaultClient.GetClient();
-            var secret = client.SetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey, value.ConvertToSecureString()).GetAwaiter().GetResult();
 
-            return true;
-        }
-
-
-
-        public bool DeleteSecret(string resourceId, string key)
+        public async Task UpsertSecret(string resourceId, string key, string value)
         {
             var secretKey = SecretKey(resourceId, key);
             var client = _keyVaultClient.GetClient();
-            var secret = client.DeleteSecretAsync(_keyVaultClient.GetKeyVaultUrl() , secretKey).GetAwaiter().GetResult();
-            return true;
+            await client.SetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey, value.ConvertToSecureString());
+        }
+
+
+
+        public async Task DeleteSecret(string resourceId, string key)
+        {
+            var secretKey = SecretKey(resourceId, key);
+            var client = _keyVaultClient.GetClient();
+            await client.DeleteSecretAsync(_keyVaultClient.GetKeyVaultUrl() , secretKey);
         }
     }
 }
