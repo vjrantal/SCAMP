@@ -25,7 +25,7 @@ namespace ProvisioningLibrary
             _settings = settings;   
         }
 
-        public Guid SubmitActionInQueue(string  resourceId, ProvisioningLibrary.ResourceAction  action)
+        public Guid SubmitActionInQueue(string  resourceId, ProvisioningLibrary.ResourceAction  action, uint? duration = null)
         {
             var storageConnectionString = _settings["Provisioning:StorageConnectionString"];
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString); 
@@ -47,33 +47,44 @@ namespace ProvisioningLibrary
 
 
             queue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(actionMessage)));
+
+            // if the action was to start a resource, but a duration was specified
+            // send a second queue message with initial visility time out set to
+            // 'duration' hours in the future. To trigger automatic stop
+            if (action == ResourceAction.Start && duration != null)
+            {
+                actionMessage.Action = ResourceAction.Stop;
+                CloudQueueMessage tmpMsg = new CloudQueueMessage(JsonConvert.SerializeObject(actionMessage));
+                queue.AddMessage(tmpMsg, null, new TimeSpan(0, (int)duration, 0),null,null);
+            }
+
             return actionId;
         }
 
-        public void SubmitActionInQueue(string resourceId, string actionname)
+        public static ResourceAction GetAction(string action)
         {
-            actionname = actionname.ToLowerInvariant();
-            var action= ResourceAction.Undefined;
-            if (actionname == "start")
+            switch (action.ToLower())
             {
-                action = ResourceAction.Start;
+                case "start":
+                    return ResourceAction.Start;
+                case "stop":
+                    return ResourceAction.Stop;
+                case "create":
+                    return ResourceAction.Create;
+                case "delete":
+                    return ResourceAction.Delete;
+                default:
+                    return ResourceAction.Undefined;                
             }
-            if (actionname == "stop")
-            {
-                action = ResourceAction.Stop;
-            }
-            if (actionname == "create")
-            {
-                action = ResourceAction.Create;
-            }
-            if (actionname == "delete")
-            {
-                action = ResourceAction.Delete;
-            }
-            if (action == ResourceAction.Undefined) throw new Exception("Action no defined");
+        }
 
-            this.SubmitActionInQueue(resourceId, action);
-
+        public void SubmitActionInQueue(string resourceId, string actionname, uint? duration = null)
+        {
+            ResourceAction action = GetAction(actionname);
+            if (action == ResourceAction.Undefined)
+                throw new Exception("Action not defined");
+ 
+            this.SubmitActionInQueue(resourceId, action, duration);
         }
     }
 }
