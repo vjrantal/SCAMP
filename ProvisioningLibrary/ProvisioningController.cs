@@ -197,7 +197,7 @@ namespace ProvisioningLibrary
 
         }
 
-        public async Task<string> GetVirtualMachineStatus(string virtualMachineName)
+        public async Task<string> GetVirtualMachineStatusAsync(string virtualMachineName)
         {
             List<string> VMList = new List<string>();
 
@@ -208,7 +208,7 @@ namespace ProvisioningLibrary
                 return details.Deployments[0].RoleInstances[0].InstanceStatus;
             }
         }
-        public async Task StartStopVirtualMachine(string virtualMachineName, string cloudServiceName, VirtualMachineAction action)
+        public async Task StartStopVirtualMachineAsync(string virtualMachineName, string cloudServiceName, VirtualMachineAction action)
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
             {

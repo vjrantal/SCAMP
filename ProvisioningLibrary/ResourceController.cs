@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Management.Models;
 
 namespace ProvisioningLibrary
 {
-    public class ResourceController
+    internal class ResourceController : IResourceController
     {
         private readonly IResourceRepository _resourceRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
@@ -44,7 +44,7 @@ namespace ProvisioningLibrary
             //For now is the first in the store
             var c = await _subscriptionRepository.GetSubscriptions();
             var selected = c.LastOrDefault();
-            selected.AzureManagementThumbnail = _keyRepository.GetSecret(selected.Id, "cert");
+            selected.AzureManagementThumbnail = await _keyRepository.GetSecret(selected.Id, "cert");
             return selected;
 
         }
