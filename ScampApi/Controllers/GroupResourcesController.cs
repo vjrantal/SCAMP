@@ -11,6 +11,7 @@ using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
+using System.IO; 
 
 namespace ScampApi.Controllers
 {
@@ -23,14 +24,17 @@ namespace ScampApi.Controllers
         private ISecurityHelper _securityHelper;
         private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController)
+        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
             _securityHelper = securityHelper;
             _groupRepository = groupRepository;
+            _groupRepository = groupRepository;
             _webJobController = webJobController;
+            _subscriptionRepository = subscriptionRepository;
         }
         [HttpGet]
         public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
@@ -72,6 +76,29 @@ namespace ScampApi.Controllers
                     }
                 }
             };
+        }
+
+        // allows you to take the specified action (start, stop) on a specified resource
+        [HttpGet("{resourceId}/rdp")]
+        public async Task<Byte[]> GetRdp(string groupId, string resourceId)
+        {
+            ScampResource res = await _resourceRepository.GetResource(resourceId);
+            if (res == null)
+            {
+                //TODO: throw "not found" exception
+            }
+
+            // can user preform this action
+            var checkPermission = await CanManageResource(res, ResourceAction.Undefined);
+            if (!checkPermission)
+            {
+                //TODO return error
+            }
+
+            ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
+            var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
+
+            return await provisioningController.GetVirtualMachineRdpFile(res.Name, res.CloudServiceName);
         }
 
 
