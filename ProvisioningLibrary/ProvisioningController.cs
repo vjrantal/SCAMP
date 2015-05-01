@@ -28,9 +28,11 @@ namespace ProvisioningLibrary
             //          http://go.microsoft.com/fwlink/?LinkID=301775
             //          Inside the XML File
             //          ManagementCertificate="...base64 encoded certificate data..." />
-
             byte[] tmp = Convert.FromBase64String(certificate);
-            return new X509Certificate2(tmp);
+            // We need to set the x509StorageFlag to help direct that the cert should not default
+            // to Azure Blob under the covers. This ensures that it runs both locally and hosted.
+            var rtnValue = new X509Certificate2(tmp, "", X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.UserKeySet);
+            return rtnValue;
         }
         private SubscriptionCloudCredentials GetCloudCredentials(string certificate, string subscriptionId)
         {
@@ -208,6 +210,28 @@ namespace ProvisioningLibrary
                 return details.Deployments[0].RoleInstances[0].InstanceStatus;
             }
         }
+
+        public async Task<Byte[]> GetVirtualMachineRdpFile(string virtualMachineName, string cloudServiceName)
+        {
+            VirtualMachineGetRemoteDesktopFileResponse response = null;
+
+            using (var computeClient = new ComputeManagementClient(_credentials))
+            {
+                var VMOperations = computeClient.VirtualMachines;
+                var details = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+
+                HostedServiceGetDetailedResponse cs = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+                Console.WriteLine("Found cloud service: " + cloudServiceName);
+
+                Console.WriteLine("Fetching deployment.");
+                var deployment = cs.Deployments.ToList().First(x => x.Name == virtualMachineName);
+                if (deployment != null)
+                    response = VirtualMachineOperationsExtensions.GetRemoteDesktopFile(VMOperations, cloudServiceName, deployment.Name, virtualMachineName);
+            }
+
+            return response.RemoteDesktopFile;
+        }
+
         public async Task StartStopVirtualMachine(string virtualMachineName, string cloudServiceName, VirtualMachineAction action)
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
@@ -216,6 +240,7 @@ namespace ProvisioningLibrary
                 try
                 {
                     vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+                    Console.WriteLine("Found cloud service: " + cloudServiceName);
                 }
                 catch (Exception)
                 {
@@ -223,6 +248,7 @@ namespace ProvisioningLibrary
                     return;
                 }
 
+                Console.WriteLine("Fetching deployment.");
                 var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
                 //var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
 
@@ -231,6 +257,7 @@ namespace ProvisioningLibrary
                     var deploymantSlotName = deployment.Name;
                     var serviceName = vm.ServiceName;
 
+                    Console.WriteLine("Fetching instance.");
                     // GSUHackfest Note #1 by Brent - April 30th
                     // the line that has been commented out worked for Gabriele's tests with a machine he
                     // provisioned via SCAMP. But it didn't work with VMs deployed via the Azure portal. 
@@ -245,6 +272,8 @@ namespace ProvisioningLibrary
                             Console.WriteLine("VM Already Started");
                             return;
                         }
+
+                        Console.WriteLine("Issuing Management Start cmd");
                         //TODO this is strange but for now i leave it a is. Need to be refactored.
                         // refer to "GSUHackfest Note #1" above
                         //await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
@@ -257,9 +286,14 @@ namespace ProvisioningLibrary
                             Console.WriteLine("VM Already Stopped");
                             return;
                         }
+
+                        // ensures no compute charges for the stopped VM
+                        VirtualMachineShutdownParameters shutdownParms = new VirtualMachineShutdownParameters();
+                        shutdownParms.PostShutdownAction = PostShutdownAction.StoppedDeallocated;
+
                         // refer to "GSUHackfest Note #1" above
-                        //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, new VirtualMachineShutdownParameters { });
-                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, new VirtualMachineShutdownParameters { });
+                        //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, shutdownParms);
+                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
                     }
                 }
             }
