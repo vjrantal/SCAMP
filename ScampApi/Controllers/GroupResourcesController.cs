@@ -11,6 +11,7 @@ using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
+using System.IO; 
 
 namespace ScampApi.Controllers
 {
@@ -23,14 +24,17 @@ namespace ScampApi.Controllers
         private ISecurityHelper _securityHelper;
         private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController)
+        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
             _securityHelper = securityHelper;
             _groupRepository = groupRepository;
+            _groupRepository = groupRepository;
             _webJobController = webJobController;
+            _subscriptionRepository = subscriptionRepository;
         }
         [HttpGet]
         public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
@@ -73,24 +77,54 @@ namespace ScampApi.Controllers
                 }
             };
         }
-        [HttpPost("{resourceId}/{actionname}")]
-        public async void Post(string groupId, string resourceId, string actionname)
+
+        // allows you to take the specified action (start, stop) on a specified resource
+        [HttpGet("{resourceId}/rdp")]
+        public async Task<Byte[]> GetRdp(string groupId, string resourceId)
         {
-            var checkPermission = await CanStartStopResource(resourceId);
-            if (checkPermission)
-            { 
-                _webJobController.SubmitActionInQueue(resourceId, actionname);
+            ScampResource res = await _resourceRepository.GetResource(resourceId);
+            if (res == null)
+            {
+                //TODO: throw "not found" exception
+            }
+
+            // can user preform this action
+            var checkPermission = await CanManageResource(res, ResourceAction.Undefined);
+            if (!checkPermission)
+            {
+                //TODO return error
+            }
+
+            ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
+            var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
+
+            return await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
+        }
+
+
+        // allows you to take the specified action (start, stop) on a specified resource
+        [HttpPost("{resourceId}/{actionname}/{duration:int?}")]
+        public async Task Post(string groupId, string resourceId, string actionname, uint? duration = null)
+        {
+            ScampResource res = await _resourceRepository.GetResource(resourceId);
+            if (res == null)
+            {
+                //TODO: throw "not found" exception
+            }
+
+            ResourceAction action = WebJobController.GetAction(actionname);
+            if (await CanManageResource(res, action))
+            {
+                _webJobController.SubmitActionInQueue(resourceId, action, duration);
             }
         }
+
         [HttpPost]
         public async Task<ScampResourceSummary>  Post(string groupId, [FromBody]ScampResourceSummary groupResource)
         {
-            //LINKED TO UI
-            var grp = await _groupRepository.GetGroup(groupId);
-
-            var checkPermission =await  CanCreateResource(groupId);
-            if (!checkPermission) return null;
-            var grpRef = new ScampResourceGroupReference() {Id = grp.Id};
+            // set up resource to be created
+            // need some preliminary values for the authorization check
+            var grpRef = new ScampResourceGroupReference() { Id = groupId };
             var res = new ScampResource()
             {
                 Id = Guid.NewGuid().ToString("d"),
@@ -100,9 +134,15 @@ namespace ScampApi.Controllers
                 State = ResourceState.Allocated
             };
 
+            // can user preform this action
+            var checkPermission = await CanManageResource(res, ResourceAction.Create);
+            if (!checkPermission)
+            {
+                //TODO return error
+            } 
+
             await _resourceRepository.CreateResource(res);
             return Mapper.Map<ScampResourceSummary>(res);
-
         }
 
         [HttpPut("{resourceId}")]
@@ -115,50 +155,45 @@ namespace ScampApi.Controllers
         [HttpDelete("{resourceId}")]
         public async Task Delete(string  groupId, string resourceId)
         {
+            var res = await _resourceRepository.GetResource(resourceId);
+            //TODO what if resource doesn't exist?
+
             //LINKED TO UI
-            var checkPermission = await CanDeleteResource(groupId, resourceId);
+            var checkPermission = await CanManageResource(res, ResourceAction.Delete);
             if(checkPermission)
             {
-                var res =await  _resourceRepository.GetResource(resourceId);
                 res.State = ResourceState.Deleting;
                 await  _resourceRepository.UpdateResource( res);
                 _webJobController.SubmitActionInQueue(resourceId,ResourceAction.Delete );
             }
         }
 
-
-
-        private async Task<bool> CanCreateResource(string groupId)
+        // this method will see if the requesting user has permissions to take the action on the 
+        // specified resource
+        private async Task<bool> CanManageResource(ScampResource resource, ResourceAction action)
         {
-            if (await _securityHelper.IsSysAdmin()) return true; //Sysadmin can do everything
+            ScampUser currentUser = await _securityHelper.GetCurrentUser();
 
-            //Check if User is a Group Owner
-            if (await _securityHelper.IsGroupAdmin(groupId)) return true;
+            // System admin can do everything EXCEPT create a resource
+            // to create a resource, you must be a group admin
+            if (action != ResourceAction.Create && currentUser.IsSystemAdmin) return true; //Sysadmin can do everything
 
+            // Resource owner can also do anything to their resource except create
+            var owner = resource.Owners.Find(user => user.Id == currentUser.Id);
+            // if current user is in list of resource owners, allow action
+            if (action != ResourceAction.Create && owner != null)
+                return true;
+
+            // Resource's Group Admins can do anything to the resources in groups
+            // they administer
+            var rscGroup = currentUser.GroupMembership.Find(grp => grp.Id == resource.ResourceGroup.Id);
+            // if current user is an admin of the group that owns the resource, allow action
+            if (rscGroup != null && rscGroup.isAdmin)
+                return true;
+
+            // if no positive results, default to false and deny action
             return false;
         }
-
-        private async Task<bool> CanStartStopResource( string resourceId)
-        {
-            if (await _securityHelper.IsSysAdmin()) return true; //Sysadmin can do everything
-
-            //TODO Check if User is a Resource Owner
-            //TODO Check if User is a Group Owner
-
-            return true;
-        }
-
-        private async Task<bool> CanDeleteResource(string groupId, string resourceId)
-        {
-            if (await _securityHelper.IsSysAdmin()) return true; //Sysadmin can do everything
-            //TODO Check if resource belongs to this groupId
-
-            //Only group admin can Delete resources
-
-            var checkAdmin = await _securityHelper.IsGroupAdmin(groupId);
-            return checkAdmin;
-        }
-
 
     }
 }
