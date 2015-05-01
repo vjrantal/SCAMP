@@ -98,7 +98,7 @@ namespace ScampApi.Controllers
             ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
 
-            return await provisioningController.GetVirtualMachineRdpFile(res.Name, res.CloudServiceName);
+            return await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
         }
 
 

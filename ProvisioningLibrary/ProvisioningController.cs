@@ -199,7 +199,7 @@ namespace ProvisioningLibrary
 
         }
 
-        public async Task<string> GetVirtualMachineStatus(string virtualMachineName)
+        public async Task<string> GetVirtualMachineStatusAsync(string virtualMachineName)
         {
             List<string> VMList = new List<string>();
 
@@ -211,7 +211,7 @@ namespace ProvisioningLibrary
             }
         }
 
-        public async Task<Byte[]> GetVirtualMachineRdpFile(string virtualMachineName, string cloudServiceName)
+        public async Task<Byte[]> GetRdpAsync(string virtualMachineName, string cloudServiceName)
         {
             VirtualMachineGetRemoteDesktopFileResponse response = null;
 
@@ -232,7 +232,7 @@ namespace ProvisioningLibrary
             return response.RemoteDesktopFile;
         }
 
-        public async Task StartStopVirtualMachine(string virtualMachineName, string cloudServiceName, VirtualMachineAction action)
+        public async Task StartStopVirtualMachineAsync(string virtualMachineName, string cloudServiceName, VirtualMachineAction action)
         {
             using (var computeClient = new ComputeManagementClient(_credentials))
             {
