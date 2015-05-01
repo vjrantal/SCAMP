@@ -21,7 +21,7 @@ angular.module('scamp')
 	};
 
 	$scope.populate = function () {
-	    scampDashboard.initializeGrid();
+	    scampDashboard.initialize();
 
 	    var userGUID = $scope.userProfile.id;
 	    $scope.dashboardStatus = 'loading';
@@ -59,6 +59,25 @@ angular.module('scamp')
 			}
 		});
 	};
+
+	$scope.testWebSockStateUpdate = function(){
+	    var testMsg = {
+	        state: 2,
+	        resource: '8808789d-e889-4127-b6c2-baeb59c39d09',
+	        user: 'a144e3bd-5b25-4162-b927-3c17e4f7235a-8bc0004a-1af0-42d1-87e6-ac92bed0c93f',
+	        action: 'update',
+	        date: 'March 3, 2015 14:34:0338'
+	    }
+
+	    var targetRsc = $scope.resources.filter(function (item) { return item.id === testMsg.resource });
+	    if (!targetRsc)
+	        console.error('Couldnt find targeted resource ' + testMsg.resource);
+	    targetRsc = targetRsc[0];
+
+	    testMsg.state = targetRsc.state === 9 ? 0 : targetRsc.state + 1;//increment the state with each click. If'ts 9 then reset it to 0
+
+	    scampDashboard.updateRsrcScopeFromWSUpdate(testMsg);
+	}
 
     // get the list of current system administrators
 	$scope.testGetCurrentUserResources = function () {
