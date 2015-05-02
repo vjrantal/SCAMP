@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('scamp')
-.controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService) {
+.controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', 'resourcesSvc', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService, resourcesSvc) {
     var scampDashboard = new ScampDashboard($scope);
     $scope.currentRouteName = 'Dashboard';
 	$scope.userList = null;
 	$scope.rscStateDescMapping = {
 	    0: {description: "Allocated", allowableActions : ["Start", "Delete"] },
-	    1: {description: "Starting", allowableActions : [] },
+	    1: {description: "Starting", allowableActions : [], previousAction: "Start" },
 	    2: {description: "Running", allowableActions : ["Stop"] },
-	    3: {description: "Stopping", allowableActions : [] },
+	    3: {description: "Stopping", allowableActions : [], previousAction: "Stop" },
 	    4: {description: "Stopped", allowableActions: ["Start", "Delete"] },
 	    5: {description: "Suspended", allowableActions: ["Start", "Delete"] },
 	    6: {description: "Deleting", allowableActions: [] }
@@ -60,6 +60,18 @@ angular.module('scamp')
 		});
 	};
 
+	var callResourceService = function (item, action, duration, cb) {
+	    console.log("Attempting to " + action + " resource" + item.id + " in group " + item.groupId)
+	    resourcesSvc.sendAction(item.groupId, item.id, action, duration).success(function (results) {
+	        $scope.loadingMessage = "";
+	        cb();
+	    }).error(function (err) {
+	        console.log('Error attempting to Start a resource');
+	        $scope.error = err;
+	        $scope.loadingMessage = "";
+	    });
+	}
+	
 	$scope.testWebSockStateUpdate = function(){
 	    var testMsg = {
 	        state: 2,
@@ -91,6 +103,45 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
+	};
+
+	$scope.confirmResourceAction = function (actionSelection, rsc, event) {
+	    var defaultDurationHrs = 8;
+
+	    $scope.resourceSave = {
+	        name: rsc.name,
+	        currentStateDesc: rsc.stateDescription,
+	        id: rsc.id,
+	        duration: defaultDurationHrs,
+	        newStateDesc: actionSelection.action
+	    };
+
+	    event.preventDefault(); 
+	};
+
+	$scope.resourceSendAction = function () {
+	    if ($scope.resourceSave && $scope.resourceSave.newStateDesc && $scope.resourceSave.id) {
+	        var resourceIdToSave = $scope.resourceSave.id, updatedDashboardState = -1;
+	        var rscAction = $scope.resourceSave.newStateDesc;
+	        var resource = $scope.resources.filter(function (item) { return item.id === resourceIdToSave});
+	        resource = (resource && resource.length > 0) ? resource[0] : resource;
+	        var duration = (rscAction==='Start')?$scope.resourceSave.duration * 60:-1; //convert the duration from hours to minutes
+
+	        _.each($scope.rscStateDescMapping, function (value, key) {
+	            if (value.previousAction && value.previousAction === rscAction)
+	                updatedDashboardState = key; });
+
+	        var dashboardRscUpdateMsg = {
+	            state: updatedDashboardState,
+	            resource: resourceIdToSave,
+	        };
+
+	        var callback = function () {scampDashboard.processResourceUpdate(dashboardRscUpdateMsg)}
+	        callResourceService(resource, $scope.resourceSave.newStateDesc, duration, callback);
+	    }else
+	        throw new Exception("Unsupported action was called for resourceSendAction");
+
+	    $('#resourceSendActionModal').modal('hide');
 	};
 
 }]);
