@@ -12,8 +12,8 @@ angular.module('scamp')
         postItem: function (groupId,item) {
             return $http.post('api/groups/' + groupId + '/resources', item);
         },
-        sendAction: function (groupId, resouceId, action) {
-            return $http.post('api/groups/' + groupId + '/resources/'+resouceId +"/"+action);
+        sendAction: function (groupId, resouceId, action, duration) {
+            return $http.post('api/groups/' + groupId + '/resources/' + resouceId + "/" + action + ((duration>-1)? + "/" + duration:""));
         },
         putItem : function(groupId,item){
             return $http.put('api/groups/' + groupId + '/resources', item);

@@ -37,25 +37,27 @@ angular.module('scamp')
     //        newResource.save();
     //    });
     //}
-    $scope.startResource = function(item) {
-        console.log("Attempting to start resource" + item.id + " in group " + $scope.currentGroup.groupId)
+    /*$scope.startResource = function(item, cb) {
+        console.log("Attempting to start resource" + item.id + " in group " + item.groupId)
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Start").success(function (results) {
             $scope.loadingMessage = "";
+            cb;
         }).error(function (err) {
             console.log('Error attempting to Start a resource');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
     }
-    $scope.stopResource = function (item) {
+    $scope.stopResource = function (item, cb) {
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Stop").success(function (results) {
             $scope.loadingMessage = "";
+            cb;
         }).error(function (err) {
             console.log('Error attempting to Stop a resource');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
-    }
+    }*/
     $scope.createResource = function() {
         $scope.editSwitch($scope.editInProgressResource, true);
         $scope.editInProgressResource = {
