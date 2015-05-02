@@ -78,3 +78,8 @@ h4, .h4 {
   font-weight: bold!important;
   padding-left: 37px!important;
 }
+
+#usageDonutChart{
+    width:120px!important;
+    height:120px!important;
+}
