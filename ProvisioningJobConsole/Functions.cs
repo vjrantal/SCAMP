@@ -10,146 +10,202 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.DependencyInjection.Fallback;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using ProvisioningLibrary;
-using ProvisioningLibrary5x;
+using System.Threading.Tasks;
 
 namespace ProvisioningJobConsole
 {
     public class Functions
     {
+        static IServiceProvider Provider = null;
+
+        static Functions()
+        {
+            // Setup configuration sources.
+            var configuration = new Configuration()
+                 .AddEnvironmentVariables("APPSETTING_");
+
+            var services = new ServiceCollection();
+            services.AddDocumentDbRepositories(configuration);
+            services.AddKeyVaultRepositories(configuration);
+            services.AddProvisioning(configuration);
+
+            Provider = services.BuildServiceProvider();
+        }
+
+        class ResourceActivity
+        {
+            public IResourceController ResourceController { get; private set; }
+            public ResourceActivity(IResourceController rc)
+            {
+                this.ResourceController = rc;
+            }
+
+            public ScampResource Resource { get; private set; }
+
+            public ScampSubscription Subscription { get; private set; }
+
+            public bool IsCreating { get; private set; }
+
+            public string ServiceName { get; private set; }
+
+            public string MachineName { get { return Resource.Name; } }
+
+            public ProvisioningController Provisioning { get; private set; }
+
+            public async Task<bool> TryInitializeAsync(string id)
+            {
+                Console.WriteLine("Retrieving Resource: " + id);
+                Resource = await ResourceController.GetResource(id);
+                if (Resource == null)
+                    return false;
+
+                if (string.IsNullOrEmpty(Resource.SubscriptionId))
+                {
+                    //need to create a VM
+                    Console.WriteLine("Creating VM");
+                    this.IsCreating = true;
+
+                    Subscription = await ResourceController.GetAvailabeDeploymentSubscription();
+                    ServiceName = await ResourceController.GetCloudServiceName(Resource);
+                }
+                else
+                {
+                    Console.WriteLine("Retrieving Subscription: " + Resource.SubscriptionId);
+                    Subscription = await ResourceController.GetSubscription(Resource.SubscriptionId);
+                    ServiceName = Resource.CloudServiceName;
+                }
+
+
+                Provisioning = new ProvisioningController(Subscription.AzureManagementThumbnail, Subscription.AzureSubscriptionID);
+                return true;
+            }
+        }
+
         // This function will get triggered/executed when a new message is written 
         // on an Azure Queue called queue.
         public async static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
         {
-
-            // Setup configuration sources.
-            var configuration = new Configuration()
-                 .AddEnvironmentVariables("APPSETTING_");
-            var services = new ServiceCollection();
-            services.AddDocumentDbRepositories(configuration);
-            services.AddKeyVaultRepositories(configuration);
-            services.AddTransient<ResourceController>();
-            
-            var serviceProvider = services.BuildServiceProvider();
-
-
-
             // TODO - shouldn't be depending on ResourceController here
-            var keyVaultController = serviceProvider.GetService<IKeyRepository>();
-            var resourceController = serviceProvider.GetService<ResourceController>();
-            
-            var docDbResource = await resourceController.GetResource(message.ResourceId);
-            ScampSubscription subscription;
-            string cloudServiceName, machineName;
+            var resourceController = Provider.GetService<IResourceController>();
 
-            if (docDbResource == null)
+            var activity = new ResourceActivity(resourceController);
+            if (!await activity.TryInitializeAsync(message.ResourceId))
             {
                 Console.WriteLine("Resource not found");
                 return;
             }
 
-
-            if (string.IsNullOrEmpty(docDbResource.SubscriptionId))
-            {
-                //need to create a VM
-                Console.WriteLine("Creating VM");
-
-                subscription = await resourceController.GetAvailabeDeploymentSubscription();
+            if (activity.IsCreating)
                 message.Action = ResourceAction.Create;
-                cloudServiceName = await resourceController.GetCloudServiceName(docDbResource);
-                machineName = docDbResource.Name;
-            }
-            else
+
+            // sometimes actions will throw exceptions, handle them gracefully:
+            // example:
+            // ConflictError: Another reboot or reimage operation is already in progress on role instance brent1.
+
+            try
             {
-                subscription = await resourceController.GetSubscription(docDbResource.SubscriptionId);
-                machineName = docDbResource.Name;
-                cloudServiceName = docDbResource.CloudServiceName;
+                switch (message.Action)
+                {
+                    case ResourceAction.Delete:
+                        await ActionDelete(activity);
+                        break;
+                    case ResourceAction.Stop:
+                        await ActionStop(activity);
+                        break;
+                    case ResourceAction.Start:
+                        await ActionStart(activity);
+                        break;
+                    case ResourceAction.Create:
+                        await ActionCreate(activity);
+                        break;
+                    default:
+                        Console.WriteLine("Unhandled action: " + message.Action);
+                        return;
+                }
+
+                Console.WriteLine(message);
             }
-
-
-            var provisioningController = new ProvisioningController(subscription.AzureManagementThumbnail, subscription.AzureSubscriptionID);
-
-       
-            //TODO Get Connection string from DB
-            if (message.Action == ResourceAction.Delete)
+            catch (Exception e)
             {
+                Console.WriteLine("Resource action failed: " + e.Message);
+            }
+        }
+
+        static async Task ActionDelete(ResourceActivity activity)
+        {
                 //TODO Temporary
                 try
                 {
-                    await provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Stop);
+                    await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
                 }
-                catch (Exception e)
-                {
-                }
+                catch { }
 
-                await resourceController.DeleteResource(docDbResource);
-            }
-            if (message.Action == ResourceAction.Stop)
-            {
+                await activity.ResourceController.DeleteResource(activity.Resource);
+        }
+
+        static async Task ActionStop(ResourceActivity activity)
+        {
+                Trace.WriteLine("Stopping VM");
                 Console.WriteLine("Stopping VM");
-                await provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Stop);
-                docDbResource.State = "Stopped";
-                await resourceController.UpdateResource(docDbResource);
-            }
-            if (message.Action == ResourceAction.Start)
+                await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
+                activity.Resource.State = ResourceState.Stopping;
+                await activity.ResourceController.UpdateResource(activity.Resource);
+        }
+
+
+        static async Task ActionStart(ResourceActivity activity)
+        {
+            Console.WriteLine("Starting VM");
+            await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Start);
+            activity.Resource.State = ResourceState.Starting;
+            await activity.ResourceController.UpdateResource(activity.Resource);
+        }
+
+        static async Task ActionCreate(ResourceActivity activity)
+        {
+            var r = new Random();
+            //Need to find a way to assign Usename and Pwd
+            string username = "ScampAdmin";
+            string password = "Enter.321";
+            string storageAccountName = activity.ServiceName;
+            int rdpPort = r.Next(3000, 4000);
+
+            activity.Resource.State = ResourceState.Starting;
+            await activity.ResourceController.UpdateResource(activity.Resource);
+
+            var isCloudServiceAlreadyCreated =
+                            await activity.Provisioning.IsCloudServiceAlreadyCreated(activity.ServiceName);
+
+            if (!isCloudServiceAlreadyCreated)
             {
-                Console.WriteLine("Starting VM");
-                var x = provisioningController.StartStopVirtualMachine(machineName, cloudServiceName, VirtualMachineAction.Start);
+                Console.WriteLine("Creating Cloud Services");
+
+                string location = activity.ResourceController.GetServiceLocation();
+                var x = activity.Provisioning.CreateCloudService(activity.ServiceName, location);
                 x.Wait();
-                docDbResource.State = "Started";
-                await resourceController.UpdateResource(docDbResource);
-            }
-            if (message.Action == ResourceAction.Create)
-            {
-                var r = new Random();
-                //Need to find a way to assign Usename and Pwd
-                string username =  "ScampAdmin";
-                string password = "Enter.321";
-                string location = resourceController.GetServiceLocation();
-                string storageAccountName = cloudServiceName;
-                int rdpPort = r.Next(3000, 4000);
+                Console.WriteLine("Creating Storage");
 
-                docDbResource.State = "Creating base services";
-                await resourceController.UpdateResource(docDbResource);
-
-                var isCloudServiceAlreadyCreated =
-                                await provisioningController.IsCloudServiceAlreadyCreated(cloudServiceName);
-
-                if (!isCloudServiceAlreadyCreated)
-                {
-                    Console.WriteLine("Creating Cloud Services");
-                    docDbResource.State = "Creating Cloud Services";
-                    await resourceController.UpdateResource(docDbResource);
-                    var x = provisioningController.CreateCloudService(cloudServiceName, location);
-                    x.Wait();
-                    Console.WriteLine("Creating Storage");
-                   
-                    docDbResource.State = "Creating Storage";
-                    await resourceController.UpdateResource(docDbResource);
-
-                    await provisioningController.CreateStorageAccount(location, storageAccountName);
-                }
-                //TODO Need to delete disk in case is already there
-                Console.WriteLine("Creating Virtual Machine");
-
-                docDbResource.State = "Creating Virtual Machine";
-                await resourceController.UpdateResource(docDbResource);
-
-                var z = await provisioningController.CreateVirtualMachine(machineName, cloudServiceName, storageAccountName,
-                    username, password, "Visual-Studio-2015-Ultimate", VirtualMachineRoleSize.Small, rdpPort, isCloudServiceAlreadyCreated);
-                
-                docDbResource.CloudServiceName = cloudServiceName;
-                docDbResource.State = "Created - Starting";
-                docDbResource.SubscriptionId = subscription.Id;
-                docDbResource.UserName = username;
-                //docDbResource.UserPassword = password;
-                docDbResource.RdpPort = rdpPort.ToString();
-                keyVaultController.UpsertSecret(docDbResource.Id, "password", password);
-
-                await resourceController.UpdateResource(docDbResource);
+                await activity.Provisioning.CreateStorageAccount(location, storageAccountName);
             }
 
+            //TODO Need to delete disk in case is already there
+            Console.WriteLine("Creating Virtual Machine");
 
-            Console.WriteLine(message);
+            var z = await activity.Provisioning.CreateVirtualMachine(activity.MachineName, activity.ServiceName, storageAccountName,
+                username, password, "Visual-Studio-2015-Ultimate", VirtualMachineRoleSize.Small, rdpPort, isCloudServiceAlreadyCreated);
+
+            activity.Resource.CloudServiceName = activity.ServiceName;
+
+            activity.Resource.SubscriptionId = activity.Subscription.Id;
+            activity.Resource.UserName = username;
+
+            //docDbResource.UserPassword = password;
+            activity.Resource.RdpPort = rdpPort.ToString();
+
+            var vault = Provider.GetService<IKeyRepository>();
+            await vault.UpsertSecret(activity.Resource.Id, "password", password);
+
+            await activity.ResourceController.UpdateResource(activity.Resource);
         }
 
     }

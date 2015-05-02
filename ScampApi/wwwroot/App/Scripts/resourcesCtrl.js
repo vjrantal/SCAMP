@@ -37,25 +37,27 @@ angular.module('scamp')
     //        newResource.save();
     //    });
     //}
-    $scope.startResource = function(item) {
-        
+    /*$scope.startResource = function(item, cb) {
+        console.log("Attempting to start resource" + item.id + " in group " + item.groupId)
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Start").success(function (results) {
             $scope.loadingMessage = "";
+            cb;
         }).error(function (err) {
             console.log('Error attempting to Start a resource');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
     }
-    $scope.stopResource = function (item) {
+    $scope.stopResource = function (item, cb) {
         resourcesSvc.sendAction($scope.currentGroup.groupId, item.id, "Stop").success(function (results) {
             $scope.loadingMessage = "";
+            cb;
         }).error(function (err) {
             console.log('Error attempting to Stop a resource');
             $scope.error = err;
             $scope.loadingMessage = "";
         });
-    }
+    }*/
     $scope.createResource = function() {
         $scope.editSwitch($scope.editInProgressResource, true);
         $scope.editInProgressResource = {
@@ -90,7 +92,7 @@ angular.module('scamp')
             $scope.resourceList = results.data;
             $scope.loadingMessage = "";
             // TODO CHECK: Without this the first time grid is not updated.
-            $scope.$apply();
+            //$scope.$apply();
 
             },
         function (err) {

@@ -13,17 +13,17 @@ namespace ScampApi.Controllers
     [Route("sampledata")]
     public class SampleDataController : Controller
     {
-        private readonly GroupRepository _groupRepository;
-        private readonly ResourceRepository _resourceRepository;
-        private readonly SubscriptionRepository _subscriptionRepository;
-        private readonly UserRepository _userRepository;
+        private readonly IGroupRepository _groupRepository;
+        private readonly IResourceRepository _resourceRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IKeyRepository _keyRepository;
 
         public SampleDataController(
-            UserRepository userRepository,
-            GroupRepository groupRepository,
-            ResourceRepository resourceRepository,
-            SubscriptionRepository subscriptionRepository,
+            IUserRepository userRepository,
+            IGroupRepository groupRepository,
+            IResourceRepository resourceRepository,
+            ISubscriptionRepository subscriptionRepository,
             IKeyRepository keyRepository)
         {
             _userRepository = userRepository;
@@ -73,8 +73,8 @@ namespace ScampApi.Controllers
                     Id = Guid.NewGuid().ToString("d"),
                     ResourceGroup = new ScampResourceGroupReference { Id = group.Id },
                     Name = "ScampDev",
-                    ResourceType = "Virtual Machine",
-                    State = "Not provisioned"
+                    ResourceType = ResourceType.VirtualMachine,
+                    State = ResourceState.Allocated
                 });
             }
             if (Request.Form["addSubscription"] == "on")

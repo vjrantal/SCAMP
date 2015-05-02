@@ -8,8 +8,9 @@ namespace ScampApi.ViewModels
     {
         public ScampResourceSummary()
         {
-            Links = new List<Link>();
+
         }
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
@@ -20,15 +21,12 @@ namespace ScampApi.ViewModels
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "resourceType")]
-        public string ResourceType { get; set; }
+        public int ResourceType { get; set; }
 
         [JsonProperty(PropertyName = "state")]
-        public string State { get; set; }
+        public int State { get; set; }
 
         [JsonProperty(PropertyName = "remaining")]
         public int Remaining { get; set; }
-
-        public List<Link> Links { get; set; }
-
     }
 }

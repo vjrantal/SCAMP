@@ -9,7 +9,7 @@ You an use an existing Azure Active Directory AAD tenant (all Azure subscription
 
 From your shell or command line:
 
-	`git clone https://github.com/SimpleCloudManagerProject/Scamp-API`
+	git clone https://github.com/SimpleCloudManagerProject/Scamp
 
 ### Step 2:  Register the Scamp Web App on your Azure Active Directory tenant
 

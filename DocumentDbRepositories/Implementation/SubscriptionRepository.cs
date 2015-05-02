@@ -12,41 +12,42 @@ using DocumentDbRepositories;
 namespace DocumentDbRepositories.Implementation
 {
 
-    public class SubscriptionRepository
+    internal class SubscriptionRepository : ISubscriptionRepository
     {
-        private readonly DocumentClient _client;
-        private readonly DocumentCollection _collection;
+        DocDb docdb;
 
-        public SubscriptionRepository(DocumentClient client, DocumentCollection collection)
+        public SubscriptionRepository(DocDb docdb)
         {
-            _client = client;
-            _collection = collection;
+            this.docdb = docdb;
         }
+
         public async Task CreateSubscription(ScampSubscription newSubscription)
         {
-            var created = await _client.CreateDocumentAsync(_collection.SelfLink, newSubscription);
+            if (!(await docdb.IsInitialized))
+                return;
+
+            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newSubscription);
         }
 
-        public Task<ScampSubscription> GetSubscription(string subscriptionId)
+        public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
-            var subscriptions = from u in _client.CreateDocumentQuery<ScampSubscription>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from u in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
                                 where u.Id == subscriptionId
                                 select u;
-            var subList = subscriptions.ToList();
-            if (subList.Count == 0)
-                return Task.FromResult((ScampSubscription)null);
-            return Task.FromResult(subList[0]);
-
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
 
-        public Task<List<ScampSubscription>> GetSubscriptions()
+        public async Task<List<ScampSubscription>> GetSubscriptions()
         {
-            var subscriptions = from u in _client.CreateDocumentQuery<ScampSubscription>(_collection.SelfLink)
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from u in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
                                 select u;
-            var subList = subscriptions.ToList();
-            if (subList.Count == 0)
-                return Task.FromResult((List<ScampSubscription>)null);
-            return Task.FromResult(subList);
+            return await query.AsDocumentQuery().ToListAsync();
         }
     }
 }

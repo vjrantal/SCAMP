@@ -1,5 +1,5 @@
 ﻿'use strict';
-angular.module('scamp', ['ngRoute','AdalAngular'])
+angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap'])
 .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$locationProvider', function ($routeProvider, $httpProvider, adalProvider, $locationProvider) {
 
     $routeProvider.when("/Home", {
@@ -54,7 +54,7 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
     if (scampConfig.settings.clientId === null)
         console.error("Missing $env:APPSETTING_ClientId");
     if (scampConfig.settings.tenantId === null)
-        console.error("Missing $env:APPSETTING_TenantId");    
+        console.error("Missing $env:APPSETTING_TenantId");
 
     adalProvider.init(
         {
@@ -65,6 +65,6 @@ angular.module('scamp', ['ngRoute','AdalAngular'])
             redirectUri: scampConfig.settings.redirectUri
         },
         $httpProvider
-    );
+        );
    
 }]);

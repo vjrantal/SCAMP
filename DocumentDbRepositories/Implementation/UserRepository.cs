@@ -11,41 +11,45 @@ using DocumentDbRepositories;
 
 namespace DocumentDbRepositories.Implementation
 {
-    public class UserRepository 
+    internal class UserRepository : IUserRepository
     {
-        private readonly DocumentClient _client;
-        private readonly DocumentCollection _collection;
-
-        public UserRepository(DocumentClient client, DocumentCollection collection)
+        DocDb docdb;
+        public UserRepository(DocDb docdb)
         {
-            _client = client;
-            _collection = collection;
+            this.docdb = docdb;
         }
         public async Task CreateUser(ScampUser newUser)
 		{
-			var created = await _client.CreateDocumentAsync(_collection.SelfLink, newUser);
+            if (!(await docdb.IsInitialized))
+                return;
+
+            var created = await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newUser);
 		}
 
-		public Task<ScampUser> GetUser(string userId)
+		public async Task<ScampUser> GetUserbyId(string userId)
         {
-            var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                        where u.Id == userId
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
-                return Task.FromResult((ScampUser)null);
-            return Task.FromResult(userList[0]);           
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            // get specified user by ID
+            var query = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
+                              where u.Id == userId
+                              select u;
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
 
-        public Task<ScampUser> GetUserByID(string IPID)
+        public async Task UpdateUser(ScampUser user)
         {
-            var users = from u in _client.CreateDocumentQuery<ScampUser>(_collection.SelfLink)
-                        where u.Id == IPID
-                        select u;
-            var userList = users.ToList();
-            if (userList.Count == 0)
-                return Task.FromResult((ScampUser)null);
-            return Task.FromResult(userList[0]);
+            if (!(await docdb.IsInitialized))
+                return;
+
+            //TODO: likely need to do more here
+
+            //ScampUser tmpUser = (dynamic)userDoc;
+            user.IsSystemAdmin = false;
+            var savedUser = await docdb.Client.ReplaceDocumentAsync(user.SelfLink, user);
+
+            // exception handling, etc... 
         }
     }
 }

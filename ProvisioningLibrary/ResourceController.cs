@@ -6,18 +6,17 @@ using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using KeyVaultRepositories.Implementation;
 using Microsoft.WindowsAzure.Management.Models;
-using ProvisioningLibrary;
 
-namespace ProvisioningLibrary5x
+namespace ProvisioningLibrary
 {
-    public class ResourceController
+    internal class ResourceController : IResourceController
     {
-        private readonly ResourceRepository _resourceRepository;
-        private readonly SubscriptionRepository _subscriptionRepository;
-        private readonly GroupRepository _groupRepository;
+        private readonly IResourceRepository _resourceRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IGroupRepository _groupRepository;
         private readonly IKeyRepository _keyRepository;
 
-        public ResourceController(ResourceRepository resourceRepository, SubscriptionRepository subscriptionRepository, GroupRepository groupRepository, IKeyRepository keyRepository)
+        public ResourceController(IResourceRepository resourceRepository, ISubscriptionRepository subscriptionRepository, IGroupRepository groupRepository, IKeyRepository keyRepository)
         {
             _resourceRepository = resourceRepository;
             _subscriptionRepository = subscriptionRepository;
@@ -45,7 +44,7 @@ namespace ProvisioningLibrary5x
             //For now is the first in the store
             var c = await _subscriptionRepository.GetSubscriptions();
             var selected = c.LastOrDefault();
-            selected.AzureManagementThumbnail = _keyRepository.GetSecret(selected.Id, "cert");
+            selected.AzureManagementThumbnail = await _keyRepository.GetSecret(selected.Id, "cert");
             return selected;
 
         }

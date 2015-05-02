@@ -28,4 +28,65 @@ table .progress {
 
 .page-content {
     padding: 10px;
+    background: #ebebeb;
+}
+
+.profile-info {
+    font-family: "Helvetica Neue", Helvetica, "Noto Sans", sans-serif, Arial, sans-serif!important;
+    font-size: 12px!important;
+    line-height: 1.42857143!important;
+    color: #949494!important;
+}
+
+#breadcrumb {
+  padding: 0;
+  line-height: 40px;
+  background: #525252;
+  background: #5a8db6 url(/app/images/devoops_pattern_b10.png) 0 0 repeat;
+  margin-bottom: 20px;
+}
+
+.row > div{
+    margin-bottom:5px!important;
+}
+
+#dashboard_tabs {
+    background: #f8f8f8;
+    -webkit-border-radius: 8px 0 0 4px;
+    -moz-border-radius: 8px 0 0 4px;
+    border-radius: 8px 0 0 4px;
+      margin-left: 14px;
+  margin-right: 14px;
+}
+
+#ow-marketplace {
+  margin-top: 20px;
+}
+
+.page-header {
+  padding-bottom: 9px!important;
+  margin: 4px 0 10px!important;
+  border-bottom: 1px solid rgb(115, 139, 192)!important;
+}
+
+h4, .h4 {
+  font-size: 18px;
+}
+
+.chartTitle{
+  font-size: 13px!important;
+  font-weight: bold!important;
+  padding-left: 37px!important;
+}
+
+#usageDonutChart{
+    width:120px!important;
+    height:120px!important;
+}
+
+.smallInputSelect{
+    width: 60px!important;
+    height: 24px!important;
+    font-size: 10px!important;
+    display: inline!important;
 }

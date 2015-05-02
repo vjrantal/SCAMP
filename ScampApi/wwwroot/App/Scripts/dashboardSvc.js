@@ -1,7 +1,7 @@
 'use strict';
 angular.module('scamp')
 .factory('dashboardSvc', ['$http', function ($http) {
-    var apiPath = '/api/users';
+    var apiPath = '/api/user';
     return {
         getItems: function () {
             return $http.get(apiPath);
