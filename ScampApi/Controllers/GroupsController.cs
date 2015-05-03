@@ -10,6 +10,7 @@ using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
 using Group = ScampApi.ViewModels.Group;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {

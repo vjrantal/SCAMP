@@ -8,6 +8,7 @@ using System.Security.Claims;
 using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers.Controllers
 {

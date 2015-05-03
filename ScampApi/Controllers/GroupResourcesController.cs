@@ -11,7 +11,8 @@ using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
-using System.IO; 
+using System.IO;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {

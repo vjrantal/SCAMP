@@ -1,16 +1,19 @@
 ﻿{
-    "version": "1.0.0-*",
-    "dependencies": {
-        "Microsoft.KeyVault.Client": "1.0.0-*",
-        "Microsoft.IdentityModel.Clients.ActiveDirectory": "2.14.201151115"
-    },
+  "version": "1.0.0-*",
+  "description": "",
+  "authors": [ "" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
 
-    "frameworks": {
-        "aspnet50": {
-            "dependencies": {
-                "Microsoft.Framework.ConfigurationModel": "1.0.0-beta3",
-                "Microsoft.Framework.DependencyInjection": "1.0.0-beta3"
-            }
-        }
-    }
-}
+  "dependencies": {
+    "Microsoft.KeyVault.Client": "1.0.0-*",
+    "Microsoft.IdentityModel.Clients.ActiveDirectory": "2.14.201151115",
+    "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
+    "Microsoft.Framework.DependencyInjection": "1.0.0-beta4"
+  },
+
+  "frameworks": {
+    "dnx451": { }
+  }
+} }

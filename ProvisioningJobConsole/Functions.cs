@@ -7,7 +7,6 @@ using KeyVaultRepositories.Implementation;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.DependencyInjection.Fallback;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using ProvisioningLibrary;
 using System.Threading.Tasks;
