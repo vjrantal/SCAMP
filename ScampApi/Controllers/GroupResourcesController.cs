@@ -96,7 +96,7 @@ namespace ScampApi.Controllers
             }
 
            // Response.ContentType = "application/rdp; charset=utf-8";
-            Response.Headers.Add("Content-Disposition", new string[] { string.Format("attachement; filename={0}.rdp", res.CloudServiceName) });
+            Response.Headers.Add("Content-Disposition", new string[] { string.Format("attachment; filename={0}.rdp", res.CloudServiceName) });
 
             ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
