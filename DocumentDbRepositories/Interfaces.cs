@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace DocumentDbRepositories
@@ -42,5 +43,6 @@ namespace DocumentDbRepositories
     public interface ISystemSettingsRepository
     {
         Task<List<ScampUser>> GetSystemAdministrators();
+        Task<StyleSettings> GetSiteStyleSettings();
     }
 }

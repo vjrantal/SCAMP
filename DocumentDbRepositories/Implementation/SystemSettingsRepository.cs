@@ -33,5 +33,20 @@ namespace DocumentDbRepositories.Implementation
             var adminList = await admins.AsDocumentQuery().ToListAsync();
             return adminList;
         }
+
+        public async Task<StyleSettings> GetSiteStyleSettings()
+        {
+            string rtnResult = string.Empty;
+
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            // assumption is there is only one document of type "stylesettings"
+            var settingQuery = from s in docdb.Client.CreateDocumentQuery<StyleSettings>(docdb.Collection.SelfLink)
+                               where s.Type == "stylesettings"
+                               select s;
+            // execute query and return results
+            return await settingQuery.AsDocumentQuery().FirstOrDefaultAsync(); ;
+        }
     }
 }
