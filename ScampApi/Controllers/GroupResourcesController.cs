@@ -11,7 +11,8 @@ using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
-using System.IO; 
+using System.IO;
+using Microsoft.AspNet.Http;
 
 namespace ScampApi.Controllers
 {
@@ -97,6 +98,10 @@ namespace ScampApi.Controllers
 
             ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
+
+
+            Response.ContentType = "application/x-rdp";
+            Response.Headers.Add("content-disposition", new string[] { "attachment; filename =" + res.CloudServiceName + ".rdp" });
 
             return await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
         }
