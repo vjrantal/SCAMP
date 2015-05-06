@@ -11,6 +11,7 @@ using Microsoft.Framework.DependencyInjection.Fallback;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using ProvisioningLibrary;
 using System.Threading.Tasks;
+using ScampTypes.ViewModels;
 
 namespace ProvisioningJobConsole
 {
