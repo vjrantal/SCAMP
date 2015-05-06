@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
+using ScampTypes.ViewModels;
 
 namespace ScampApi.Controllers
 {

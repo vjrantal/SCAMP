@@ -5,6 +5,7 @@ using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using KeyVaultRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
+using ScampTypes.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -87,7 +88,7 @@ namespace ScampApi.Controllers
                     AzureManagementThumbnail = "OnKeyVault"
 
                 });
-                _keyRepository.UpsertSecret(id, "cert", subscriptionMngCert);
+                await _keyRepository.UpsertSecret(id, "cert", subscriptionMngCert);
             }
             return Content("Done!");
         }

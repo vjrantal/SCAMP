@@ -15,7 +15,7 @@ using Newtonsoft.Json.Serialization;
 using ScampApi.Infrastructure;
 using Microsoft.AspNet.StaticFiles;
 using ProvisioningLibrary;
-using ScampApi.ViewModels;
+using ScampTypes.ViewModels;
 using IConfiguration = Microsoft.Framework.ConfigurationModel.IConfiguration;
 
 
