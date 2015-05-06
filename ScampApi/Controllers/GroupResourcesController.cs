@@ -87,7 +87,7 @@ namespace ScampApi.Controllers
 
         // allows you to take the specified action (start, stop) on a specified resource
         [HttpGet("{resourceId}/rdp")]
-        public async Task<Byte[]> GetRdp(string groupId, string resourceId)
+        public async Task<string> GetRdp(string groupId, string resourceId)
         {
             ScampResource res = await _resourceRepository.GetResource(resourceId);
             if (res == null)
@@ -102,10 +102,15 @@ namespace ScampApi.Controllers
                 //TODO return error
             }
 
+           // Response.ContentType = "application/rdp; charset=utf-8";
+            Response.Headers.Add("Content-Disposition", new string[] { string.Format("attachment; filename={0}.rdp", res.CloudServiceName) });
+
             ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
-
-            return await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
+            byte[] bytes = await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
+            var encoding = new System.Text.UTF8Encoding();
+            var sRes = encoding.GetString(bytes);
+            return sRes;
         }
 
 
