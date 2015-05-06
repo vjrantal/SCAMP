@@ -50,7 +50,6 @@ namespace Monitor
                         return;
                     }
 
-                    //                    var handler = a.ApplicationServices.GetRequiredService<ISessionHandler>();
                     var factory = a.ApplicationServices.GetService<SessionFactory>();
                     var handler = new SessionHandler(context, factory);
                     await handler.MessageLoopAsync();

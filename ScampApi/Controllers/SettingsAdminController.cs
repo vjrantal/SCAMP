@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DocumentDbRepositories;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampTypes.ViewModels;
-using System.Security.Claims;
-using DocumentDbRepositories;
-using DocumentDbRepositories.Implementation;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ScampApi.Controllers.Controllers
