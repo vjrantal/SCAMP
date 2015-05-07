@@ -13,6 +13,9 @@ using ScampApi.Infrastructure;
 using ScampApi.ViewModels;
 using System.IO;
 using Microsoft.AspNet.Http;
+using ScampTypes.ViewModels;
+using System.IO; 
+
 
 namespace ScampApi.Controllers
 {
@@ -62,21 +65,28 @@ namespace ScampApi.Controllers
         [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]
         public GroupResource Get(string groupId, string resourceId)
         {
-            return new GroupResource
+            var newUser = new UserSummary
             {
-                GroupId = groupId,
-                ResourceId = resourceId,
-                Name = "GroupResource" + resourceId,
-                Users = new[]
-                {
-                    new UserSummary { UserId = "1", Name = "User1", Links =
+                UserId = "1",
+                Name = "User1",
+                Links =
                         {
                             new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
                             new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: "1") }
                         }
-                    }
-                }
             };
+
+            var newGroup =
+                new GroupResource
+                {
+                    Id = groupId,
+                    ResourceId = resourceId,
+                    Name = "GroupResource" + resourceId,
+                    Users = new List<UserSummary>()
+                };
+
+            newGroup.Users.Add(newUser);
+            return newGroup;
         }
 
         // allows you to take the specified action (start, stop) on a specified resource

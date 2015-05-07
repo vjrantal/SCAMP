@@ -4,25 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ScampTypes.ViewModels;
 
 namespace DocumentDbRepositories
 {
-    public enum ResourceType {
-        VirtualMachine = 1, // Azure Virtual Machine
-        WebApp = 2, // Azure Web App
-    };
-
-    public enum ResourceState
-    {
-        Allocated = 0, // the resource can be created, but doesn't yet exist
-        Starting = 1, // the resource is being started, if its the first time, this also means provisioning
-        Running = 2, // the resource is running/active
-        Stopping = 3, // the resource is being stopped
-        Stopped = 4, // the resource is stopped, but may still be incuring charges
-        Suspended = 5, // the resource has exceeded its usage quota
-        Deleting = 6 // the resource is being deleted, when complete it will be in an allocated state
-    };
-
     public class ScampResource
     {
         public ScampResource()

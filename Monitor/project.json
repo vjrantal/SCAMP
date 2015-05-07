@@ -1,0 +1,21 @@
+{
+	/* Click to learn more about project.json  http://go.microsoft.com/fwlink/?LinkID=517074 */
+	"webroot": "wwwroot",
+	"version": "1.0.0-*",
+	"dependencies": {
+		"Microsoft.AspNet.Server.IIS": "1.0.0-beta3",
+		"Microsoft.AspNet.Mvc": "6.0.0-beta3",
+		"Microsoft.AspNet.StaticFiles": "1.0.0-beta3",
+		"Microsoft.AspNet.Server.WebListener": "1.0.0-beta3",
+		"Microsoft.AspNet.WebSockets.Server": "1.0.0.0-beta3",
+		"Microsoft.AspNet.Diagnostics": "1.0.0.0-beta3",
+		"ScampTypes": "1.0.0-*"
+	},
+	"commands": {
+		"web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:8088"
+	},
+	"frameworks": {
+		"aspnet50": { }
+	}
+
+}

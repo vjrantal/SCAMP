@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
+using ScampTypes.ViewModels;
 using DocumentDbRepositories.Implementation;
 using DocumentDbRepositories;
 using System.Threading.Tasks;
-
+using System.Net;
 using System.Net.Http;
-
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using System.IO;
+using Newtonsoft.Json;
 
 namespace ScampApi.Controllers.Controllers
 {
+
+
     [Authorize]
     [Route("api/user")]
     public class UserController : Controller
@@ -44,13 +46,14 @@ namespace ScampApi.Controllers.Controllers
             //TODO: we're going to need this for authorizing requests, so we should probably cache it
             //return object for user...
 
-            return new User
+            var user = new User()
             {
                 Id = tmpUser.Id,
                 Name = tmpUser.Name,
-                IsSystemAdmin = tmpUser.IsSystemAdmin,
                 Email = tmpUser.Email
             };
+
+            return user;
         }
 
         [HttpGet("{userId}", Name = "Users.GetSingle")]
@@ -65,7 +68,6 @@ namespace ScampApi.Controllers.Controllers
             {
                 Id = tmpUser.Id,
                 Name = tmpUser.Name,
-                IsSystemAdmin = tmpUser.IsSystemAdmin,
                 Email = tmpUser.Email
             };
         }
@@ -101,7 +103,7 @@ namespace ScampApi.Controllers.Controllers
                                 Name = groupMbrship.Name
                             },
                             Name = resource.Name,
-                            ResourceType = resource.type,
+                            Type = resource.type,
                             State = resource.state,
                             //TODO: replace with the REAL value
                             Remaining = new Random().Next(0, 100)
@@ -118,9 +120,21 @@ namespace ScampApi.Controllers.Controllers
 
 
         [HttpGet("byname/{searchparm}", Name = "Users.SearchByName")]
-        public User GetByName(string searchparm)
+        public async Task<List<ScampUserReference>> GetByName(string searchparm)
         {
-            throw new NotImplementedException();
+            //TODO: implement search
+            string searchStr = "https://scamp.search.windows.net/indexes/userindex/docs?api-version=2015-02-28&search=brent";
+
+            //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(searchStr));
+            var req = HttpWebRequest.CreateHttp(searchStr);
+            req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+            req.Headers.Add("api-key:0228F8886E1F40C4B53F05316E5B9CA1");
+
+            var response = (HttpWebResponse) await req.GetResponseAsync();
+            var result = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
+
+            var users = JsonConvert.DeserializeObject<List<ScampUserReference>>(result);
+            return users;
         }
 
 

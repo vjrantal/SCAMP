@@ -1,0 +1,12 @@
+﻿{
+	"version": "1.0.0-*",
+	"dependencies": {
+		"ScampTypes": "1.0.0-*"
+	},
+	"commands": {
+		"MonitorTest": "run"
+	},
+	"frameworks": {
+		"aspnet50": { }
+	}
+}

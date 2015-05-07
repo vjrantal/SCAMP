@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DocumentDbRepositories
 {
@@ -48,12 +44,5 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "group"; } }
 
-    }
-    public class ScampResourceGroupReference
-    {
-        [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
     }
 }
