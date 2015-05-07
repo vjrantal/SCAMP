@@ -29,6 +29,9 @@ namespace ProvisioningJobConsole
             services.AddKeyVaultRepositories(configuration);
             services.AddProvisioning(configuration);
 
+            services.UseVolatileStorage(configuration);
+
+
             Provider = services.BuildServiceProvider();
         }
 
@@ -87,8 +90,13 @@ namespace ProvisioningJobConsole
         {
             // TODO - shouldn't be depending on ResourceController here
             var resourceController = Provider.GetService<IResourceController>();
+            var volatileStorageController = Provider.GetService<IVolatileStorageController>();
+
 
             var activity = new ResourceActivity(resourceController);
+
+           
+
             if (!await activity.TryInitializeAsync(message.ResourceId))
             {
                 Console.WriteLine("Resource not found");
@@ -104,6 +112,7 @@ namespace ProvisioningJobConsole
 
             try
             {
+                
                 switch (message.Action)
                 {
                     case ResourceAction.Delete:
@@ -122,6 +131,34 @@ namespace ProvisioningJobConsole
                         Console.WriteLine("Unhandled action: " + message.Action);
                         return;
                 }
+
+
+                /*
+
+                the following is logging code. it will need to 
+                be uncommented after the previous code is stable enough
+
+                
+
+                var groupId = string.Empty;
+                if (activity.Resource != null &&
+                    activity.Resource.ResourceGroup != null)
+                    groupId = activity.Resource.ResourceGroup.Id;
+
+
+
+                await volatileStorageController.CreateActivityLog(new ActivityLog()
+                {
+                    ResourceId = message.ResourceId,
+                    GroupId = groupId,
+                    RequestId = message.OperationGuid.ToString(),
+                    Action = message.Action.ToString(),
+                    UserId = "ProvisioningConsole"
+                });
+
+
+                */
+
 
                 Console.WriteLine(message);
             }
