@@ -1,17 +1,91 @@
-﻿<div class="col-xs-12" ng-hide="!isLoggedOn" >
-    <div class="user pull-right" >
-        <div class="item dropdown" ng-hide="!isLoggedOn" >
-
-            <a href="" ng-click="logout()">Log out</a>
+﻿<nav class="navbar navbar-default navbar-fixed-top navbar-inner">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle SCAMP navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse" ng-show="isLoggedOn">
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="#/dashboard">Dashboard</a></li>
+                <li class="menuUnderline"><a href="#/resources">Group Manager</a></li>
+            </ul>
+            <a class="navbar-brand" href="/">
+                <img src="/App/Images/scamp_logo.png" alt="SCAMP" class="logo">
+            </a>
+            <ul class="nav navbar-nav navbar-right" ng-show="isLoggedOn">
+                <li class="nav-icon-btn nav-icon-btn-danger dropdown notifications">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="label">5</span>
+                        <i class="nav-icon fa fa-bullhorn fa-2x"></i>
+                        <span class="small-screen-text">Notifications</span>
+                    </a>
+                    <ul class="dropdown-menu alerts" role="menu">
+                        <li class="alert-header">
+                            <p class="small" style="color:#fff;font-size: 12px;">
+                                <i style="color:#4B874A" class="nav-icon fa fa-skyatlas fa-1x">
+                                    <span class="alert-header-text">Resource Notifications</span>
+                                </i>
+                            </p>
+                        </li>
+                        <li class="alert-list-item">
+                            <a href="#">
+                                <i class="nav-icon fa fa-check-circle-o fa-1x" style="color:#188754"></i> 
+                                <span class="line">
+                                    <span class="alert-list-item-header">Resource 1</span>
+                                    <span class="alert-list-item-time">8:01 AM</span><br>
+                                    <span class="alert-list-item-description">Started Succesfully</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="alert-list-item">
+                            <a href="#">
+                                <i class="nav-icon fa fa-check-circle-o fa-1x" style="color:#188754"></i>
+                                <span class="line">
+                                    <span class="alert-list-item-header">Resource 1</span>
+                                    <span class="alert-list-item-time">8:01 AM</span><br>
+                                    <span class="alert-list-item-description">Started Succesfully</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="alert-list-item">
+                            <a href="#">
+                                <i class="nav-icon fa fa-check-circle-o fa-1x" style="color:#188754"></i>
+                                <span class="line">
+                                    <span class="alert-list-item-header">Resource 1</span>
+                                    <span class="alert-list-item-time">8:01 AM</span><br>
+                                    <span class="alert-list-item-description">Started Succesfully</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="alert-list-item">
+                            <a href="#">
+                                <i class="nav-icon fa fa-check-circle-o fa-1x" style="color:#188754"></i>
+                                <span class="line">
+                                    <span class="alert-list-item-header">Resource 1</span>
+                                    <span class="alert-list-item-time">8:01 AM</span><br>
+                                    <span class="alert-list-item-description">Started Succesfully</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="fa-stack fa-lg" style="color:#fff;">
+                        <i class="fa fa-circle-thin fa-stack-2x"></i>
+                        <i class="fa fa-user fa-stack-1x"></i>
+                    </span>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" style="padding-left: 2px;" data-toggle="dropdown" role="button" aria-expanded="false">{{userProfile.name}}<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="logout()">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
-    <div class="meta">
-        <div class="page profile-info">
-            <span class="fa-stack fa-lg">
-                <i class="fa fa-circle-thin fa-stack-2x"></i>
-                <i class="fa fa-user fa-stack-1x"></i>
-            </span>
-                 {{userProfile.name}}
-        </div>
-    </div>
-</div>
+</nav>

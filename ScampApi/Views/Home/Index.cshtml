@@ -13,19 +13,24 @@
 }
 
 <div ng-app="scamp" ng-controller="homeCtrl" role="document">
-    <div id="page-wrapper" class="open">
-        <div id="sidebar-wrapper" ng-show="isLoggedOn" ng-include="'/App/Views/Sidebar.html'">
-            <!--sidebar-->
-        </div>
-        <div class="content-wrapper" role="main">
-			<div class="row header" ng-include="'/App/Views/Header.html'">
-                <!--header-->
+    <div ng-include="'/App/Views/Header.html'">
+        <!--header-->
+    </div>
+    <main id="main" class="site-main" role="main">
+        <section class="section" id="home">
+            <div class="container">
+                <div class="row content-row">
+                    <div>
+                        <div ng-view id="dashboard" class="page-content">
+                            <!--page content-->
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div ng-view class="page-content">
-                <!--page content-->
-            </div>
-        </div>
-
+        </section>
+    </main>
+    <div ng-include="'/App/Views/Footer.html'">
+        <!--header-->
     </div>
 </div>
 @section scripts{

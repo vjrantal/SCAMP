@@ -50,13 +50,20 @@ table .progress {
     margin-bottom:5px!important;
 }
 
+#content-header{
+    color:#D4E7EA !important;
+}
+
 #dashboard_tabs {
     background: #f8f8f8;
     -webkit-border-radius: 8px 0 0 4px;
     -moz-border-radius: 8px 0 0 4px;
-    border-radius: 8px 0 0 4px;
-      margin-left: 14px;
-  margin-right: 14px;
+    border-radius: 8px 8px 8px 8px;
+    margin-left: 14px;
+    margin-right: 14px;
+    width:98%;
+    background-color: #ebebeb !important;
+    background: url(/App/images/background-gradient.png) 0 0 repeat;
 }
 
 #ow-marketplace {
