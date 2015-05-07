@@ -242,20 +242,27 @@ namespace ProvisioningLibrary
                 try
                 {
                     vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
-                    Console.WriteLine("Found cloud service: " + cloudServiceName);
+                    //  Console.WriteLine("Found cloud service: " + cloudServiceName);
+
+                    Console.WriteLine(string.Format("Found cloud service: {0}", cloudServiceName));
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Virtual Machine not found");
+                    Console.WriteLine(string.Format("Virtual Machine for [{0}] cloud was not found!", cloudServiceName));
                     return;
                 }
 
-                Console.WriteLine("Fetching deployment.");
+                Console.WriteLine(string.Format("Fetching deployment for virtual machine [{0}].", virtualMachineName));
                 var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
                 //var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
 
-                if (deployment != null)
+                if (deployment == null)
                 {
+                    Console.Write(string.Format("Failed to fetch deployment for virtual machine [{0}] Start/Stop will exit and do nothing", 
+                        virtualMachineName));
+
+                    return;
+                }
                     var deploymantSlotName = deployment.Name;
                     var serviceName = vm.ServiceName;
 
@@ -267,25 +274,44 @@ namespace ProvisioningLibrary
                     //var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
                     var instance = deployment.RoleInstances.First(x => x.RoleName == virtualMachineName);
 
-                    if (action == VirtualMachineAction.Start)
+                    Console.WriteLine(string.Format("Machine Name[{0}] is currently at [{1}] state", 
+                                                    virtualMachineName,
+                                                    instance.InstanceStatus));
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] is currently at [{1}] state (if not at ReadyRole or StoppedVM the following start/stop will fail)",
+                                                virtualMachineName,
+                                                instance.InstanceStatus));
+
+
+
+                if (action == VirtualMachineAction.Start)
                     {
                         if (instance.InstanceStatus == "ReadyRole")
                         {
-                            Console.WriteLine("VM Already Started");
-                            return;
+                            Console.WriteLine(string.Format("VM  [{0}] Deploymentslot[{1}] roleName [{2}] already started (no start will be execute)", serviceName, deploymantSlotName, instance.RoleName));
+
+                        return;
                         }
 
-                        Console.WriteLine("Issuing Management Start cmd");
-                        //TODO this is strange but for now i leave it a is. Need to be refactored.
-                        // refer to "GSUHackfest Note #1" above
-                        //await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
-                        await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.RoleName);
+                        Console.WriteLine(string.Format("Issuing Management Start cmd Service[{0}] Deploymentslot[{1}] roleName [{2}]", serviceName, deploymantSlotName, instance.RoleName));
+                    //TODO this is strange but for now i leave it a is. Need to be refactored.
+                    // refer to "GSUHackfest Note #1" above
+                    //await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] Starting..",
+                                                virtualMachineName));
+
+                    await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.RoleName);
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] start command issued..",
+                                          virtualMachineName));
+
                     }
                     else
                     {
                         if (instance.InstanceStatus == "StoppedVM")
                         {
-                            Console.WriteLine("VM Already Stopped");
+                            Console.WriteLine(string.Format("VM  [{0}] Deploymentslot[{1}] roleName [{2}] already stopped (no stop will be execute)", serviceName, deploymantSlotName, instance.RoleName));
                             return;
                         }
 
@@ -293,12 +319,19 @@ namespace ProvisioningLibrary
                         VirtualMachineShutdownParameters shutdownParms = new VirtualMachineShutdownParameters();
                         shutdownParms.PostShutdownAction = PostShutdownAction.StoppedDeallocated;
 
-                        // refer to "GSUHackfest Note #1" above
-                        //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, shutdownParms);
-                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
-                    }
+                    // refer to "GSUHackfest Note #1" above
+                    //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, shutdownParms);
+                    // computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
+                    Console.WriteLine(string.Format("Machine Name[{0}] Stopping..",
+                            virtualMachineName));
+
+                    await computeClient.VirtualMachines.ShutdownAsync(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
+                    Console.WriteLine(string.Format("Machine Name[{0}] stop command issued..",
+                      virtualMachineName));
+
                 }
             }
+            
         }
         public async Task<List<string>> GetVirtualMachineList()
         {
