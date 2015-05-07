@@ -62,6 +62,7 @@
 
 .notifications{
     margin-right: 15px;
+    cursor: pointer;
 }
 .open > .notifications-menu {
   display: block;
@@ -129,7 +130,7 @@
 }
 
 .alerts{
-    min-width: 230px!important;
+    min-width: 280px!important;
 }
 
 .alert-header{
@@ -161,4 +162,18 @@ padding-left: 3px;
 
 .alert-list-item-description{
     font-size: 11px;
+    color: #fff!important;
+}
+
+.alert-row-icon{
+    padding-top:2px;
+}
+
+.alert-row{
+    padding-left:8px;
+}
+
+.alert-row-a{
+min-height: 44px;
+  background-color: #45525A;
 }
