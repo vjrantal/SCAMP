@@ -8,10 +8,11 @@ using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using ScampTypes.Messages;
 
 namespace Monitor
 {
-    internal sealed class Session
+    public sealed class Session
     {
         public const int BufferSize = 2048;
 
@@ -23,27 +24,37 @@ namespace Monitor
 
         public byte[] Buffer { get; private set; }
 
+        ArraySegment<byte> receiver;
+
         public WebSocketReceiveResult Result { get; private set; }
 
-        public Session(WebSocket ws)
+        public SessionFactory Factory { get; private set; }
+
+        public Session(SessionFactory factory, WebSocket ws)
         {
+            this.Factory = factory;
             this.Id = Guid.NewGuid();
             this.Socket = ws;
             this.Source = new CancellationTokenSource();
             this.Buffer = new byte[BufferSize];
+            receiver = new ArraySegment<byte>(this.Buffer);
             this.Result = null;
         }
 
         public async Task ReceiveAsync()
         {
-            var segment = new ArraySegment<byte>(this.Buffer);
-            this.Result = await this.Socket.ReceiveAsync(segment, this.Source.Token);
+            this.Result = await this.Socket.ReceiveAsync(receiver, this.Source.Token);
+        }
+
+        public async Task SendAsync(ArraySegment<byte> segment)
+        {
+            await this.Socket.SendAsync(segment, WebSocketMessageType.Binary, true, this.Source.Token);
         }
 
         public async Task SendAsync(byte[] message, int length)
         {
             var segment = new ArraySegment<byte>(message, 0, length);
-            await this.Socket.SendAsync(segment, WebSocketMessageType.Binary, true, this.Source.Token);
+            await SendAsync(segment);
         }
 
         public async Task SendAsync(byte[] message)
@@ -51,24 +62,9 @@ namespace Monitor
             await SendAsync(message, message.Length);
         }
 
-        public async Task EchoAsync()
+        public void Close()
         {
-            try
-            {
-                // first thing for any new session we send our session id
-                var sessionMessage = System.Text.UTF8Encoding.UTF8.GetBytes(this.Id.ToString());
-                await this.SendAsync(sessionMessage, sessionMessage.Length);
-
-                // now loop for any incoming (we just echo)
-                while (this.Socket.State == WebSocketState.Open)
-                {
-                    await this.ReceiveAsync();
-                    if (this.Result.CloseStatus.HasValue)
-                        break;
-                    await this.SendAsync(this.Buffer, this.Result.Count);
-                }
-            }
-            catch { }
+            this.Factory.Remove(this);
         }
     }
 }
