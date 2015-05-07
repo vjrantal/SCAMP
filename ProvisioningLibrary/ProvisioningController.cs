@@ -224,7 +224,9 @@ namespace ProvisioningLibrary
                 Console.WriteLine("Found cloud service: " + cloudServiceName);
 
                 Console.WriteLine("Fetching deployment.");
-                var deployment = cs.Deployments.ToList().First(x => x.Name == virtualMachineName);
+                //var deployment = cs.Deployments.ToList().First(x => x.Name == virtualMachineName);
+
+                var deployment = cs.Deployments.ToList().First(x => x.Name == "brent1");
                 if (deployment != null)
                     response = VirtualMachineOperationsExtensions.GetRemoteDesktopFile(VMOperations, cloudServiceName, deployment.Name, virtualMachineName);
             }

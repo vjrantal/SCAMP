@@ -114,9 +114,14 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
                 "APPSETTING_DocDb:collectionName": "scampdata",
                 "APPSETTING_DocDb:connectionMode" : "http|tcp",
                 "APPSETTING_Provisioning:StorageConnectionString": "<storage connection string>",
-		"APPSETTING_KeyVault:Url": "https://{name}.vault.azure.net/",
-        	"APPSETTING_KeyVault:AuthClientId": "{Active Directory Client ID}",
-        	"APPSETTING_KeyVault:AuthClientSecret": "{Active directory secret}"
+				"APPSETTING_KeyVault:Url": "https://{name}.vault.azure.net/",
+        		"APPSETTING_KeyVault:AuthClientId": "{Active Directory Client ID}",
+        		"APPSETTING_KeyVault:AuthClientSecret": "{Active directory secret}",
+				"APPSETTING_ActivityLogStorage:ConnectionString": "<storage account for saving activity logs>",
+				"APPSETTING_ResourceStateStorage:ConnectionString": "<storage account for saving resource states>",
+				"APPSETTING_ActivityLogStorage:TableName": "<table name for Activity Logs>",
+				"APPSETTING_ResourceStateStorage:TableName": "<table name for resource state storage>"
+
             }
         }
     ]
