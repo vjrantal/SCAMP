@@ -49,6 +49,8 @@ namespace ProvisioningLibrary
 
                 this._ActivityLogTable = this._ActivityLogTableClient.GetTableReference(sActivityLogTableName);
                 this._StateUpdateTable = this._StateUpdateTableClient.GetTableReference(sStateUpdateLogTableName);
+
+            Debug.WriteLine("Storage for VolatileStorage Controller is now connected");
         }
         
          
