@@ -1,0 +1,128 @@
+.dashboard.page-content{
+    padding:1em;
+    color:#000;
+}
+
+.dashboard ul{
+    list-style-type: none;
+}
+
+    .dashboard .list-group-item {
+        color: #000;
+    }
+
+.dashboard .top-header {
+    padding:2em 4em;
+}
+
+.dashboard .notification-number {
+    margin-right:2px;
+}
+
+.dashboard .user {
+    margin-left:10px;
+    font-size:1.4em;
+}
+
+.dashboard .user .fa-user{
+    font-size:1.4em;
+}
+
+    .dashboard .table {
+        color: #000;
+        background-color: #eee;
+    }
+
+.dashboard .table thead {
+    
+    background-color:#dfdfdf;
+}
+
+.dashboard .nav-block{
+    border-top:2px solid #555;
+    border-bottom:2px solid #555;
+    padding:0;
+    margin:0;
+    height:60px;
+}
+
+.dashboard .nav-block li{
+    float: left;
+    min-width:100px;
+    margin:0 5px;
+    padding:18px 30px;
+    border-right:1px solid #555;
+}
+
+.dashboard .nav-block li.search{
+    padding:0;
+    margin-left:150px;
+    border-right:0;
+}
+.dashboard .nav-block li.search input{
+    padding:18px 10px;
+    border:0;
+    background-color:#efefef;
+}
+
+.dashboard .dashboard{
+    padding:0 3em;
+}
+
+.dashboard .graph-row{
+    width:30%;
+}
+
+.dashboard .test-graph {
+    height:200px;
+    margin-bottom:-20px;
+}
+
+.dashboard .group-selection{
+    margin-bottom:-50px;
+}
+
+
+.dashboard .group-summary{
+    margin-top:30px;
+}
+
+.dashboard .summary-items{
+    padding:0;
+}
+
+.dashboard .summary-items li{
+    margin-top:15px;    
+    font-size:.85em;
+}
+
+.dashboard .summary-items li:nth-child(even){
+    float:left;
+    margin-right:20px;
+}
+
+.dashboard .summary-items li .summary-value{
+    margin-left:10px;
+    border:1px solid #ddd;
+    padding:4px;
+    font-weight:bolder;
+}
+
+.dashboard .list{
+    padding:0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

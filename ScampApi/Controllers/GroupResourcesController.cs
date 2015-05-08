@@ -10,7 +10,6 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
 using System.IO;
 using Microsoft.AspNet.Http;
 using ScampTypes.ViewModels;

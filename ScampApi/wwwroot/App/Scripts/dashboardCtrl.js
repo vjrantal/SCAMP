@@ -2,6 +2,8 @@
 
 angular.module('scamp')
 .controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', 'resourcesSvc', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService, resourcesSvc) {
+
+
     var scampDashboard = new ScampDashboard($scope);
     $scope.currentRouteName = 'Dashboard';
 	$scope.userList = null;
@@ -29,6 +31,9 @@ angular.module('scamp')
 	    userSvc.getResourceList(userGUID).then(
             // resource REST call was a success
             function (data) {
+                console.log(data)
+                console.log(data)
+                console.log(data)
                 scampDashboard.render(data);
             },
             // resource REST call failed
@@ -139,7 +144,7 @@ angular.module('scamp')
 	        var callback = function () {scampDashboard.processResourceUpdate(dashboardRscUpdateMsg)}
 	        callResourceService(resource, $scope.resourceSave.newStateDesc, duration, callback);
 	    }else
-	        throw new Exception("Unsupported action was called for resourceSendAction");
+	        throw "Unsupported action was called for resourceSendAction";
 
 	    $('#resourceSendActionModal').modal('hide');
 	};

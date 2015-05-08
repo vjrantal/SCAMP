@@ -1,0 +1,120 @@
+﻿<div class="container group-manager" style="color:#000;"> <!--We're going to need to extract all the custom styles to a css file-->
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-2">
+                    <h3 style="right:20px;">Site Admin</h3>
+                </div>
+            </div>
+
+
+
+            <div class="group_manage">
+                <div class="settings">
+
+
+                    <form class="form-horizontal" style="margin-bottom:100px;">
+                        <div class="form-group">
+                            <label for="group_name" class="col-md-1 control-label" style="left:14px;">Name Lookup</label>
+                            <br>
+                            <div class="col-md-3 input-group">
+                                <input type="text" class="form-control" style="left:15px;">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="left:53px;">Search</button>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="group_quota" class="col-md-1 control-label">Quota</label>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" id="group_quota">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="expiration_control" class="col-md-1 control-label">Expiration</label>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" id="expiration_control">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="expiration_control" class="col-md-1 control-label"></label>
+                            <div class="col-md-1" style="left:100px;">
+                                <input type="button" class="btn btn-primary" value="+Add">
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div class="panel panel-default" style="margin:20px;">
+                        <div class="panel-body">
+
+                            <div class="col-md-12">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Usage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p>Instructor 1</p>
+
+
+                                            </td>
+                                            <td>
+
+                                                <div class='progress progress-striped'>
+                                                    <div class="progress-bar progress-striped" role="progressbar" style="width: 50%;">
+                                                        <!--Change width with Angular-->
+                                                        50% <!--Will be fixed by Angular Expression-->
+                                                    </div>
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>Instructor 2</td>
+                                            <td>
+
+                                                <div class='progress progress-striped'>
+                                                    <div class="progress-bar progress-striped" role="progressbar" style="width: 50%;">
+                                                        <!--Change widt with Angular-->
+                                                        50% <!--Change with Angular-->
+                                                    </div>
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>Instructor 3</td>
+                                            <td>
+
+                                                <div class='progress progress-striped'>
+                                                    <div class="progress-bar progress-striped" role="progressbar" style="width: 50%; margin-bottom:-40px;">
+                                                        <!--Change width with Angular-->
+                                                        50% <!--Change with Angular Expression-->
+                                                    </div>
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

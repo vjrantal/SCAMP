@@ -1,6 +1,6 @@
 ﻿'use strict';
 angular.module('scamp')
-.controller('resourcesCtrl', ['$scope', '$location', 'resourcesSvc', 'groupsSvc', 'adalAuthenticationService', '$sce', 'fileSvc', function ($scope, $location, resourcesSvc, groupsSvc, adalService, $sce, fileSvc) {
+.controller('resourcesCtrl', ['$scope', '$location', 'resourcesSvc', 'groupsSvc', 'adalAuthenticationService', '$sce', function ($scope, $location, resourcesSvc, groupsSvc, adalService, $sce) {
     $scope.error = "";
     $scope.loadingMessage = "Loading...";
     $scope.resourceList = null;
@@ -17,25 +17,6 @@ angular.module('scamp')
         isNew:false
     };
 
-    $scope.getRdp = function (resource){
-        // url: GET - "api/groups/{groupId}/resources/{resourceId}/rdp"
-
-        var groupId = resource.resourceGroup.id,
-            resourceId = resource.id,
-            contentType = "application/rdp; charset=utf-8",
-            fileName = "service.rdp"
-
-        var Fileurl = "/api/groups/" + groupId + "/resources/" + resourceId + "/rdp";
-
-        console.log("Get Rdp: " + Fileurl)
-
-        fileSvc.downloadFile(Fileurl, contentType, fileName).then(
-            function (fileName) {
-                console.log("File downloaded: " + fileName)
-            },function (error) {
-                console.log("Failed to download file" + error);
-            });
-    }
     //$scope.addResource = function (resource) {
     //    var name = resource.rName,
     //        state = resource.rState,
