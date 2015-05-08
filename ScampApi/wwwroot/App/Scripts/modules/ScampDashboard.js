@@ -45,8 +45,8 @@
         //if the updated resource cannot be found on the scope, then refresh the dashboard by calling the service
         if (!resourceUpdated)
             scope.populate();
-        else
-            renderCharts(scope.resources);
+        //else
+         //   renderCharts(scope.resources);
     };
 
     var setResources = function(rspData){
@@ -93,7 +93,7 @@
 
     this.render = function (rspData) {
         setResources(rspData);
-        renderCharts(scope.resources);
+        //renderCharts(scope.resources);
         scope.dashboardStatus = 'loaded';
    }
 }
