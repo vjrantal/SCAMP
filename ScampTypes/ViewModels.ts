@@ -1,23 +1,5 @@
 ﻿module ViewModels {
 
-    export class Link {
-        Rel: string;
-        Href: string;
-    }
-
-    export class UserSummary {
-        UserId: string;
-        Name: string;
-        Links: Link[];
-    }
-
-    export class GroupResource {
-        Id: string;
-        Name: string;
-        ResourceId: string;
-        Users: UserSummary[]
-    }
-
     export enum ResourceType {
         None,
         VirtualMachine,  // Azure Virtual Machine
@@ -35,61 +17,88 @@
         Deleting    // the resource is being deleted, when complete it will be in an allocated state
     }
 
-    export class ScampResourceGroupReference {
-        Id: string;
+    export enum RoleType {
+        None,
+        User,
+        GroupManager,
+        GroupAdmin,
+        SystemAdmin
+    }
+
+    export enum VirtualMachineAction {
+        None,
+        Stop,
+        Start
+    }
+
+    export enum ResourceAction {
+        Undefined,
+        Stop,
+        Start,
+        Create,
+        Delete
+    }
+
+    // unique id and descriptive name
+    export class RefId {
+        Id: string
+    }
+
+    export class Identity extends RefId {
         Name: string;
     }
 
-    export class ScampResourceSummary {
-        Id: string;
-        Name: string;
-        ResourceGroup: ScampResourceGroupReference;
-        Type: ResourceType;
-        State: ResourceState;
-        Remaining: number;
-    }
+    export class GroupId extends RefId { }
 
-    export class User {
-        Id: string;
-        Name: string;
+    export class ResourceId extends RefId { }
+
+    export class UserId extends RefId { }
+
+    export class TemplateId extends RefId { }
+
+    export class AzureSettingsId extends RefId { }
+
+    export class User extends Identity {
         Email: string;
-        Groups: Group[];
-        Resources: ScampResourceSummary[];
+        DisplayName: string;
     }
 
-    export class GroupTemplate {
-        Id: string;
-        Name: string;
-        GroupId: string;
+    export class Resource extends Identity {
+        Type: ResourceType;
+        Owner: UserId;
+        Group: GroupId;
+        Template: TemplateId;
     }
 
-    export class GroupTemplateSummary {
-        Id: string;
-        Name: string;
-        TemplateId: string;
-        Links: Link[];
+    export class Template extends Identity {
+        Content: string;
+        Settings: AzureSettingsId;
     }
 
-    export class Group {
-        Id: string;
-        Name: string;
-        Resources: ScampResourceSummary[];
-        Templates: GroupTemplateSummary[];
-        Admins: UserSummary[];
-        Members: UserSummary[];
+    export class MemberRole {
+        User: UserId;
+        Role: RoleType;
     }
 
-    export class GroupSummary {
-        Id: string;
-        Name: string;
-        Links: Link[];
+    export class Group extends Identity {
+        Templates: TemplateId[];
+        Owner: UserId;
+        Members: MemberRole[];
     }
 
-    export class ScampSettings {
+    export class AzureSettings extends Identity {
+        SubscriptionId: string;
         TenantId: string;
         ClientId: string;
         ExtraQueryParameter: string;
         CacheLocation: string;
         RedirectUri: string;
+        ManagementThumbnail: string;
+        AdminUser: string; //TODO: move to keyvault
+        AdminPassword: string; //TODO: move to keyvault
+    }
+
+    export class ScampSettings extends Identity {
+        Members: MemberRole[];
     }
 }
