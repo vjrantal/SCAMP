@@ -63,6 +63,12 @@
         DisplayName: string;
     }
 
+    export class ResourceUnits {
+        Group: GroupId;
+        User: UserId;
+        Used: number;
+    }
+
     export class Resource extends Identity {
         Type: ResourceType;
         Owner: UserId;
@@ -75,15 +81,25 @@
         Settings: AzureSettingsId;
     }
 
-    export class MemberRole {
+    export class UnitsData {
+        Allocated: number;
+        Used: number;
+    }
+
+    export class GroupUser extends UnitsData {
         User: UserId;
         Role: RoleType;
+    }
+
+    export class GroupAdmin extends UnitsData {
+        User: UserId;
     }
 
     export class Group extends Identity {
         Templates: TemplateId[];
         Owner: UserId;
-        Members: MemberRole[];
+        Users: GroupUser[];
+        Units: UnitsData;
     }
 
     export class AzureSettings extends Identity {
@@ -98,7 +114,13 @@
         AdminPassword: string; //TODO: move to keyvault
     }
 
+    export class UserRole {
+        User: User;
+        Role: RoleType;
+    }
+
     export class ScampSettings extends Identity {
-        Members: MemberRole[];
+        GroupAdmins: GroupAdmin[];
+        Users: UserRole[];
     }
 }
