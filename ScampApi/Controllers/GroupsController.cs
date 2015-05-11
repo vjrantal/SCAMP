@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using R = System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using DocumentDbRepositories;
 using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
-using Group = ScampApi.ViewModels.Group;
+using ScampTypes.ViewModels;
 
 namespace ScampApi.Controllers
 {
@@ -71,7 +70,7 @@ namespace ScampApi.Controllers
             //Cleaning the object
             var group = new ScampResourceGroup()
             {
-                Name = Regex.Replace(userInputGroup.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
+                Name = R.Regex.Replace(userInputGroup.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
                 Id = Guid.NewGuid().ToString()
 
 
@@ -81,7 +80,7 @@ namespace ScampApi.Controllers
             await _groupRepository.CreateGroup(group);
             var resp = new GroupSummary()
             {
-                GroupId = group.Id,
+                Id = group.Id,
                 Name = group.Name
             };
 
@@ -111,7 +110,7 @@ namespace ScampApi.Controllers
                         Id = a.UserId,
                         Name = a.Name
                     })),
-                    Id = value.GroupId,
+                    Id = value.Id,
                     Name = value.Name
                 });
 
@@ -149,7 +148,7 @@ namespace ScampApi.Controllers
         {
             return new GroupSummary
             {
-                GroupId = docDbGroup.Id,
+                Id = docDbGroup.Id,
                 Name = docDbGroup.Name,
                 Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: docDbGroup.Id) } }
             };
@@ -158,12 +157,12 @@ namespace ScampApi.Controllers
         {
             return new Group
             {
-                GroupId = docDbGroup.Id,
+                Id = docDbGroup.Id,
                 Name = docDbGroup.Name,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
                 Members = docDbGroup.Members?.Select(MapToSummary).ToList(),
                 Admins = docDbGroup.Admins?.Select(MapToSummary).ToList(),
-                Resources = docDbGroup.Resources?.Select(MapToSummary)
+                Resources = docDbGroup.Resources?.Select(MapToSummary).ToList()
             };
         }
         private UserSummary MapToSummary(ScampUserReference docDbUser)

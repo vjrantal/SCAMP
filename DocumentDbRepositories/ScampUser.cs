@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
+using ScampTypes.ViewModels;
 
 namespace DocumentDbRepositories
 {
@@ -58,10 +59,10 @@ namespace DocumentDbRepositories
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "type")]
-        public int type { get; set; }
+        public ResourceType type { get; set; }
 
         [JsonProperty(PropertyName = "state")]
-        public int state { get; set; }
+        public ResourceState state { get; set; }
     }
 
     public class ScampUserReference

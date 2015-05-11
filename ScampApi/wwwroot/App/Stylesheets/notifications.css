@@ -64,6 +64,15 @@
     margin-right: 15px;
     cursor: pointer;
 }
+
+.notifications:hover {
+   opacity:0.9;
+}
+
+.notifications:hover>li{
+   opacity:0.6!important;
+}
+
 .open > .notifications-menu {
   display: block;
 }

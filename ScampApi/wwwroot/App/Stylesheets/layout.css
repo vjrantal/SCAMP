@@ -7,7 +7,7 @@
 }
 
 .container{
-    width: 98%!important;
+    width: 99%!important;
 }
 
 .navbar-default{
@@ -93,18 +93,17 @@ body{
 }
 
 .page-content{
-  height: 720px;
+  height: 320px;
   /* background-image: url('../Images/IMG_6246.JPG'); */
   background-image: -webkit-linear-gradient(top,#303a4c 0,#2e2f33  100%);
   background-image: -o-linear-gradient(top,#303a4c 0,#2e2f33  100%);
-  background-image: linear-gradient(to bottom,#303a4c 0,#2e2f33 100%); 
-  background-repeat: repeat-x;
+  background-image: linear-gradient(to bottom,#303a4c 0,#2e2f33 100%);
   background-position: center top;
   color: #fff;
 }
 
 .content-row{
-      margin-top: 88px;
+      margin-top: 74px;
 }
 
 body {

@@ -3,7 +3,9 @@
         Empty = 0,
         Error,
         Subscribe,
-        Update
+        Update,
+        GetSubscriptions,
+        Subscriptions
     }
 
     export class Message {
@@ -43,6 +45,20 @@
             this.Resource = resource;
             this.State = state;
             this.Date = date;
+        }
+    }
+
+    export class GetSubscriptions extends Message {
+        constructor() {
+            super(MessageType.GetSubscriptions);
+        }
+    }
+
+    export class Subscriptions extends Message {
+        List: string[];
+
+        constructor() {
+            super(MessageType.Subscriptions);
         }
     }
 
