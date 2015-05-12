@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Microsoft.Framework.ConfigurationModel;
-
+using ScampTypes.ViewModels;
 
 namespace ProvisioningLibrary
 {
@@ -176,6 +176,16 @@ namespace ProvisioningLibrary
         {
             TableOperation insertOperation = TableOperation.InsertOrMerge(newstate);
             await this._StateUpdateTable.ExecuteAsync(insertOperation);
+        }
+
+        public async Task UpdateResourceState(string resourceId, ResourceState state)
+        {
+            CurrentResourceState newState = new CurrentResourceState()
+            {
+                ResourceId = resourceId,
+                State = (int)state
+            };
+            await UpdateResourceState(newState);
         }
     }
 }

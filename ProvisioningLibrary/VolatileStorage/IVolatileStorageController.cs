@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ScampTypes.ViewModels;
 
 namespace ProvisioningLibrary
 {
@@ -15,7 +16,7 @@ namespace ProvisioningLibrary
         Task CreateActivityLog(ActivityLog activityLog);
         Task<int> GetResourceState(string resourceId);
         Task UpdateResourceState(CurrentResourceState newstate);
-
+        Task UpdateResourceState(string resourceId, ResourceState state);
         Task CreateActivityLog(List<ActivityLog> activityLogs);
     }
 }
