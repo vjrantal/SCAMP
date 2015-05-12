@@ -1,5 +1,5 @@
 # Simple Cloud Manager Project - Web Application #
-This project contains a Single Page Web App that contains both the Views/Pages along with the Web API in support of the Pages.
+This project contains a Single Page Web App that contains both the Views/Pages along with the Web API in support of the pages.
 
 ### Setting Azure Active Directory Tenant ###
 

@@ -53,6 +53,7 @@ namespace ScampApi
             services.AddScoped <ISecurityHelper, SecurityHelper>();
 
             services.AddSingleton <IWebJobController, WebJobController>();
+            services.AddSingleton<IVolatileStorageController, VolatileStorageController>();
 
             services.AddInstance(Configuration);
 

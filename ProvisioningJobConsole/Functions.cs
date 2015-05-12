@@ -17,7 +17,8 @@ namespace ProvisioningJobConsole
 {
     public class Functions
     {
-        static IServiceProvider Provider = null;
+        private static IServiceProvider Provider = null;
+        private static IVolatileStorageController _volatileStorageController = null;
 
         static Functions()
         {
@@ -96,17 +97,13 @@ namespace ProvisioningJobConsole
 
             Console.WriteLine(string.Format("Start - Current Time: [{0}]", 
                                              DateTime.UtcNow.ToLongTimeString()));
+
             // TODO - shouldn't be depending on ResourceController here
             var resourceController = Provider.GetService<IResourceController>();
-            var volatileStorageController = Provider.GetService<IVolatileStorageController>();
+            if (_volatileStorageController == null)
+                _volatileStorageController = Provider.GetService<IVolatileStorageController>();
             var activity = new ResourceActivity(resourceController);
-
-
-
             
-
-           
-
             if (!await activity.TryInitializeAsync(message.ResourceId))
             {
                 Console.WriteLine("Resource not found");
@@ -155,9 +152,7 @@ namespace ProvisioningJobConsole
                     activity.Resource.ResourceGroup != null)
                     groupId = activity.Resource.ResourceGroup.Id;
 
-
-
-                await volatileStorageController.CreateActivityLog(new ActivityLog()
+                await _volatileStorageController.CreateActivityLog(new ActivityLog()
                 {
                     ResourceId = message.ResourceId,
                     GroupId = groupId,
@@ -166,8 +161,6 @@ namespace ProvisioningJobConsole
                     UserId = "ProvisioningConsole"
                 });
 
-
-                
 
                 //Console.WriteLine(string.Format("My orginal message was: {0}", message));
             }
@@ -204,12 +197,18 @@ namespace ProvisioningJobConsole
         }
 
         static async Task ActionStop(ResourceActivity activity)
-        {
-                
-                Console.WriteLine(string.Format("Stopping VM [{0}]", activity.MachineName));
-                await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
-                activity.Resource.State = ResourceState.Stopping;
-                await activity.ResourceController.UpdateResource(activity.Resource);
+        {              
+            Console.WriteLine(string.Format("Stopping VM [{0}]", activity.MachineName));
+
+            await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
+
+            // stop command completed, need to poll for updated state
+            Task<bool> monitorTask = Task.Run(() => activity.Provisioning.WaitForStatus(activity.MachineName, activity.ServiceName, "StoppedDeallocated"));
+            // when the monitor completes, update resource status
+            Task continuation = monitorTask.ContinueWith(async (antecedent) => {
+                if (antecedent.Result) // if previous completed without timeout
+                    await _volatileStorageController.UpdateResourceState(activity.Resource.Id, ResourceState.Stopped);
+            });
         }
 
 
@@ -217,8 +216,15 @@ namespace ProvisioningJobConsole
         {
             Console.WriteLine(string.Format("Starting VM [{0}]", activity.MachineName));
             await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Start);
-            activity.Resource.State = ResourceState.Starting;
-            await activity.ResourceController.UpdateResource(activity.Resource);
+
+            // start command completed, need to poll for updated state
+            Task<bool> monitorTask = Task.Run(() => activity.Provisioning.WaitForStatus(activity.MachineName, activity.ServiceName, "ReadyRole"));
+            // when the monitor completes, update resource status
+            Task continuation = monitorTask.ContinueWith(async (antecedent) => {
+                if (antecedent.Result) // if previous completed without timeout
+                    await _volatileStorageController.UpdateResourceState(activity.Resource.Id, ResourceState.Running);
+            });
+
         }
 
         static async Task ActionCreate(ResourceActivity activity)
