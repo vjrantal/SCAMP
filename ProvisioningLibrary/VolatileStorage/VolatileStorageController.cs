@@ -165,11 +165,11 @@ namespace ProvisioningLibrary
             return activtyLog;
         }
 
-        public async Task<int> GetResourceState(string resourceId)
+        public async Task<ResourceState> GetResourceState(string resourceId)
         {
             TableOperation retrieveOperation = TableOperation.Retrieve<CurrentResourceState>(CurrentResourceState.PKey, resourceId);
             TableResult retrievedResult = await this._StateUpdateTable.ExecuteAsync(retrieveOperation);
-            return ((CurrentResourceState)retrievedResult.Result).State;
+            return (ResourceState)((CurrentResourceState)retrievedResult.Result).State;
         }
 
         public async Task UpdateResourceState(CurrentResourceState newstate)

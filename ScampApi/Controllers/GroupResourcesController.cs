@@ -131,7 +131,7 @@ namespace ScampApi.Controllers
             }
 
             ResourceAction action = WebJobController.GetAction(actionname);
-            ResourceState newState = ResourceState.None;
+            ResourceState newState = ResourceState.Unknown;
             switch (action)
             {
                 case ResourceAction.Start:
