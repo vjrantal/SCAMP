@@ -51,17 +51,21 @@ table .progress {
 }
 
 #content-header{
-    color:#D4E7EA !important;
+    color:#fff !important;
+}
+
+#content-header h3{
+  padding-top: 0px;
+    font-size: 18px;
+  margin-top: 0px;
 }
 
 #dashboard_tabs {
     background: #f8f8f8;
     -webkit-border-radius: 8px 0 0 4px;
     -moz-border-radius: 8px 0 0 4px;
+    padding: 6px;
     border-radius: 8px 8px 8px 8px;
-    margin-left: 14px;
-    margin-right: 14px;
-    width:98%;
     background-color: #ebebeb !important;
     background: url(/App/images/background-gradient.png) 0 0 repeat;
 }

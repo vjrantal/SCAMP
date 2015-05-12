@@ -32,20 +32,13 @@
 </div>
 
 <div id="content-header">
-    <h3>Resource Insights</h3>
-</div>	
+    <h3>DASHBOARD INSIGHTS</h3>
+</div>
 <div class="dashboard page-content container-fluid" id="dashboard_tabs" ng-init="populate()">
-       <div class="row">
-           <div class="col-md-4">
-               <h3 class="page-header">Dashboard</h3>
-           </div>
-           <div class="col-md-8">
-               
-           </div>
-       </div>
         <div class="row group-selection">
-            <div class="col-md-6">
-                    <div style="margin-bottom:20px">
+            <div class="col-md-7 dashboard-grid-container">
+                <div class="row">
+                    <div class="col-md-12 dashboard-grid-container" style="margin-bottom:15px">
                         Select a view:
                         <span class="btn-group" data-toggle="buttons">
                             <label class="btn btn-primary btn-xs active">
@@ -75,53 +68,57 @@
                             </ul>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 dashboard-grid-container">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>State</td>
+                                    <td>Resource</td>
+                                    <td>Type</td>
+                                    <td>Action</td>
+                                    <td>Remaining</td>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <td>Name</td>
-                                <td>State</td>
-                                <td>Resource</td>
-                                <td>Type</td>
-                                <td>Action</td>
-                                <td>Remaining</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr ng-repeat="resource in resources">
-                                <td class="text-center">{{resource.stateDescription}}</td>
-                                <td>{{resource.name}}</td>
-                                <td>{{resource.resourceTypeDesc}}</td>
-                                <td>{{resource.groupName}}</td>
-                                <td>
-                                    <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
-                                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
-                                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                            <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li ng-repeat="action in rscStateDescMapping[resource.state].allowableActions">
-                                                <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-toggle="modal" data-target="#resourceSendActionModal" data-resource-id="{{resource.id}}">{{action}}</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-{{resource.usageEscalation}}" role="progressbar" aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="100" style="width: {{resource.remaining}}%;">
-                                            {{resource.remaining}}%
+                                <tr ng-repeat="resource in resources">
+                                    <td class="text-center">{{resource.stateDescription}}</td>
+                                    <td>{{resource.name}}</td>
+                                    <td>{{resource.resourceTypeDesc}}</td>
+                                    <td>{{resource.groupName}}</td>
+                                    <td>
+                                        <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
+                                            <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
+                                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li ng-repeat="action in rscStateDescMapping[resource.state].allowableActions">
+                                                    <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-toggle="modal" data-target="#resourceSendActionModal" data-resource-id="{{resource.id}}">{{action}}</a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-{{resource.usageEscalation}}" role="progressbar" aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="100" style="width: {{resource.remaining}}%;">
+                                                {{resource.remaining}}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
              </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="group-summary">
-                    <h3 class="heading">Summary</h3>
+                    <h3>Summary</h3>
                     <ul class="summary-items">
                         <li>Summary Item <span class="summary-value">summary value</span></li>
                         <li>Summary Item <span class="summary-value">summary value</span></li>
@@ -130,7 +127,7 @@
                         <li>Summary Item <span class="summary-value">summary value</span></li>
                     </ul>
                 </div>
-
+                <!--
                 <div class="activity-list">
                     <h3 class="heading">Activities</h3>
                     <ul class="list-group">
@@ -138,7 +135,7 @@
                         <li class="list-group-item">activity item</li>
                         <li class="list-group-item">activity item</li>
                     </ul>
-                </div>
+                </div>-->
             </div>
-                </div>
+       </div>
 	</div>
