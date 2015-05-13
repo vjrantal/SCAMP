@@ -9,6 +9,8 @@ SCAMP is very much a work in progress at the moment. As such, there's a great ma
 
 As we identify isolated tasks going forward, we're going to leverage a specific GitHub issue tag which we will use on issues that we feel anyone can "jump in" to work on. So from time to time, [look for "jump in" issues][jumpin] that we'd welcome anyone to tackle.
 
+ - [Learn more about how "Jump In" issues work](http://nikcodes.com/2013/05/10/new-contributor-jump-in/) 
+
 [jumpin]: https://github.com/SimpleCloudManagerProject/SCAMP/issues?q=is%3Aopen+is%3Aissue+label%3A%22jump+in%22
 
 ## Contributing to the Project
