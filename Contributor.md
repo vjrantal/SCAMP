@@ -55,12 +55,12 @@ Some things that will increase the chance that your pull request is accepted:
 ## Reporting Issues
 Bugs, defects, typos.. these all happen. If you encounter something, we definitely want to hear about it via one of the options below:
 
-**Email us at [simplecloudmgr@outlook.com]**: Not our preferred method since only one person checks this currently. 
+**Email us at [simplecloudmgr@outlook.com][emailus]**: Not our preferred method since only one person checks this currently. 
 
 **Send a [Tweet]**: a better option as it provides more folks an opportunity to see and respond. We also like the thought of the greater transparency. If its big/important, don't be surprised if we ask you to open an issue. 
 
 **[Open an issue on GitHub]**: An incredibly valid option and one that allows us to tag issues to make them more easily searchable. It also provides a great way for us to track any code changes that are related to issues folks bring us. Thus allowing you to know when something has been fixed. 
 
-[Tweet]: (https://twitter.com/simplecloudmgr)
-[Open an issue on GitHub]: https://github.com/SimpleCloudManagerProject/SCAMP/issues/new)
+[Tweet]: https://twitter.com/simplecloudmgr
+[Open an issue on GitHub]: https://github.com/SimpleCloudManagerProject/SCAMP/issues/new
 
