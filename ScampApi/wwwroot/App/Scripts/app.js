@@ -5,6 +5,10 @@ angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap'])
     $routeProvider.when("/Home", {
         controller: "homeCtrl",
         templateUrl: "/App/Views/Home.html",
+    }).when("/settings/groupMgr", {
+        controller: "GroupManagerController",
+        templateUrl: "/App/Views/GroupManager.html",
+        requireADLogin: true
     }).when("/dashboard", {
         controller: "dashboardCtrl",
         templateUrl: "/App/Views/Dashboard.html",

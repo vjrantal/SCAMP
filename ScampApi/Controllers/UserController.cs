@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.IO;
 using Newtonsoft.Json;
+using ProvisioningLibrary;
 
 namespace ScampApi.Controllers.Controllers
 {
@@ -24,13 +25,15 @@ namespace ScampApi.Controllers.Controllers
         private readonly ILinkHelper _linkHelper;
         private readonly IResourceRepository _resourceRepository;
         private readonly IUserRepository _userRepository;
+        private static IVolatileStorageController _volatileStorageController = null;
 
-        public UserController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository)
+        public UserController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
+            _volatileStorageController = volatileStorageController;
         }
 
         // retrieves the current user
@@ -94,6 +97,18 @@ namespace ScampApi.Controllers.Controllers
                 {
                     foreach(ScampUserGroupResources resource in groupMbrship.Resources)
                     {
+                        ResourceState currentState = ResourceState.Unknown;
+                        // get resource state from volatile store
+                        // Brent - Try/Catch is temporary
+                        try
+                        {
+                            currentState = await _volatileStorageController.GetResourceState(resource.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            //TODO: log error
+                        }
+
                         ScampResourceSummary tmpSummary = new ScampResourceSummary()
                         {
                             Id = resource.Id,
@@ -104,7 +119,7 @@ namespace ScampApi.Controllers.Controllers
                             },
                             Name = resource.Name,
                             Type = resource.type,
-                            State = resource.state,
+                            State = currentState,
                             //TODO: replace with the REAL value
                             Remaining = new Random().Next(0, 100)
                         };

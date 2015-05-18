@@ -10,12 +10,9 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
 using System.IO;
 using Microsoft.AspNet.Http;
 using ScampTypes.ViewModels;
-using System.IO; 
-
 
 namespace ScampApi.Controllers
 {
@@ -29,8 +26,9 @@ namespace ScampApi.Controllers
         private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository)
+        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository, IVolatileStorageController volatileStorageController)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
@@ -39,6 +37,7 @@ namespace ScampApi.Controllers
             _groupRepository = groupRepository;
             _webJobController = webJobController;
             _subscriptionRepository = subscriptionRepository;
+            _volatileStorageController = volatileStorageController;
         }
         [HttpGet]
         public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
@@ -132,8 +131,20 @@ namespace ScampApi.Controllers
             }
 
             ResourceAction action = WebJobController.GetAction(actionname);
+            ResourceState newState = ResourceState.Unknown;
+            switch (action)
+            {
+                case ResourceAction.Start:
+                    newState = ResourceState.Starting;
+                    break;
+                case ResourceAction.Stop:
+                    newState = ResourceState.Stopping;
+                    break;
+            }
+
             if (await CanManageResource(res, action))
             {
+                await _volatileStorageController.UpdateResourceState(resourceId, newState);
                 _webJobController.SubmitActionInQueue(resourceId, action, duration);
             }
         }

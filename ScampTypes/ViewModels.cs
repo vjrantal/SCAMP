@@ -33,7 +33,7 @@ namespace ScampTypes.ViewModels
 
     public enum ResourceState
     {
-        None,       // default no known state
+        Unknown,    // default no known state
         Allocated,  // the resource can be created, but doesn't yet exist
         Starting,   // the resource is being started, if its the first time, this also means provisioning
         Running,    // the resource is running/active

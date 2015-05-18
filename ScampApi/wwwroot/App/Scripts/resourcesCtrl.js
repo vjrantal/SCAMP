@@ -17,25 +17,26 @@ angular.module('scamp')
         isNew:false
     };
 
-    $scope.getRdp = function (resource){
-        // url: GET - "api/groups/{groupId}/resources/{resourceId}/rdp"
+    $scope.getRdp = function (resource){		
+                // url: GET - "api/groups/{groupId}/resources/{resourceId}/rdp"		
+        		
+                var groupId = resource.resourceGroup.id,		
+                    resourceId = resource.id,		
+                    contentType = "application/rdp; charset=utf-8",		
+                    fileName = "service.rdp"		
+        		
+                var Fileurl = "/api/groups/" + groupId + "/resources/" + resourceId + "/rdp";		
+        		
+                console.log("Get Rdp: " + Fileurl)		
+        		
+                fileSvc.downloadFile(Fileurl, contentType, fileName).then(		
+                    function (fileName) {		
+                            console.log("File downloaded: " + fileName)		
+                        },function (error) {		
+                                console.log("Failed to download file" + error);		
+                           });		
+            }
 
-        var groupId = resource.resourceGroup.id,
-            resourceId = resource.id,
-            contentType = "application/rdp; charset=utf-8",
-            fileName = "service.rdp"
-
-        var Fileurl = "/api/groups/" + groupId + "/resources/" + resourceId + "/rdp";
-
-        console.log("Get Rdp: " + Fileurl)
-
-        fileSvc.downloadFile(Fileurl, contentType, fileName).then(
-            function (fileName) {
-                console.log("File downloaded: " + fileName)
-            },function (error) {
-                console.log("Failed to download file" + error);
-            });
-    }
     //$scope.addResource = function (resource) {
     //    var name = resource.rName,
     //        state = resource.rState,

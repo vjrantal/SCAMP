@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Microsoft.Framework.ConfigurationModel;
-
+using ScampTypes.ViewModels;
 
 namespace ProvisioningLibrary
 {
@@ -165,17 +165,27 @@ namespace ProvisioningLibrary
             return activtyLog;
         }
 
-        public async Task<int> GetResourceState(string resourceId)
+        public async Task<ResourceState> GetResourceState(string resourceId)
         {
             TableOperation retrieveOperation = TableOperation.Retrieve<CurrentResourceState>(CurrentResourceState.PKey, resourceId);
             TableResult retrievedResult = await this._StateUpdateTable.ExecuteAsync(retrieveOperation);
-            return ((CurrentResourceState)retrievedResult.Result).State;
+            return (ResourceState)((CurrentResourceState)retrievedResult.Result).State;
         }
 
         public async Task UpdateResourceState(CurrentResourceState newstate)
         {
             TableOperation insertOperation = TableOperation.InsertOrMerge(newstate);
             await this._StateUpdateTable.ExecuteAsync(insertOperation);
+        }
+
+        public async Task UpdateResourceState(string resourceId, ResourceState state)
+        {
+            CurrentResourceState newState = new CurrentResourceState()
+            {
+                ResourceId = resourceId,
+                State = (int)state
+            };
+            await UpdateResourceState(newState);
         }
     }
 }
