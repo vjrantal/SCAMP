@@ -6,32 +6,35 @@
         WebApp           // Azure Web App
     }
 
-    export enum WebAppState {
+    export enum ResourceState {
         None,       // default no known state
-        Allocated,  // the vm can be created, but doesn't yet exist
-        Starting,   // the vm is being started, if its the first time, this also means provisioning
-        Running,    // the vm is running/active
-        Stopping,   // the vm is being stopped
-        Stopped,    // the vm is stopped, but may still be incuring charges
-        Suspended,  // the vm has exceeded its usage quota
-        Deleting    // the vm is being deleted, when complete it will be in an allocated state
+        Allocated,  // the resource can be created, but doesn't yet exist
+        Starting,   // the resource is being started, if its the first time, this also means provisioning
+        Running,    // the resource is running/active
+        Stopping,   // the resource is being stopped
+        Stopped,    // the resource is stopped, but may still be incuring charges
+        Suspended,  // the resource has exceeded its usage quota
+        Deleting    // the resource is being deleted, when complete it will be in an allocated state
     }
 
-    export enum VirtualMachineState {
-        None,       // default no known state
-        Allocated,  // the vm can be created, but doesn't yet exist
-        Starting,   // the vm is being started, if its the first time, this also means provisioning
-        Running,    // the vm is running/active
-        Stopping,   // the vm is being stopped
-        Stopped,    // the vm is stopped, but may still be incuring charges
-        Suspended,  // the vm has exceeded its usage quota
-        Deleting    // the vm is being deleted, when complete it will be in an allocated state
+    export enum RoleType {
+        None,
+        User,
+        GroupManager,
+        GroupAdmin,
+        SystemAdmin
     }
 
     export enum VirtualMachineAction {
         None,
-        Start,
         Stop,
+        Start
+    }
+
+    export enum ResourceAction {
+        Undefined,
+        Stop,
+        Start,
         Create,
         Delete
     }
@@ -45,11 +48,7 @@
         Name: string;
     }
 
-    export class AuthorizationGroupId extends RefId { }
-
-    export class AllocationGroupId extends RefId { }
-
-    export class ResourceGroupId extends RefId { }
+    export class GroupId extends RefId { }
 
     export class ResourceId extends RefId { }
 
@@ -59,63 +58,48 @@
 
     export class AzureSettingsId extends RefId { }
 
-    export class ScampSettingsId extends RefId { }
-
-    export class VirtualMachineAccessId extends RefId { }
-
-    export class ResourceDataId extends RefId { }
-
-    export interface IUnitAllocation {
-        Allocation: number;
-    }
-
-    export interface IAuthorizations {
-        Authorizations: AuthorizationGroupId[];
-    }
-
-    export interface IAllocationGroup {
-        AllocationGroup: AllocationGroupId;
-    }
-
     export class User extends Identity {
         Email: string;
         DisplayName: string;
     }
 
+    export class ResourceUnits {
+        Group: GroupId;
+        User: UserId;
+        Used: number;
+    }
+
     export class Resource extends Identity {
-        Owner: UserId;
         Type: ResourceType;
-        Group: ResourceGroupId;
+        Owner: UserId;
+        Group: GroupId;
         Template: TemplateId;
-        Data: ResourceDataId;
-    }
-
-    // TODO: move this into secret store
-    export class VirtualMachineAccess extends Identity {
-        Username: string;
-        Password: string;
-        RdpPort: number;
-    }
-
-    export class ResourceData extends Identity {
-        UnitsUsed: number;
-    }
-
-    export class WebAppData extends ResourceData {
-        State: WebAppState;
-    }
-
-    export class VirtualMachineData extends ResourceData {
-        ServiceName: string;
-        MachineName: string;
-        State: VirtualMachineState;
-        AccessData: VirtualMachineAccessId;
     }
 
     export class Template extends Identity {
         Content: string;
         Settings: AzureSettingsId;
-        UnitRate: number;
+    }
+
+    export class UnitsData {
+        Allocated: number;
+        Used: number;
+    }
+
+    export class GroupUser extends UnitsData {
+        User: UserId;
+        Role: RoleType;
+    }
+
+    export class GroupAdmin extends UnitsData {
+        User: UserId;
+    }
+
+    export class Group extends Identity {
+        Templates: TemplateId[];
+        Owner: UserId;
+        Users: GroupUser[];
+        Units: UnitsData;
     }
 
     export class AzureSettings extends Identity {
@@ -130,29 +114,13 @@
         AdminPassword: string; //TODO: move to keyvault
     }
 
-    export class AuthorizationGroup extends Identity {
-        Users: UserId[];
+    export class UserRole {
+        User: User;
+        Role: RoleType;
     }
 
-    export class UserAllocation implements IUnitAllocation {
-        User: UserId;
-        Allocation: number;
-    }
-
-    export class AllocationGroup extends Identity {
-        Allocations: UserAllocation[];
-    }
-
-    export class ResourceGroup extends Identity implements IUnitAllocation, IAuthorizations {
-        Owner: UserId;
-        Allocation: number;
-        Templates: TemplateId[];
-        Authorizations: AuthorizationGroupId[];
-        AllocationGroup: AllocationGroupId;
-    }
-
-    export class ScampSettings extends Identity implements IUnitAllocation, IAuthorizations {
-        Authorizations: AuthorizationGroupId[];
-        Allocation: number;
+    export class ScampSettings extends Identity {
+        GroupAdmins: GroupAdmin[];
+        Users: UserRole[];
     }
 }
