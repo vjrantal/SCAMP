@@ -10,8 +10,12 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
+using ScampApi.ViewModels;
+using System.IO;
+using Microsoft.AspNet.Http;
 using ScampTypes.ViewModels;
 using System.IO; 
+
 
 namespace ScampApi.Controllers
 {
@@ -102,11 +106,14 @@ namespace ScampApi.Controllers
                 //TODO return error
             }
 
-           // Response.ContentType = "application/rdp; charset=utf-8";
-            Response.Headers.Add("Content-Disposition", new string[] { string.Format("attachment; filename={0}.rdp", res.CloudServiceName) });
-
+          
             ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
+
+
+            //Response.ContentType = "application/x-rdp";
+            Response.Headers.Add("content-disposition", new string[] { "attachment; filename =" + res.CloudServiceName + ".rdp" });
+
             byte[] bytes = await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
             var encoding = new System.Text.UTF8Encoding();
             var sRes = encoding.GetString(bytes);
