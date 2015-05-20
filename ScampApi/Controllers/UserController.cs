@@ -15,9 +15,7 @@ using ProvisioningLibrary;
 
 namespace ScampApi.Controllers.Controllers
 {
-
-
-    [Authorize]
+    //[Authorize]
     [Route("api/user")]
     public class UserController : Controller
     {
@@ -59,79 +57,99 @@ namespace ScampApi.Controllers.Controllers
             return user;
         }
 
-        [HttpGet("{userId}", Name = "Users.GetSingle")]
-        public async Task<User> Get(string userId)
+        /// <summary>
+        /// Gets data on a specific user
+        /// </summary>
+        /// <param name="userId">Id of user being requested</param>
+        /// <param name="view">type of view of the data to be returned</param>
+        /// <returns>populated view object</returns>
+        [HttpGet("{userId}/usage/{view}")]
+        public async Task<IActionResult> Get(string userId, string view)
         {
-            // fetch user
-            ScampUser tmpUser = await _userRepository.GetUserbyId(userId);
+            //TODO: authorization check
 
-            //TODO what if user isn't found?
+            // get requested user document
+            ScampUser userDoc = await _userRepository.GetUserbyId(userId);
+            if (userDoc == null)
+                return HttpNotFound();
 
-            return new User
+            if (view == "summary")
             {
-                Id = tmpUser.Id,
-                Name = tmpUser.Name,
-                Email = tmpUser.Email
-            };
-        }
-
-
-        // get a list of the user's resources
-        // GET /api/user/{userid}/resources/
-        [HttpGet("{userId}/resources", Name = "User.GetResourcesForUser")]
-        public async Task<List<ScampResourceSummary>> GetResourcesforUser(string userId)
-        {
-            List<ScampResourceSummary> resourceList = new List<ScampResourceSummary>();
-            ScampUser currentUser = await _securityHelper.GetCurrentUser();
-
-            // request must be systemAdmin, or the requesting user
-            if (!currentUser.IsSystemAdmin && currentUser.Id != userId)
-                throw new AccessViolationException("Access Denied");
-
-            // execute query
-            ScampUser user = await _userRepository.GetUserbyId(userId);
-
-            if (user != null)
-            {
-                foreach(ScampUserGroupMbrship groupMbrship in user.GroupMembership)
+                UserUsageSummary tmpUserSummary = new UserUsageSummary()
                 {
-                    foreach(ScampUserGroupResources resource in groupMbrship.Resources)
-                    {
-                        ResourceState currentState = ResourceState.Unknown;
-                        // get resource state from volatile store
-                        // Brent - Try/Catch is temporary
-                        try
-                        {
-                            currentState = await _volatileStorageController.GetResourceState(resource.Id);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Exception source: {0}", ex.Source);
-                        }
+                    totUnitsAllocated = new Random().NextDouble() * (2000 - 100) + 100,
+                    unitsBudgeted = new Random().NextDouble() * (2000 - 100) + 100,
+                    totUnitsUsed = new Random().NextDouble() * (2000 - 100) + 100,
+                    totGroupMemberships = userDoc.GroupMembership.Count()
+                };
 
-                        ScampResourceSummary tmpSummary = new ScampResourceSummary()
-                        {
-                            Id = resource.Id,
-                            ResourceGroup = new ScampResourceGroupReference()
-                            {
-                                Id = groupMbrship.Id,
-                                Name = groupMbrship.Name
-                            },
-                            Name = resource.Name,
-                            Type = resource.type,
-                            State = currentState,
-                            //TODO: replace with the REAL value
-                            Remaining = new Random().Next(0, 100)
-                        };
-
-                        resourceList.Add(tmpSummary);
-                    }
-                }
+                return new ObjectResult(tmpUserSummary) { StatusCode = 200 };
             }
-            //TODO: return "not found" 
+            else
+            {
+                return new ObjectResult(string.Format("view '{0}' not supported", view)) { StatusCode = 400 };
+            }
 
-            return resourceList;
+            return new ObjectResult(null) { StatusCode = 200 };
+
         }
+
+        //// get a list of the user's resources
+        //// GET /api/user/{userid}/resources/
+        //[HttpGet("{userId}/resources", Name = "User.GetResourcesForUser")]
+        //public async Task<List<ScampResourceSummary>> GetResourcesforUser(string userId)
+        //{
+        //    List<ScampResourceSummary> resourceList = new List<ScampResourceSummary>();
+        //    ScampUser currentUser = await _securityHelper.GetCurrentUser();
+
+        //    // request must be systemAdmin, or the requesting user
+        //    if (!currentUser.IsSystemAdmin && currentUser.Id != userId)
+        //        throw new AccessViolationException("Access Denied");
+
+        //    // execute query
+        //    ScampUser user = await _userRepository.GetUserbyId(userId);
+
+        //    if (user != null)
+        //    {
+        //        foreach(ScampUserGroupMbrship groupMbrship in user.GroupMembership)
+        //        {
+        //            foreach(ScampUserGroupResources resource in groupMbrship.Resources)
+        //            {
+        //                ResourceState currentState = ResourceState.Unknown;
+        //                // get resource state from volatile store
+        //                // Brent - Try/Catch is temporary
+        //                try
+        //                {
+        //                    currentState = await _volatileStorageController.GetResourceState(resource.Id);
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Console.WriteLine("Exception source: {0}", ex.Source);
+        //                }
+
+        //                ScampResourceSummary tmpSummary = new ScampResourceSummary()
+        //                {
+        //                    Id = resource.Id,
+        //                    //ResourceGroup = new ScampResourceGroupReference()
+        //                    //{
+        //                    //    Id = groupMbrship.Id,
+        //                    //    Name = groupMbrship.Name
+        //                    //},
+        //                    Name = resource.Name,
+        //                    Type = resource.type,
+        //                    State = currentState,
+        //                    //TODO: replace with the REAL value
+        //                    //Remaining = new Random().Next(0, 100)
+        //                };
+
+        //                resourceList.Add(tmpSummary);
+        //            }
+        //        }
+        //    }
+        //    //TODO: return "not found" 
+
+        //    return resourceList;
+        //}
 
 
         [HttpGet("byname/{searchparm}", Name = "Users.SearchByName")]
@@ -178,7 +196,7 @@ namespace ScampApi.Controllers.Controllers
 		{
 			return new UserSummary
 			{
-				UserId = docDbUSer.Id,
+				Id = docDbUSer.Id,
 				Name = docDbUSer.Name
 			};
 		}

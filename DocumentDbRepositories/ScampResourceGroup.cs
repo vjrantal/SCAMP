@@ -25,6 +25,7 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "group"; } }
 	}
+
     /// <summary>
     /// This includes resources for the group and is used for querying.
     /// </summary>
@@ -38,8 +39,6 @@ namespace DocumentDbRepositories
         public List<ScampUserReference> Admins { get; set; }
         [JsonProperty(PropertyName = "members")]
         public List<ScampUserReference> Members { get; set; }
-        [JsonProperty(PropertyName = "resources")]
-        public List<ScampResource> Resources { get; set; }
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "group"; } }

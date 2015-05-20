@@ -51,7 +51,7 @@ namespace DocumentDbRepositories.Implementation
             if (group == null)
                 return null;
 
-            group.Resources = resourcesTask.Result;
+            //group.Resources = resourcesTask.Result;
             return group;
         }
 
