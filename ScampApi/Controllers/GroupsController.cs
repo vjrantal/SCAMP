@@ -29,6 +29,12 @@ namespace ScampApi.Controllers
             _securityHelper = securityHelper;
         }
 
+        /// <summary>
+        /// returns the specified view of a given user
+        /// </summary>
+        /// <param name="view"> view to be returned (either "user" or "admin"</param>
+        /// <param name="userId">Id of user to get view for</param>
+        /// <returns></returns>
         [HttpGet("{view}/{userId}", Name = "Groups.GetListForUser")]
         public async Task<IActionResult> Get(string view, string userId)
         {
@@ -76,6 +82,35 @@ namespace ScampApi.Controllers
                 // return document
                 return new ObjectResult(rtnView) { StatusCode = 200 };
             }
+            //else if (view == "test")
+            //{
+            //    List<ScampTypes.Views.GroupSummaryView> rtnView = new List<ScampTypes.Views.GroupSummaryView>();
+
+            //    foreach (ScampUserGroupMbrship group in userDoc.GroupMembership)
+            //    {
+
+            //        ScampTypes.Views.GroupSummaryView tmpGroupRef = new ScampTypes.Views.GroupSummaryView()
+            //        {
+            //            Group = new ScampTypes.Common.Group()
+            //            {
+            //                Id = group.Id,
+            //                Name = group.Name,
+            //                Templates = new List<ScampTypes.Common.TemplateId>(),
+            //                Budget = new Random().NextDouble() * (2000 - 100) + 100,
+            //                DefaultBudget = new Random().NextDouble() * (2000 - 100) + 100,
+            //                Allocations = new List<ScampTypes.Common.UserAllocation>()
+            //            },
+            //            Budget = new Random().NextDouble() * (2000 - 100) + 100,
+            //            Usage = new Random().NextDouble() * (2000 - 100) + 100,
+            //            Remaining = new Random().NextDouble() * (2000 - 100) + 100
+            //        };
+
+
+            //        rtnView.Add(tmpGroupRef);
+            //    }
+            //    // return document
+            //    return new ObjectResult(rtnView) { StatusCode = 200 };
+            //}
             else
             {
                 //TODO: invalid argument "view"
@@ -192,6 +227,7 @@ namespace ScampApi.Controllers
             //TODO Who else can create a group? Do we need a flag on profile?
             return true;
         }
+
         private async Task<bool> CurrentUserCanViewGroup(ScampResourceGroupWithResources group)
         {
             var currentUser = await _securityHelper.GetCurrentUser();
@@ -200,6 +236,7 @@ namespace ScampApi.Controllers
                 || group.Members.Any(u => u.Id == currentUser.Id); // group member
         }
 
+        #region Mapping Functions
         private GroupSummary MapToSummary(ScampResourceGroup docDbGroup)
         {
             return new GroupSummary
@@ -209,6 +246,7 @@ namespace ScampApi.Controllers
                 Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: docDbGroup.Id) } }
             };
         }
+
         private Group Map(ScampResourceGroupWithResources docDbGroup)
         {
             return new Group
@@ -246,5 +284,7 @@ namespace ScampApi.Controllers
                 //}
             };
         }
+
+        #endregion
     }
 }

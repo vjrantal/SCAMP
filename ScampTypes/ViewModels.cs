@@ -9,6 +9,14 @@ namespace ScampTypes.ViewModels
     public string Href { get; set; }
     }
 
+    public sealed class UserGroupSummary
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public double totUnitsUsed { get; set; }
+        public double totUnitsRemaining { get; set; }
+    }
+
     public sealed class UserSummary
     {
     public string UserId { get; set; }
