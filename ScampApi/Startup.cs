@@ -59,6 +59,7 @@ namespace ScampApi
 
             services.AddDocumentDbRepositories(Configuration);
             services.AddKeyVaultRepositories(Configuration);
+            services.AddCacheProvider(Configuration);
         }
 
         // Configure is called after ConfigureServices is called.
