@@ -112,16 +112,16 @@ namespace ScampApi.Controllers.Controllers
                         ScampResourceSummary tmpSummary = new ScampResourceSummary()
                         {
                             Id = resource.Id,
-                            ResourceGroup = new ScampResourceGroupReference()
-                            {
-                                Id = groupMbrship.Id,
-                                Name = groupMbrship.Name
-                            },
+                            //ResourceGroup = new ScampResourceGroupReference()
+                            //{
+                            //    Id = groupMbrship.Id,
+                            //    Name = groupMbrship.Name
+                            //},
                             Name = resource.Name,
                             Type = resource.type,
                             State = currentState,
                             //TODO: replace with the REAL value
-                            Remaining = new Random().Next(0, 100)
+                            //Remaining = new Random().Next(0, 100)
                         };
 
                         resourceList.Add(tmpSummary);

@@ -1,4 +1,4 @@
-﻿
+
 Front End Module: Resource Retrieval for Dashboard
 
 Use Case 1: Get Azure Group Listings
@@ -30,7 +30,7 @@ Front-End Module Client: Dashboard
 Use Case 2. Group User Listing
 Front-End Module Client: Dashboard
  a. Get list of users for a specified group
-    path: /api/groups/:groupId/users/
+    path: /api/group/:groupId/users/
 	action: GET
 	Expected Response : {
 	   users: [{
@@ -43,15 +43,15 @@ Front-End Module Client: Dashboard
 
 Use Case 3: Get user/student resources
 Front-End Module Client: Dashboard
-service path: /api/resources/group/:groupId/user/:userId
+service path: /api/group/:groupId/user/:userId/resources/
 action: GET
 Expected Response : {
    resources: [{
-            resourceName: {string},
-            resourceId: {string},
-            state: {string},
-            type: {string},
-            unitsUsed: {number}
+            Name: {string},
+            Id: {string},
+            state: {int},
+            type: {int},
+            totUnitsUsed: {number}
    }]
 }
 

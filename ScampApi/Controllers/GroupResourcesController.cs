@@ -39,27 +39,28 @@ namespace ScampApi.Controllers
             _subscriptionRepository = subscriptionRepository;
             _volatileStorageController = volatileStorageController;
         }
-        [HttpGet]
-        public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
-        {
-            //LINKED TO UI
-            var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
-            var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
-            var rnd = new Random();
-            ressummary.ForEach(summary =>
-            {
-                //summary.Links.Add(new Link
-                //{
-                //    Rel = "resource",
-                //    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
-                //});
-                summary.Remaining = rnd.Next(0, 100);
-            });
+        //[HttpGet]
+        //public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
+        //{
+        //    //LINKED TO UI
+        //    var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
-            return ressummary;
+        //    var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
+        //    var rnd = new Random();
+        //    ressummary.ForEach(summary =>
+        //    {
+        //        //summary.Links.Add(new Link
+        //        //{
+        //        //    Rel = "resource",
+        //        //    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
+        //        //});
+        //        summary.Remaining = rnd.Next(0, 100);
+        //    });
+
+        //    return ressummary;
  
-        }
+        //}
 
         [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]
         public GroupResource Get(string groupId, string resourceId)

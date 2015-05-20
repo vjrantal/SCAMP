@@ -62,8 +62,6 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "type")]
         public ResourceType type { get; set; }
 
-        [JsonProperty(PropertyName = "state")]
-        public ResourceState state { get; set; }
     }
 
     public class ScampUserReference
@@ -72,6 +70,8 @@ namespace DocumentDbRepositories
         public string Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "admins")]
+        public List<ScampResourceReference> Resources { get; set; }
 
         public static implicit operator ScampUserReference(ScampUser user)
         {

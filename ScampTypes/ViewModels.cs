@@ -72,12 +72,11 @@ namespace ScampTypes.ViewModels
 
     public sealed class ScampResourceSummary
     {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public ScampResourceGroupReference ResourceGroup { get; set; }
-    public ResourceType Type { get; set; }
-    public ResourceState State { get; set; }
-    public int Remaining { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public ResourceType Type { get; set; }
+        public ResourceState State { get; set; }
+        public double totUnitsUsed { get; set; }
     }
 
     [Serializable]

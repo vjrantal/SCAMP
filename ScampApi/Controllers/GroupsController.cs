@@ -16,14 +16,12 @@ namespace ScampApi.Controllers
     [Route("api/groups")]
     public class GroupsController : Controller
     {
-        private readonly ILinkHelper _linkHelper;
         private readonly IGroupRepository _groupRepository;
         private readonly IUserRepository _userRepository;
         private readonly ISecurityHelper _securityHelper;
 
-        public GroupsController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository)
+        public GroupsController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository)
         {
-            _linkHelper = linkHelper;
             _groupRepository = groupRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
@@ -35,16 +33,18 @@ namespace ScampApi.Controllers
         /// <param name="view"> view to be returned (either "user" or "admin"</param>
         /// <param name="userId">Id of user to get view for</param>
         /// <returns></returns>
-        [HttpGet("{view}/{userId}", Name = "Groups.GetListForUser")]
+        [HttpGet("{view}/{userId}")]    
         public async Task<IActionResult> Get(string view, string userId)
         {
-            //TODO: add in group admin authorization check
+            //TODO: authorization check
 
-            // get current user document
+            // get requested user document
             ScampUser userDoc = await _securityHelper.GetUserById(userId);
+            if (userDoc == null)
+                return HttpNotFound();
 
             // build return view
-            if (view == "admin")
+            if (view == "admin") // do admin view
             {
                 List<ScampAdminGroupReference> rtnView = new List<ScampAdminGroupReference>();
 
@@ -63,7 +63,7 @@ namespace ScampApi.Controllers
 
                 return new ObjectResult(rtnView) { StatusCode = 200 };
             }
-            else if (view == "user")
+            else if (view == "user") // do user view
             {
                 List<ScampUserGroupReference> rtnView = new List<ScampUserGroupReference>();
 
@@ -82,35 +82,6 @@ namespace ScampApi.Controllers
                 // return document
                 return new ObjectResult(rtnView) { StatusCode = 200 };
             }
-            //else if (view == "test")
-            //{
-            //    List<ScampTypes.Views.GroupSummaryView> rtnView = new List<ScampTypes.Views.GroupSummaryView>();
-
-            //    foreach (ScampUserGroupMbrship group in userDoc.GroupMembership)
-            //    {
-
-            //        ScampTypes.Views.GroupSummaryView tmpGroupRef = new ScampTypes.Views.GroupSummaryView()
-            //        {
-            //            Group = new ScampTypes.Common.Group()
-            //            {
-            //                Id = group.Id,
-            //                Name = group.Name,
-            //                Templates = new List<ScampTypes.Common.TemplateId>(),
-            //                Budget = new Random().NextDouble() * (2000 - 100) + 100,
-            //                DefaultBudget = new Random().NextDouble() * (2000 - 100) + 100,
-            //                Allocations = new List<ScampTypes.Common.UserAllocation>()
-            //            },
-            //            Budget = new Random().NextDouble() * (2000 - 100) + 100,
-            //            Usage = new Random().NextDouble() * (2000 - 100) + 100,
-            //            Remaining = new Random().NextDouble() * (2000 - 100) + 100
-            //        };
-
-
-            //        rtnView.Add(tmpGroupRef);
-            //    }
-            //    // return document
-            //    return new ObjectResult(rtnView) { StatusCode = 200 };
-            //}
             else
             {
                 //TODO: invalid argument "view"
@@ -151,8 +122,6 @@ namespace ScampApi.Controllers
             return new ObjectResult(Map(group)) { StatusCode = 200 };
         }
 
-
-        // TODO: check user is authorized
         [HttpPost]
         public async Task<GroupSummary> Post([FromBody]Group userInputGroup)
         {
@@ -179,7 +148,6 @@ namespace ScampApi.Controllers
 
         }
 
-        // TODO: check user is authorized
         [HttpPut("{groupId}")]
         public async Task<Group> Put(string groupId, [FromBody]Group value)
         {
@@ -211,14 +179,12 @@ namespace ScampApi.Controllers
             return null;
         }
 
-        // TODO: check user is authorized
         [HttpDelete("{groupId}")]
         public void Delete(int groupId)
         {
             // TODO implement deleting a group
             throw new NotImplementedException();
         }
-
 
         private async Task<bool> CurrentUserCanCreateGroup()
         {
@@ -243,7 +209,6 @@ namespace ScampApi.Controllers
             {
                 Id = docDbGroup.Id,
                 Name = docDbGroup.Name,
-                Links = { new Link { Rel = "group", Href = _linkHelper.Group(groupId: docDbGroup.Id) } }
             };
         }
 
@@ -255,8 +220,7 @@ namespace ScampApi.Controllers
                 Name = docDbGroup.Name,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
                 Members = docDbGroup.Members?.Select(MapToSummary).ToList(),
-                Admins = docDbGroup.Admins?.Select(MapToSummary).ToList(),
-                Resources = docDbGroup.Resources?.Select(MapToSummary).ToList()
+                Admins = docDbGroup.Admins?.Select(MapToSummary).ToList()
             };
         }
         private UserSummary MapToSummary(ScampUserReference docDbUser)
@@ -265,23 +229,6 @@ namespace ScampApi.Controllers
             {
                 UserId = docDbUser.Id,
                 Name = docDbUser.Name,
-                Links =
-                {
-                    new Link { Rel = "user", Href= _linkHelper.User(docDbUser.Id) }
-                }
-            };
-        }
-        private ScampResourceSummary MapToSummary(ScampResource docDbResource)
-        {
-            return new ScampResourceSummary
-            {
-                ResourceGroup = new ScampResourceGroupReference() { Id = docDbResource.ResourceGroup.Id },
-                Id = docDbResource.Id,
-                Name = docDbResource.Name,
-                //Links =
-                //{
-                //	new Link {Rel = "resource", Href = _linkHelper.GroupResource(docDbResource.ResourceGroup.Id, docDbResource.Id) }
-                //}
             };
         }
 
