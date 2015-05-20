@@ -11,8 +11,8 @@ namespace ProvisioningLibrary
 {
     public interface ICacheProvider 
     {
-        Task<User> GetUserView(string userId);
+        Task<User> GetUser(string userId);
 
-        Task SetUserView(User user);
+        Task SetUser(User userDoc);
     }
 }

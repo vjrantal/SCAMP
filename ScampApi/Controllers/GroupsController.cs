@@ -12,7 +12,7 @@ using ScampTypes.ViewModels;
 
 namespace ScampApi.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/groups")]
     public class GroupsController : Controller
     {
@@ -28,6 +28,62 @@ namespace ScampApi.Controllers
             _userRepository = userRepository;
             _securityHelper = securityHelper;
         }
+
+        [HttpGet("{view}/{userId}", Name = "Groups.GetListForUser")]
+        public async Task<IActionResult> Get(string view, string userId)
+        {
+            //TODO: add in group admin authorization check
+
+            // get current user document
+            ScampUser userDoc = await _securityHelper.GetUserById(userId);
+
+            // build return view
+            if (view == "admin")
+            {
+                List<ScampAdminGroupReference> rtnView = new List<ScampAdminGroupReference>();
+
+                foreach (ScampUserGroupMbrship group in userDoc.GroupMembership)
+                {
+                    ScampAdminGroupReference tmpGroupRef = new ScampAdminGroupReference()
+                    {
+                        Id = group.Id,
+                        Name = group.Name,
+                        totUnitsUsed = new Random().NextDouble() * (2000 - 100) + 100,
+                        totUnitsAllocated = new Random().NextDouble() * (2000 - 100) + 100,
+                        totUnitsBudgeted = new Random().NextDouble() * (2000 - 100) + 100
+                    };
+                    rtnView.Add(tmpGroupRef);
+                }
+
+                return new ObjectResult(rtnView) { StatusCode = 200 };
+            }
+            else if (view == "user")
+            {
+                List<ScampUserGroupReference> rtnView = new List<ScampUserGroupReference>();
+
+                foreach(ScampUserGroupMbrship group in userDoc.GroupMembership)
+                {
+                    ScampUserGroupReference tmpGroupRef = new ScampUserGroupReference()
+                    {
+                        Id = group.Id,
+                        Name = group.Name,
+                        totUnitsUsedByUser = new Random().NextDouble() * (2000 - 100) + 100,
+                        totUnitsRemainingForUser = new Random().NextDouble() * (2000 - 100) + 100
+                    };
+                    rtnView.Add(tmpGroupRef);
+                }
+
+                // return document
+                return new ObjectResult(rtnView) { StatusCode = 200 };
+            }
+            else
+            {
+                //TODO: invalid argument "view"
+            }
+
+            return new ObjectResult(null) { StatusCode = 200 };
+        }
+
         [HttpGet(Name = "Groups.GetAll")]
         public async Task<IEnumerable<GroupSummary>> Get()
         {

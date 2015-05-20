@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Microsoft.Framework.ConfigurationModel;
-using ScampTypes.ViewModels;
+using ScampTypes.ViewModels; 
 using StackExchange.Redis;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -18,7 +18,7 @@ namespace ProvisioningLibrary
 {
     /// <summary>
     /// A cache provider that implements/wraps the hosted Redis cache service provied by Azure
-    ///     This implementation contains necessary methods to add/remove various API "view" objects 
+    ///     This implementation contains necessary methods to add/remove various data store 
     /// </summary>
     public class CacheProvider : ICacheProvider
     {
@@ -106,7 +106,7 @@ namespace ProvisioningLibrary
         /// </summary>
         /// <param name="userId">Id of the user view to be retrieved</param>
         /// <returns></returns>
-        public async Task<User> GetUserView(string userId)
+        public async Task<User> GetUser(string userId)
         {
             return Deserialize<User>(await _cache.StringGetAsync(userId));
         }
@@ -116,10 +116,17 @@ namespace ProvisioningLibrary
         /// </summary>
         /// <param name="user">the user view object to be inserted</param>
         /// <returns></returns>
-        public async Task SetUserView(User user)
+        public async Task SetUser(User userDoc)
         {
-            await _cache.StringSetAsync(user.Id, Serialize(user));
-
+            try
+            {
+                await _cache.StringSetAsync(userDoc.Id, userDoc.ToString());
+            }
+            catch (Exception ex)
+            {
+                //TODO: log issue
+                string tmp = ex.Message; 
+            }
         }
 
     }
