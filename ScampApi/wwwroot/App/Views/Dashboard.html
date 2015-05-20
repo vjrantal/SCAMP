@@ -13,7 +13,7 @@
                     <div class="row" ng-show="resourceSave.newStateDesc==='Start'">
                         <div class="col-md-12" style="padding-top: 10px;">
                             The duration for this resource will be set to
-                            <select ng-model="resourceSave.duration" class="form-control smallInputSelect" style="width: 60px!important; height: 24px!important; font-size: 10px!important; display: inline!important;" ng-model="resourceSave.duration">
+                            <select ng-model="resourceSave.duration" class="form-control smallInputSelect" style="width: 60px!important; height: 24px!important; font-size: 10px!important; display: inline!important;">
                                 <option value="2">2</option>
                                 <option value="4">4</option>
                                 <option value="6">6</option>
@@ -32,110 +32,162 @@
 </div>
 
 <div id="content-header">
-    <h3>DASHBOARD INSIGHTS</h3>
+    <h2>Dashboard Insights</h2>
+    &nbsp;&nbsp;&nbsp;Select a view:
+    <span class="btn-group" data-toggle="buttons">
+        <label class="btn btn-primary btn-xs active">
+            <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Admin
+        </label>
+        <label class="btn btn-primary btn-xs">
+            <input type="radio" name="options" id="option2" autocomplete="off"> Student
+        </label>
+    </span>
 </div>
 <div class="dashboard page-content container-fluid" id="dashboard_tabs" ng-init="populate()">
         <div class="row group-selection">
-            <div class="col-md-7 dashboard-grid-container">
-                <div class="row">
-                    <div class="col-md-12 dashboard-grid-container" style="margin-bottom:15px">
-                        Select a view:
-                        <span class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary btn-xs active">
-                                <input type="radio" name="options" id="option1" autocomplete="off" checked> Admin
-                            </label>
-                            <label class="btn btn-primary btn-xs">
-                                <input type="radio" name="options" id="option2" autocomplete="off"> Student
-                            </label>
-                        </span>
-                        <span style="display: inline-block;margin-left: 15px;">Select a group to manage:</span>
-                        <div class="btn-group action-cell" style="min-width:150px;">
-                            <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">Select Group</button>
-                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a>Group 1</a>
-                                </li>
-                                <li>
-                                    <a>Group 2</a>
-                                </li>
-                                <li>
-                                    <a>Group 3</a>
-                                </li>
-                            </ul>
+            <div class="col-md-8 dashboard-grid-container">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Azure Resource Groups</h3>
+                    </div>
+                    <div class="row">
+                            <div class="col-md-3 dashboard-side-div">
+                                <div class="list-group">
+                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item active">
+                                        <div class="row">
+                                            <div class="col-md-3 group-item-icon">
+                                                <i class="fa fa-users"></i>
+                                            </div>
+                                            <div class="col-md-9 group-item-status">
+                                                <div>CS 101</div>
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 2%;">
+                                                        2%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item">
+                                        <div class="row">
+                                            <div class="col-md-3 group-item-icon">
+                                                <i class="fa fa-users"></i>
+                                            </div>
+                                            <div class="col-md-9 group-item-status">
+                                                <div>Advanced Data Struc..</div>
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 56%;">
+                                                        56%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item">
+                                        <div class="row">
+                                            <div class="col-md-3 group-item-icon">
+                                                <i class="fa fa-users"></i>
+                                            </div>
+                                            <div class="col-md-9 group-item-status">
+                                                <div>Web Engineering</div>
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 22%;">
+                                                        22%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item">
+                                        <div class="row">
+                                            <div class="col-md-3 group-item-icon">
+                                                <i class="fa fa-users"></i>
+                                            </div>
+                                            <div class="col-md-9 group-item-status">
+                                                <div>Intermediate Java</div>
+                                                <div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 24%;">
+                                                        24%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-8 dashboard-grid-column">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>State</td>
+                                            <td>Resource</td>
+                                            <td>Type</td>
+                                            <td>Action</td>
+                                            <td>Remaining</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ngRepeat: resource in resources -->
+                                        <tr ng-repeat="resource in resources">
+                                            <td class="text-center">{{resource.name}}</td>
+                                            <td>{{resource.name}}</td>
+                                            <td>{{resource.resourceTypeDesc}}</td>
+                                            <td>{{resource.groupName}}</td>
+                                            <td>
+                                                <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
+                                                    <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
+                                                    <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="caret"></span>
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li ng-repeat="action in rscStateDescMapping[resource.state].allowableActions">
+                                                            <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-toggle="modal" data-target="#resourceSendActionModal" data-resource-id="{{resource.id}}">{{action}}</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-bar-{{resource.usageEscalation}}" role="progressbar" aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="100" style="width: {{resource.remaining}}%;">
+                                                        {{resource.remaining}}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-cubes"></i>&nbsp;Summary</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <span class="badge">5 Groups</span>
+                                <i class="fa fa-fw fa-calendar"></i>Resource Groups
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <span class="badge">10% Remaining</span>
+                                <i class="fa fa-fw fa-comment"></i>Remaining Monitor
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <span class="badge">505 Units</span>
+                                <i class="fa fa-fw fa-truck"></i>Total Resources being used
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <span class="badge">1000 Units</span>
+                                <i class="fa fa-fw fa-money"></i>Total Budget
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 dashboard-grid-container">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>State</td>
-                                    <td>Resource</td>
-                                    <td>Type</td>
-                                    <td>Action</td>
-                                    <td>Remaining</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <tr ng-repeat="resource in resources">
-                                    <td class="text-center">{{resource.stateDescription}}</td>
-                                    <td>{{resource.name}}</td>
-                                    <td>{{resource.resourceTypeDesc}}</td>
-                                    <td>{{resource.groupName}}</td>
-                                    <td>
-                                        <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
-                                            <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
-                                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                <span class="caret"></span>
-                                                <span class="sr-only">Toggle Dropdown</span>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li ng-repeat="action in rscStateDescMapping[resource.state].allowableActions">
-                                                    <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-toggle="modal" data-target="#resourceSendActionModal" data-resource-id="{{resource.id}}">{{action}}</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-{{resource.usageEscalation}}" role="progressbar" aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="100" style="width: {{resource.remaining}}%;">
-                                                {{resource.remaining}}%
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-             </div>
-            <div class="col-md-5">
-                <div class="group-summary">
-                    <h3>Summary</h3>
-                    <ul class="summary-items">
-                        <li>Summary Item <span class="summary-value">summary value</span></li>
-                        <li>Summary Item <span class="summary-value">summary value</span></li>
-                        <li>Summary Item <span class="summary-value">summary value</span></li>
-                        <li>Summary Item <span class="summary-value">summary value</span></li>
-                        <li>Summary Item <span class="summary-value">summary value</span></li>
-                    </ul>
-                </div>
-                <!--
-                <div class="activity-list">
-                    <h3 class="heading">Activities</h3>
-                    <ul class="list-group">
-                        <li class="list-group-item">activity item</li>
-                        <li class="list-group-item">activity item</li>
-                        <li class="list-group-item">activity item</li>
-                    </ul>
-                </div>-->
             </div>
        </div>
 	</div>
