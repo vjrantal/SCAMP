@@ -30,14 +30,14 @@ Front-End Module Client: Dashboard
 Use Case 2. Group User Listing
 Front-End Module Client: Dashboard
  a. Get list of users for a specified group
-    path: /api/group/:groupId/users/
+    path: /api/groups/:groupId/users/
 	action: GET
 	Expected Response : {
 	   users: [{
 		   userFullname: {string},
 		   userId: {string},
-		   totUnitsUsedByUserByGroup: {number},
-		   totUnitsRemainingForUserByGroup: {number}
+		   totUnitsUsed: {number},
+		   totUnitsRemaining: {number}
 	   }],
      }
 
