@@ -9,6 +9,7 @@ using ScampTypes.ViewModels;
 
 namespace DocumentDbRepositories
 {
+    [Serializable]
     public class ScampUser : Resource
     {
         public ScampUser()

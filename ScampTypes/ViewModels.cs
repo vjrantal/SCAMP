@@ -43,10 +43,23 @@ namespace ScampTypes.ViewModels
         Deleting    // the resource is being deleted, when complete it will be in an allocated state
     }
 
-    public sealed class ScampResourceGroupReference
+    public class ScampResourceGroupReference
     {
     public string Id { get; set; }
     public string Name { get; set; }
+    }
+
+    public class ScampAdminGroupReference : ScampResourceGroupReference
+    {
+        public double totUnitsUsed { get; set; }
+        public double totUnitsAllocated { get; set; }
+        public double totUnitsBudgeted { get; set; }
+    }
+
+    public class ScampUserGroupReference : ScampResourceGroupReference
+    {
+        public double totUnitsUsedByUser { get; set; }
+        public double totUnitsRemainingForUser { get; set; }
     }
 
     public sealed class ScampResourceSummary
@@ -59,6 +72,7 @@ namespace ScampTypes.ViewModels
     public int Remaining { get; set; }
     }
 
+    [Serializable]
     public sealed class User
     {
     public string Id { get; set; }
