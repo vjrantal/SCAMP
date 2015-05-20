@@ -62,33 +62,6 @@ namespace ScampApi.Controllers
  
         //}
 
-        [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]
-        public GroupResource Get(string groupId, string resourceId)
-        {
-            var newUser = new UserSummary
-            {
-                UserId = "1",
-                Name = "User1",
-                Links =
-                        {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
-                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: "1") }
-                        }
-            };
-
-            var newGroup =
-                new GroupResource
-                {
-                    Id = groupId,
-                    ResourceId = resourceId,
-                    Name = "GroupResource" + resourceId,
-                    Users = new List<UserSummary>()
-                };
-
-            newGroup.Users.Add(newUser);
-            return newGroup;
-        }
-
         // allows you to take the specified action (start, stop) on a specified resource
         [HttpGet("{resourceId}/rdp")]
         public async Task<string> GetRdp(string groupId, string resourceId)

@@ -58,13 +58,13 @@ Expected Response : {
 /*FYI, this is still very TBD*/
 Use Case 4: Dashboard Usage Summary
 Front-End Module Client: Dashboard
-service path: /api/user/:userId/summary
+service path: /api/user/:userId/usage/summary
 action: GET
 Expected Response : {
-       totalUnitsAllocated: {number},
+       totUnitsAllocated: {number},
        unitsBudgeted: {number},/*Will only be visible on the FE for an admin*/
-       totalUnitsUsed: {number},
-	   totalGroupMemberships: {number}
+       totUnitsUsed: {number},
+	   totGroupMemberships: {int}
    }
 
 Use Case 5: Membership Mgr - Create New Group

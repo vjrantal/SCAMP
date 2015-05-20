@@ -19,9 +19,16 @@ namespace ScampTypes.ViewModels
 
     public sealed class UserSummary
     {
-    public string UserId { get; set; }
-    public string Name { get; set; }
-    public List<Link> Links { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public sealed class UserUsageSummary
+    {
+        public double totUnitsAllocated { get; set; }
+        public double unitsBudgeted { get; set; }
+        public double totUnitsUsed { get; set; }
+        public int totGroupMemberships { get; set; }
     }
 
     public sealed class GroupResource
@@ -82,11 +89,11 @@ namespace ScampTypes.ViewModels
     [Serializable]
     public sealed class User
     {
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public List<Group> Groups { get; set; }
-    public ScampResourceSummary Resources { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public List<Group> Groups { get; set; }
+        public ScampResourceSummary Resources { get; set; }
     }
 
     public sealed class GroupTemplate

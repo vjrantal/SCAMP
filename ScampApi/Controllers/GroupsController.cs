@@ -161,12 +161,12 @@ namespace ScampApi.Controllers
                 {
                     Admins = value.Admins.ConvertAll((a => new ScampUserReference()
                     {
-                        Id = a.UserId,
+                        Id = a.Id,
                         Name = a.Name
                     })),
                     Members = value.Members.ConvertAll((a => new ScampUserReference()
                     {
-                        Id = a.UserId,
+                        Id = a.Id,
                         Name = a.Name
                     })),
                     Id = value.Id,
@@ -227,7 +227,7 @@ namespace ScampApi.Controllers
         {
             return new UserSummary
             {
-                UserId = docDbUser.Id,
+                Id = docDbUser.Id,
                 Name = docDbUser.Name,
             };
         }
