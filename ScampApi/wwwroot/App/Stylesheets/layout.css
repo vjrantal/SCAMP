@@ -93,12 +93,7 @@ body{
 }
 
 .page-content{
-  height: 320px;
-  /* background-image: url('../Images/IMG_6246.JPG'); */
-  background-image: -webkit-linear-gradient(top,#303a4c 0,#2e2f33  100%);
-  background-image: -o-linear-gradient(top,#303a4c 0,#2e2f33  100%);
-  background-image: linear-gradient(to bottom,#303a4c 0,#2e2f33 100%);
-  background-position: center top;
+  height: 100%; 
   color: #fff;
 }
 
@@ -138,10 +133,6 @@ body {
     display: inline-block;
     margin-left: 2px;
     vertical-align: middle;
-}
-
-.table>tbody>tr>td, .table>thead>tr>th{
-    border:none!important;
 }
 
 .footer{

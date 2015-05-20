@@ -106,7 +106,7 @@ namespace ScampApi.Controllers.Controllers
                         }
                         catch (Exception ex)
                         {
-                            //TODO: log error
+                            Console.WriteLine("Exception source: {0}", ex.Source);
                         }
 
                         ScampResourceSummary tmpSummary = new ScampResourceSummary()
