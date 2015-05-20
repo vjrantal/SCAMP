@@ -1,59 +1,73 @@
 ﻿
 Front End Module: Resource Retrieval for Dashboard
 
-Use Case 1: Get user/student resources(Standard view)
+Use Case 1: Get Azure Group Listings
 Front-End Module Client: Dashboard
-service path: /api/user/:userId/resources/all/
+ a. Get group lists for group admin view
+    path: /api/groups/admin/:userId
+	action: GET
+	Expected Response : {
+	   groups: [{
+		   groupName: {string},
+		   groupId: {string},
+		   totUnitsUsed: {number},
+		   totUnitsAllocated: {number},
+		   totUnitsBudgeted: {number}
+	   }],
+     }
+ b. Get group lists for user view
+    path: /api/groups/user/:userId
+	action: GET
+	Expected Response : {
+	   groups: [{
+		   groupName: {string},
+		   groupId: {string},
+		   totUnitsUsedByUser: {number},
+		   totUnitsRemainingForUser: {number}
+	   }],
+     }
+
+Use Case 2. Group User Listing
+Front-End Module Client: Dashboard
+ a. Get list of users for a specified group
+    path: /api/group/:groupId/users/
+	action: GET
+	Expected Response : {
+	   users: [{
+		   userFullname: {string},
+		   userId: {string},
+		   totUnitsUsedByUserByGroup: {number},
+		   totUnitsRemainingForUserByGroup: {number}
+	   }],
+     }
+
+Use Case 3: Get user/student resources
+Front-End Module Client: Dashboard
+service path: /api/resources/group/:groupId/user/:userId
 action: GET
 Expected Response : {
-   groups: [{
-       groupName: {string},
-       groupId: {string},
-       unitsAllocated: {number},
-       resources: [{
+   resources: [{
             resourceName: {string},
             resourceId: {string},
             state: {string},
             type: {string},
-            unitsUsed: {number},
-       }]
-   }],
-}
-
-Use Case 2: Get group resources(Admin view), than an individual administers
-Front-End Module Client: Dashboard
-service path: /api/user/:userId/group/resources/all/
-action: GET
-Expected Response : {
-   groups: [{
-       groupName: {string},
-       groupId: {string},
-       totalUnitsAllocated: {number},
-       unitsBudgeted: {number},
-       totalUnitsUsed: {number},
-       resources: [{
-            resourceName: {string},
-            resourceId: {string},
-            type: {string},
-            totalUnitsUsed: {number},
-            unitsRemaining:  {number}
-       }]
-   }],
-}
-
-Use Case 3: Site Admin - Get all group admins
-Front-End Module Client: Dashboard
-service path: /api/user/:userId/group/resources/all/
-action: GET
-Expected Response : {
-   users: [{
-       userName: {string},
-       userId: {string},
-       unitsBudgeted: {number},
+            unitsUsed: {number}
    }]
 }
 
-Use Case 4: Membership Mgr - Create New Group
+/*FYI, this is still very TBD*/
+Use Case 4: Dashboard Usage Summary
+Front-End Module Client: Dashboard
+service path: /api/user/:userId/summary
+action: GET
+Expected Response : {
+       totalUnitsAllocated: {number},
+       unitsBudgeted: {number},/*Will only be visible on the FE for an admin*/
+       totalUnitsUsed: {number},
+	   totalGroupMemberships: {number}
+   }
+
+Use Case 5: Membership Mgr - Create New Group
 Front-End Module Client: Membership Manager
 service path: /api/resource/manager/groups/
 action: Post
