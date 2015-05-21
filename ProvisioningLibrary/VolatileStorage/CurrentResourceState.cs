@@ -12,23 +12,20 @@ namespace ProvisioningLibrary
         private string _ResourceId = string.Empty;
         public static string PKey = "ResourceState";
         
-        public CurrentResourceState()
+        public CurrentResourceState(string resourceId)
         {
-            this.PartitionKey = CurrentResourceState.PKey;
+            this.RowKey = resourceId;
+            this.PartitionKey = CurrentResourceState.PKey + this.RowKey;
         }
 
         public string ResourceId {
             get
             {
-                return this._ResourceId;
-            }
-            set
-            {
-                this._ResourceId = value;
-                this.RowKey = value;
+                return this.RowKey;
             }
         }
         public int State { get; set; }
-        public string Usage { get; set; }
+        public long UnitsUsed { get; set; }
+        public DateTime NextConsolidation { get; set; }
     }
 }

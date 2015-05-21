@@ -78,7 +78,8 @@ namespace ScampApi.Infrastructure
                     await _userRepository.CreateUser(tmpUser);
                 }
 
-                _cacheProvider.SetUser(tmpUser); // save user to cache, no need to wait
+                // doesn't work yet because underlying type from SDK isn't serializable
+                //_cacheProvider.SetUser(tmpUser); // save user to cache, no need to wait
             }
             return tmpUser;
         }
