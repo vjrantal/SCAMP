@@ -10,6 +10,7 @@ using ProvisioningLibrary;
 
 namespace ScampApi.Controllers
 {
+    [Authorize]
     [Route("api/group/{groupId}")]
     public class GroupUsersController : Controller
     {

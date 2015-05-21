@@ -11,12 +11,15 @@ namespace ProvisioningLibrary
     public class CurrentResourceState : TableEntity
     {
         private string _ResourceId = string.Empty;
-        public static string PKey = "ResourceState";
-        
-        public CurrentResourceState(string resourceId)
+
+        public CurrentResourceState()
+        {
+        }
+
+        public CurrentResourceState(string resourceId) : this()
         {
             this.RowKey = resourceId;
-            this.PartitionKey = CurrentResourceState.PKey + this.RowKey;
+            this.PartitionKey = this.RowKey;
         }
 
         public string ResourceId {

@@ -13,7 +13,7 @@ using ProvisioningLibrary;
 
 namespace ScampApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/groups")]
     public class GroupsController : Controller
     {
