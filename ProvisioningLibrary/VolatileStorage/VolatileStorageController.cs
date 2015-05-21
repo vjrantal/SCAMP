@@ -184,7 +184,7 @@ namespace ProvisioningLibrary
                 updatedState = new CurrentResourceState(resourceId);
 
             // update with new state
-            updatedState.State = (int)state;
+            updatedState.State = state;
 
             // save update
             await UpdateResourceState(updatedState);

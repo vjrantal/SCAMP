@@ -34,8 +34,8 @@ Front-End Module Client: Dashboard
 	action: GET
 	Expected Response : {
 	   users: [{
-		   userFullname: {string},
-		   userId: {string},
+		   name: {string},
+		   Id: {string},
 		   totUnitsUsed: {number},
 		   totUnitsRemaining: {number}
 	   }],
@@ -58,14 +58,25 @@ Expected Response : {
 /*FYI, this is still very TBD*/
 Use Case 4: Dashboard Usage Summary
 Front-End Module Client: Dashboard
+a. Get list of user's resource usage
 service path: /api/user/:userId/usage/summary
+action: GET
+Expected Response : {
+       unitsBudgeted: {number},/*Will only be visible on the FE for an admin*/
+       totUnitsUsed: {number},
+	   totGroups: {int}
+   }
+b. Get summary of user's budget
+service path: /api/user/:userId/budget/summary
 action: GET
 Expected Response : {
        totUnitsAllocated: {number},
        unitsBudgeted: {number},/*Will only be visible on the FE for an admin*/
        totUnitsUsed: {number},
-	   totGroupMemberships: {int}
+	   totGroups: {int}
    }
+
+
 
 Use Case 5: Membership Mgr - Create New Group
 Front-End Module Client: Membership Manager

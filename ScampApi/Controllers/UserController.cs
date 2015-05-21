@@ -20,14 +20,12 @@ namespace ScampApi.Controllers.Controllers
     public class UserController : Controller
     {
         private readonly ISecurityHelper _securityHelper;
-        private readonly ILinkHelper _linkHelper;
         private readonly IResourceRepository _resourceRepository;
         private readonly IUserRepository _userRepository;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public UserController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
+        public UserController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
-            _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
@@ -58,7 +56,7 @@ namespace ScampApi.Controllers.Controllers
         }
 
         /// <summary>
-        /// Gets data on a specific user
+        /// Gets usage data on a specific user
         /// </summary>
         /// <param name="userId">Id of user being requested</param>
         /// <param name="view">type of view of the data to be returned</param>
@@ -73,16 +71,23 @@ namespace ScampApi.Controllers.Controllers
             if (userDoc == null)
                 return HttpNotFound();
 
+            // get user usage across all resources
+            List<UserBudgetState> usrBudgets = await _volatileStorageController.GetUserBudgetStates(userId);
+
             if (view == "summary")
             {
                 UserUsageSummary tmpUserSummary = new UserUsageSummary()
                 {
-                    totUnitsAllocated = new Random().NextDouble() * (2000 - 100) + 100,
-                    unitsBudgeted = new Random().NextDouble() * (2000 - 100) + 100,
-                    totUnitsUsed = new Random().NextDouble() * (2000 - 100) + 100,
-                    totGroupMemberships = userDoc.GroupMembership.Count()
+                    totGroups = userDoc.GroupMembership.Count()
                 };
-
+                
+                // summarize resource usage
+                foreach(var rscBudget in usrBudgets)
+                {
+                    tmpUserSummary.unitsBudgeted += rscBudget.UnitsBudgetted;
+                    tmpUserSummary.totUnitsUsed += rscBudget.UnitsUsed;
+                }
+                
                 return new ObjectResult(tmpUserSummary) { StatusCode = 200 };
             }
             else

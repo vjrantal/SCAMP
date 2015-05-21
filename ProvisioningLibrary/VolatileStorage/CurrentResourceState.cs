@@ -3,6 +3,7 @@ using ProvisioningLibrary;
 
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using ScampTypes.ViewModels;
 
 namespace ProvisioningLibrary
 {
@@ -24,7 +25,7 @@ namespace ProvisioningLibrary
                 return this.RowKey;
             }
         }
-        public int State { get; set; }
+        public ResourceState State { get; set; }
         public long UnitsUsed { get; set; }
         public DateTime NextConsolidation { get; set; }
     }
