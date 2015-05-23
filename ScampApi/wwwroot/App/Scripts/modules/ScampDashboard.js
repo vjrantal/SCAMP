@@ -53,6 +53,23 @@
          //   renderCharts(scope.resources);
     };
 
+    this.setCurrentUser = function (userId) {
+        var user = scope.groupUsers.filter(function (item) {
+            if (item.id == userId) return true;
+            else return false;
+        });
+
+        if (user && user.length == 1)
+            user = user[0];
+        else
+            throw new Error("Unable to find user " + userId + " in the group user list");
+
+        scope.selectedUserId = user.id;
+        scope.selectedUserName = user.name;
+        var totalUnitsAllocated = user.totUnitsUsed + user.totUnitsRemaining;
+        scope.selectedUsersUsage = (totalUnitsAllocated > 0) ? Math.round((user.totUnitsUsed / totalUnitsAllocated) * 100) : 0;
+    }
+
     this.computeUsagePercentages = function (group) {
         if (scope.dashboardView == 'admin') {
             group.usageLabel = (group.totUnitsBudgeted > 0) ? Math.round((group.totUnitsUsed / group.totUnitsBudgeted) * 100) : 0;

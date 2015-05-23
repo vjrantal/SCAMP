@@ -10,8 +10,8 @@ angular.module('scamp')
 
 	$scope.userList = null;
 	$scope.rscStateDescMapping = {
-	    0: {description: "Unknown", allowableActions : [] },
-	    1: {description: "Allocated", allowableActions : ["Start", "Delete"] },
+	    12: {description: "Unknown", allowableActions : [] },
+	    0: {description: "Allocated", allowableActions : ["Start", "Delete"] },
 	    2: {description: "Starting", allowableActions : [], previousAction: "Start" },
 	    3: {description: "Running", allowableActions : ["Connect", "Stop"] },
 	    4: {description: "Stopping", allowableActions : [], previousAction: "Stop" },
@@ -21,7 +21,7 @@ angular.module('scamp')
 	};
 
 	$scope.resourceTypes = {
-	    1: "Virtual Machine",
+	    0: "Virtual Machine",
 	    2: "Web App"
 	};
 
@@ -45,6 +45,7 @@ angular.module('scamp')
                     });
                     $scope.selectedGroupId = data[0].id;
                     $scope.selectedGroupName = data[0].name;
+                    
                     $scope.loadUsers($scope.selectedGroupId);
                 } else
                     throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
@@ -63,10 +64,14 @@ angular.module('scamp')
 	    groupsSvc.getUsers(groupId).then(
             function (data) {
                 if (data && data.length > 0) {
-                    $scope.groupUsers = data;
-                    $scope.selectedUserId = data[0].id;
-                    $scope.selectedUserName = data[0].name;
-                    $scope.loadResources(groupId, $scope.selectedUserId);
+                    $scope.groupUsers = data.map(function (item) {
+                        var totalUnitsAllocated = item.totUnitsUsed + item.totUnitsRemaining;
+                        item.userUsage = (totalUnitsAllocated > 0) ? Math.round((item.totUnitsUsed / totalUnitsAllocated) * 100) : 0;
+
+                        return item;
+                    });
+                    
+                    $scope.loadResources(groupId, data[0].id);
                 }
             },
             // resource REST call failed
@@ -80,6 +85,7 @@ angular.module('scamp')
 	    if (!groupId || !userId)
 	        throw new Error("Mandatory paramter groupId and userId need to be specified");
 
+	    scampDashboard.setCurrentUser(userId);
 	    userSvc.getResourceList(userId, groupId).then(
             function (data) {
                 if (data && data.length > 0) {

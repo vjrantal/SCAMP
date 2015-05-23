@@ -105,6 +105,7 @@ table>tbody{
 .resource-group-item {
   position: relative!important;
   display: block!important;
+  cursor:pointer!important;
   padding: 10px 15px!important;
   margin-bottom: -1px!important;
   background-color: #222!important;

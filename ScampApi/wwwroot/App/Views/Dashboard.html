@@ -36,10 +36,10 @@
     &nbsp;&nbsp;&nbsp;Select a view:
     <span class="btn-group" data-toggle="buttons">
         <label class="btn btn-primary btn-xs active">
-            <input type="radio" ng-model="dashboardView" value="admin" ng-change="populate()"> Admin
+            <input type="radio" ng-model="dashboardView" value="admin" ng-change='populate()'> Admin
         </label>
         <label class="btn btn-primary btn-xs">
-            <input type="radio" ng-model="dashboardView" value="user" ng-change="populate()"> Student
+            <input type="radio" ng-model="dashboardView" value="user" ng-change='populate()'> Student
         </label>
     </span>
 </div>
@@ -53,7 +53,7 @@
                     <div class="row">
                             <div class="col-md-3 dashboard-side-div">
                                 <div class="list-group">
-                                        <a ng-repeat="group in groups" href="#" style="padding-right: 0px" ng-class="(group.id==selectedGroupId) ? 'active' : ''" class="list-group-item resource-group-item">
+                                        <a ng-repeat="group in groups" ng-click="loadUsers(group.id)" style="cursor:pointer; padding-right: 0px" ng-class="(group.id==selectedGroupId) ? 'active' : ''" class="list-group-item resource-group-item">
                                             <div class="row">
                                                 <div class="col-md-3 group-item-icon">
                                                     <i class="fa fa-users"></i>
@@ -84,17 +84,34 @@
                             <div class="col-md-8 dashboard-grid-column">
                                 <div class="row">
                                     <div class="col-md-12" style="padding-left:4px;"><h4>{{selectedGroupName}} User Resource Summary</h4>
-                                        <div class="btn-group action-cell" ng-show="dashboardView=='admin'" style="width: 100%;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-5" style="padding-left:4px;">
+                                        <div class="btn-group action-cell" ng-show="dashboardView=='admin'" style="display: inline;">
                                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{selectedUserName}}</button>
                                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                 <span class="caret"></span>
                                                 <span class="sr-only">Toggle Dropdown</span>
                                             </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li ng-repeat="user in groupUsers">
-                                                    <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-value=="{{user.id}}" ng-class="(user.id == selectedUserId ? 'active' : '')">{{user.name}}</a>
+                                            <ul class="dropdown-menu" role="menu" style="min-width: 200px;">
+                                                <li ng-repeat="user in groupUsers" ng-class="(user.id == selectedUserId ? 'active' : '')">
+                                                    <a ng-click="loadResources(selectedGroupId, user.id)" data-value="{{user.id}}">{{user.name}}
+                                                        <div class="progress">
+                                                            <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{user.userUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{user.userUsage}}%;">
+                                                                {{user.userUsage}}% Used
+                                                            </div>
+                                                        </div>
+                                                    </a>
                                                 </li>
                                             </ul>
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-7" style="padding-left: 0px;">
+                                        <div class="progress" style="max-width: 200px;margin-top: 6px;">
+                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{selectedUsersUsage}}%;">
+                                                {{selectedUsersUsage}}% Used
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -104,20 +121,18 @@
                                             <tr>
                                                 <td>Name</td>
                                                 <td>State</td>
-                                                <td>Resource</td>
                                                 <td>Type</td>
                                                 <td>Action</td>
-                                                <td>Remaining</td>
+                                                <td>Usage</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <!-- ngRepeat: resource in resources -->
                                             <tr ng-repeat="resource in resources">
                                                 <td class="text-center">{{resource.name}}</td>
-                                                <td>{{resource.name}}</td>
+                                                <td>{{resource.stateDescription}}</td>
                                                 <td>{{resource.resourceTypeDesc}}</td>
-                                                <td>{{resource.groupName}}</td>
-                                                <td>
+                                                <td style="padding-top: 2px;">
                                                     <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
                                                         <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
                                                         <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -130,14 +145,9 @@
                                                             </li>
                                                         </ul>
                                                     </div>
+                                                    <i class="fa fa-laptop fa-2x" style="cursor: pointer;"></i>
                                                 </td>
-                                                <td>
-                                                    <div class="progress">
-                                                        <div class="progress-bar progress-bar-{{resource.usageEscalation}}" role="progressbar" aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="100" style="width: {{resource.remaining}}%;">
-                                                            {{resource.remaining}}%
-                                                        </div>
-                                                    </div>
-                                                </td>
+                                                <td>{{resource.totUnitsUsed}} Units Used</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -149,7 +159,7 @@
             <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fa fa-cubes"></i>&nbsp;Summary</h3>
+                        <h3 class="panel-title"><i class="fa fa-cubes"></i>&nbsp;My Summary</h3>
                     </div>
                     <div class="panel-body">
                         <div class="list-group">

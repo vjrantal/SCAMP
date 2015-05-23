@@ -73,5 +73,6 @@ td.beauty-hover {
 }
 
 .action-cell{
-    width:85px;
+    padding-right:8px;
+    padding-top:4px;
 }
