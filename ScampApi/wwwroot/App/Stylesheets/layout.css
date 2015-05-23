@@ -17,8 +17,7 @@
 
 .navbar-nav>li{
     padding-top: 10px;
-    padding-bottom: 10px;
-}
+ }
 
 .navbar-default .navbar-nav>li>a {
   color: #fff!important;
@@ -133,6 +132,12 @@ body {
     display: inline-block;
     margin-left: 2px;
     vertical-align: middle;
+}
+
+.user-avatar-sm{
+    width: 30px;
+    height: 30px; 
+    cursor: pointer;
 }
 
 .footer{

@@ -25,6 +25,10 @@ table>thead{
       font-weight: bold;
 }
 
+.progress-bar{
+    font-size: 8px!important;
+}
+
 table>tbody{
       font-size: 10px;
 }

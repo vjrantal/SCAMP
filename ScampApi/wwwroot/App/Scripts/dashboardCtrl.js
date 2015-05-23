@@ -6,6 +6,8 @@ angular.module('scamp')
 
     var scampDashboard = new ScampDashboard($scope);
     $scope.currentRouteName = 'Dashboard';
+    $scope.isAdmin = true;
+
 	$scope.userList = null;
 	$scope.rscStateDescMapping = {
 	    0: {description: "Unknown", allowableActions : [] },
@@ -27,15 +29,62 @@ angular.module('scamp')
 	    scampDashboard.initialize();
 
 	    var userGUID = $scope.userProfile.id;
+        //Default the view to admin view as long as the user has administrative priviledges or keep the view as it is if it's set to admin
+	    if (!$scope.dashboardView && $scope.isAdmin || ($scope.dashboardView && $scope.dashboardView=='admin'))
+	        $scope.dashboardView = 'admin';
+	    else
+	        $scope.dashboardView = 'user';
+
 	    $scope.dashboardStatus = 'loading';
 
-	    userSvc.getResourceList(userGUID).then(
-            // resource REST call was a success
+	    userSvc.getGroupList(userGUID, $scope.dashboardView).then(
             function (data) {
-                console.log(data)
-                console.log(data)
-                console.log(data)
-                scampDashboard.render(data);
+                if (data && data.length > 0) {
+                    $scope.groups = data.map(function (item) {
+                        return scampDashboard.computeUsagePercentages(item);
+                    });
+                    $scope.selectedGroupId = data[0].id;
+                    $scope.selectedGroupName = data[0].name;
+                    $scope.loadUsers($scope.selectedGroupId);
+                } else
+                    throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
+            },
+            // resource REST call failed
+            function (statusCode) {
+                console.error(statusCode);
+            }
+        );
+	};
+
+	$scope.loadUsers = function (groupId) {
+	    if (!groupId)
+	        throw new Error("Mandatory paramter groupId needs to be specified");
+
+	    groupsSvc.getUsers(groupId).then(
+            function (data) {
+                if (data && data.length > 0) {
+                    $scope.groupUsers = data;
+                    $scope.selectedUserId = data[0].id;
+                    $scope.selectedUserName = data[0].name;
+                    $scope.loadResources(groupId, $scope.selectedUserId);
+                }
+            },
+            // resource REST call failed
+            function (statusCode) {
+                console.error(statusCode);
+            }
+        );
+	};
+
+	$scope.loadResources = function (groupId, userId) {
+	    if (!groupId || !userId)
+	        throw new Error("Mandatory paramter groupId and userId need to be specified");
+
+	    userSvc.getResourceList(userId, groupId).then(
+            function (data) {
+                if (data && data.length > 0) {
+                    scampDashboard.render(data);
+                }
             },
             // resource REST call failed
             function (statusCode) {
