@@ -9,8 +9,6 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampTypes.ViewModels;
-using ScampApi.ViewModels;
-using Group = ScampApi.ViewModels.Group;
 using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
