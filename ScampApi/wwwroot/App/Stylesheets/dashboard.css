@@ -15,6 +15,10 @@
     padding:2em 4em;
 }
 
+h4{
+    margin-bottom: 0px!important;
+}
+
 .dashboard-grid-container{
   padding-right: 4px!important;
   padding-left: 4px!important;

@@ -88,13 +88,18 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-5" style="padding-left:4px;">
+                                    <div class="col-md-12" style="padding-left:4px;">
                                         <div ng-show="dashboardView=='user'" style="display: inline;">
                                             Your Resource usage:
                                         </div>
                                         <div class="btn-group action-cell" ng-show="dashboardView=='admin'" style="display: inline;">
-                                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{selectedUserName}}</button>
-                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="" style="color:#fff;">
+                                                    <img src="/app/images/default_profile_2_0.jpg" class="img-rounded user-avatar-sm" style="width: 25px;height: 25px;">
+                                                </span>
+                                                 {{selectedUserName}}
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="height: 37px;">
                                                 <span class="caret"></span>
                                                 <span class="sr-only">Toggle Dropdown</span>
                                             </button>
@@ -109,11 +114,9 @@
                                                     </a>
                                                 </li>
                                             </ul>
-                                        </div> 
-                                    </div>
-                                    <div class="col-md-7" style="padding-left: 0px;">
-                                        <div class="progress" style="max-width: 200px;margin-top: 1px;">
-                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{selectedUsersUsage}}%;">
+                                        </div>
+                                        <div class="progress" style="margin-top: -13px;margin-left: 210px;padding-left: 0px;/* margin-bottom: 50px!important; */">
+                                            <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{selectedUsersUsage}}%;">
                                                 {{selectedUsersUsage}}% Used
                                             </div>
                                         </div>
