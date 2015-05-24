@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Microsoft.Framework.ConfigurationModel;
-using ScampTypes.ViewModels; 
+using DocumentDbRepositories; 
 using StackExchange.Redis;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -106,9 +106,9 @@ namespace ProvisioningLibrary
         /// </summary>
         /// <param name="userId">Id of the user view to be retrieved</param>
         /// <returns></returns>
-        public async Task<User> GetUser(string userId)
+        public async Task<ScampUser> GetUser(string userId)
         {
-            return Deserialize<User>(await _cache.StringGetAsync(userId));
+            return Deserialize<ScampUser>(await _cache.StringGetAsync(userId));
         }
 
         /// <summary>
@@ -116,11 +116,11 @@ namespace ProvisioningLibrary
         /// </summary>
         /// <param name="user">the user view object to be inserted</param>
         /// <returns></returns>
-        public async Task SetUser(User userDoc)
+        public async Task SetUser(ScampUser userDoc)
         {
             try
             {
-                await _cache.StringSetAsync(userDoc.Id, userDoc.ToString());
+                await _cache.StringSetAsync(userDoc.Id, Serialize(userDoc));
             }
             catch (Exception ex)
             {

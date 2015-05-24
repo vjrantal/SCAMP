@@ -3,6 +3,7 @@ using ProvisioningLibrary;
 
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using ScampTypes.ViewModels;
 
 namespace ProvisioningLibrary
 {
@@ -10,25 +11,25 @@ namespace ProvisioningLibrary
     public class CurrentResourceState : TableEntity
     {
         private string _ResourceId = string.Empty;
-        public static string PKey = "ResourceState";
-        
+
         public CurrentResourceState()
         {
-            this.PartitionKey = CurrentResourceState.PKey;
+        }
+
+        public CurrentResourceState(string resourceId) : this()
+        {
+            this.RowKey = resourceId;
+            this.PartitionKey = this.RowKey;
         }
 
         public string ResourceId {
             get
             {
-                return this._ResourceId;
-            }
-            set
-            {
-                this._ResourceId = value;
-                this.RowKey = value;
+                return this.RowKey;
             }
         }
-        public int State { get; set; }
-        public string Usage { get; set; }
+        public ResourceState State { get; set; }
+        public long UnitsUsed { get; set; }
+        public DateTime NextConsolidation { get; set; }
     }
 }
