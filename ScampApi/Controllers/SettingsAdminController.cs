@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DocumentDbRepositories;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
-using System.Security.Claims;
-using DocumentDbRepositories;
-using DocumentDbRepositories.Implementation;
+using ScampTypes.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
 
@@ -48,8 +45,7 @@ namespace ScampApi.Controllers.Controllers
                     rtnList.Add(new User
                     {
                         Id = tmpUser.Id,
-                        Name = tmpUser.Name,
-                        IsSystemAdmin = tmpUser.IsSystemAdmin
+                        Name = tmpUser.Name
                     });
                 }
             }        

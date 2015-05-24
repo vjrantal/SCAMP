@@ -1,6 +1,6 @@
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.ConfigurationModel;
-using ScampApi.ViewModels;
+using ScampTypes.ViewModels;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

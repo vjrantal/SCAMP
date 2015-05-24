@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
+using ScampTypes.ViewModels;
 
 namespace DocumentDbRepositories
 {
+    [Serializable]
     public class ScampUser : Resource
     {
         public ScampUser()
@@ -58,10 +60,8 @@ namespace DocumentDbRepositories
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "type")]
-        public int type { get; set; }
+        public ResourceType type { get; set; }
 
-        [JsonProperty(PropertyName = "state")]
-        public int state { get; set; }
     }
 
     public class ScampUserReference
@@ -70,6 +70,8 @@ namespace DocumentDbRepositories
         public string Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "admins")]
+        public List<ScampResourceReference> Resources { get; set; }
 
         public static implicit operator ScampUserReference(ScampUser user)
         {

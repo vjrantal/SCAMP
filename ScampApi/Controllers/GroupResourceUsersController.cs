@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
+using ScampTypes.ViewModels;
 
 namespace ScampApi.Controllers
 {
@@ -14,34 +14,6 @@ namespace ScampApi.Controllers
         public GroupResourceUsersController(ILinkHelper linkHelper)
         {
             _linkHelper = linkHelper;
-        }
-
-        [HttpGet]
-        public IEnumerable<UserSummary> GetAll(string groupId, string resourceId)
-        {
-            return new[]
-                {
-                    new UserSummary { UserId = "1", Name = "User1", Links =
-                        {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
-                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: "1") }
-                        }
-                    }
-                };
-        }
-        [HttpGet("{userId}", Name = "GroupResourceUsers.GetSingle")]
-        public UserSummary Get(string groupId, string resourceId, string userId)
-        {
-            return new UserSummary
-            {
-                UserId = "1",
-                Name = "User1",
-                Links =
-                        {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: userId) } ,
-                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: userId) }
-                        }
-            };
         }
 
         [HttpPost]

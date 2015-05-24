@@ -1,18 +1,21 @@
 'use strict';
 
 angular.module('scamp')
-.controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', 'resourcesSvc', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService, resourcesSvc) {
+.controller('dashboardCtrl', ['$scope', '$modal', '$location', 'dashboardSvc', 'groupsSvc', 'userSvc', 'adalAuthenticationService', 'resourcesSvc', 'fileSvc', function ($scope, $modal, $location, dashboardSvc, groupsSvc, userSvc, adalService, resourcesSvc, fileSvc) {
+
+
     var scampDashboard = new ScampDashboard($scope);
     $scope.currentRouteName = 'Dashboard';
 	$scope.userList = null;
 	$scope.rscStateDescMapping = {
-	    0: {description: "Allocated", allowableActions : ["Start", "Delete"] },
-	    1: {description: "Starting", allowableActions : [], previousAction: "Start" },
-	    2: {description: "Running", allowableActions : ["Stop"] },
-	    3: {description: "Stopping", allowableActions : [], previousAction: "Stop" },
-	    4: {description: "Stopped", allowableActions: ["Start", "Delete"] },
-	    5: {description: "Suspended", allowableActions: ["Start", "Delete"] },
-	    6: {description: "Deleting", allowableActions: [] }
+	    0: {description: "Unknown", allowableActions : [] },
+	    1: {description: "Allocated", allowableActions : ["Start", "Delete"] },
+	    2: {description: "Starting", allowableActions : [], previousAction: "Start" },
+	    3: {description: "Running", allowableActions : ["Connect", "Stop"] },
+	    4: {description: "Stopping", allowableActions : [], previousAction: "Stop" },
+	    5: {description: "Stopped", allowableActions: ["Start", "Delete"] },
+	    6: {description: "Suspended", allowableActions: ["Start", "Delete"] },
+	    7: {description: "Deleting", allowableActions: [] }
 	};
 
 	$scope.resourceTypes = {
@@ -29,6 +32,9 @@ angular.module('scamp')
 	    userSvc.getResourceList(userGUID).then(
             // resource REST call was a success
             function (data) {
+                console.log(data)
+                console.log(data)
+                console.log(data)
                 scampDashboard.render(data);
             },
             // resource REST call failed
@@ -107,16 +113,39 @@ angular.module('scamp')
 
 	$scope.confirmResourceAction = function (actionSelection, rsc, event) {
 	    var defaultDurationHrs = 8;
+	    console.log(actionSelection);
+	    console.log("Action '" + actionSelection + "' requested on resource " + rsc.id);
 
-	    $scope.resourceSave = {
-	        name: rsc.name,
-	        currentStateDesc: rsc.stateDescription,
-	        id: rsc.id,
-	        duration: defaultDurationHrs,
-	        newStateDesc: actionSelection.action
-	    };
+	    if (actionSelection.action == "Connect")
+	    {
+	        var groupId = rsc.resourceGroup.id,		
+                resourceId = rsc.id,		
+                contentType = "application/rdp; charset=utf-8",		
+                fileName = "service.rdp"		
+        		
+	        var Fileurl = "/api/groups/" + groupId + "/resources/" + resourceId + "/rdp";		
+        		
+	        console.log("Get Rdp: " + Fileurl)		
+        		
+	        fileSvc.downloadFile(Fileurl, contentType, fileName).then(		
+                function (fileName) {		
+                    console.log("File downloaded: " + fileName)		
+                },function (error) {		
+                    console.log("Failed to download file" + error);		
+                });		
+	    }
+	    else
+	    {
+	        $scope.resourceSave = {
+	            name: rsc.name,
+	            currentStateDesc: rsc.stateDescription,
+	            id: rsc.id,
+	            duration: defaultDurationHrs,
+	            newStateDesc: actionSelection.action
+	        };
 
-	    event.preventDefault(); 
+	        event.preventDefault();
+	    }
 	};
 
 	$scope.resourceSendAction = function () {
@@ -139,7 +168,7 @@ angular.module('scamp')
 	        var callback = function () {scampDashboard.processResourceUpdate(dashboardRscUpdateMsg)}
 	        callResourceService(resource, $scope.resourceSave.newStateDesc, duration, callback);
 	    }else
-	        throw new Exception("Unsupported action was called for resourceSendAction");
+	        throw "Unsupported action was called for resourceSendAction";
 
 	    $('#resourceSendActionModal').modal('hide');
 	};

@@ -20,6 +20,8 @@ namespace ScampMonitorTest
         {
             var ws = new ClientWebSocket();
             await ws.ConnectAsync(new Uri("ws://localhost:8088"), CancellationToken.None);
+
+            
             byte[] buf = new byte[4096];
             var seg = new ArraySegment<byte>(buf, 0, buf.Length);
             var r1 = await ws.ReceiveAsync(seg, CancellationToken.None);

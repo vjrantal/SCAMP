@@ -15,7 +15,7 @@ using Newtonsoft.Json.Serialization;
 using ScampApi.Infrastructure;
 using Microsoft.AspNet.StaticFiles;
 using ProvisioningLibrary;
-using ScampApi.ViewModels;
+using ScampTypes.ViewModels;
 using IConfiguration = Microsoft.Framework.ConfigurationModel.IConfiguration;
 using System.IdentityModel.Tokens;
 
@@ -50,15 +50,17 @@ namespace ScampApi
             });
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILinkHelper, LinkHelper>();
-
+            
             services.AddScoped<ISecurityHelper, SecurityHelper>();
 
-            services.AddSingleton<IWebJobController, WebJobController>();
+            services.AddSingleton <IWebJobController, WebJobController>();
+            services.AddSingleton<IVolatileStorageController, VolatileStorageController>();
 
             services.AddInstance(Configuration);
 
             services.AddDocumentDbRepositories(Configuration);
             services.AddKeyVaultRepositories(Configuration);
+            services.AddCacheProvider(Configuration);
         }
 
         // Configure is called after ConfigureServices is called.
@@ -84,7 +86,7 @@ namespace ScampApi
                     name: "default",
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
-
+                
             });
             //Configure AutoMapper
             Mapper.CreateMap<ScampResource, ScampResourceSummary>();

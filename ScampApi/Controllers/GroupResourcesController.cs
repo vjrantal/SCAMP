@@ -10,8 +10,9 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
-using ScampApi.ViewModels;
-using System.IO;
+using System.IO; 
+using Microsoft.AspNet.Http;
+using ScampTypes.ViewModels;
 using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
@@ -26,8 +27,9 @@ namespace ScampApi.Controllers
         private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository)
+        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository, IVolatileStorageController volatileStorageController)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
@@ -36,52 +38,34 @@ namespace ScampApi.Controllers
             _groupRepository = groupRepository;
             _webJobController = webJobController;
             _subscriptionRepository = subscriptionRepository;
+            _volatileStorageController = volatileStorageController;
         }
-        [HttpGet]
-        public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
-        {
-            //LINKED TO UI
-            var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
-            var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
-            var rnd = new Random();
-            ressummary.ForEach(summary =>
-            {
-                //summary.Links.Add(new Link
+        //[HttpGet]
+        //public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
                 //{
-                //    Rel = "resource",
-                //    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
-                //});
-                summary.Remaining = rnd.Next(0, 100);
-            });
+        //    //LINKED TO UI
+        //    var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
-            return ressummary;
+        //    var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
+        //    var rnd = new Random();
+        //    ressummary.ForEach(summary =>
+        //    {
+        //        //summary.Links.Add(new Link
+        //        //{
+        //        //    Rel = "resource",
+        //        //    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
+        //        //});
+        //        summary.Remaining = rnd.Next(0, 100);
+        //    });
  
-        }
+        //    return ressummary;
 
-        [HttpGet("{resourceId}", Name ="GroupResources.GetSingle")]
-        public GroupResource Get(string groupId, string resourceId)
-        {
-            return new GroupResource
-            {
-                GroupId = groupId,
-                ResourceId = resourceId,
-                Name = "GroupResource" + resourceId,
-                Users = new[]
-                {
-                    new UserSummary { UserId = "1", Name = "User1", Links =
-                        {
-                            new Link {Rel="user", Href = _linkHelper.User(userId: "1") } ,
-                            new Link {Rel="groupResourceUser", Href = _linkHelper.GroupResourceUser(groupId: groupId, resourceId:resourceId, userId: "1") }
-                        }
-                    }
-                }
-            };
-        }
+        //}
 
         // allows you to take the specified action (start, stop) on a specified resource
         [HttpGet("{resourceId}/rdp")]
-        public async Task<Byte[]> GetRdp(string groupId, string resourceId)
+        public async Task<string> GetRdp(string groupId, string resourceId)
         {
             ScampResource res = await _resourceRepository.GetResource(resourceId);
             if (res == null)
@@ -96,10 +80,18 @@ namespace ScampApi.Controllers
                 //TODO return error
             }
 
+          
             ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
 
-            return await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
+
+            //Response.ContentType = "application/x-rdp";
+            Response.Headers.Add("content-disposition", new string[] { "attachment; filename =" + res.CloudServiceName + ".rdp" });
+
+            byte[] bytes = await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
+            var encoding = new System.Text.UTF8Encoding();
+            var sRes = encoding.GetString(bytes);
+            return sRes;
         }
 
 
@@ -114,8 +106,20 @@ namespace ScampApi.Controllers
             }
 
             ResourceAction action = WebJobController.GetAction(actionname);
+            ResourceState newState = ResourceState.Unknown;
+            switch (action)
+            {
+                case ResourceAction.Start:
+                    newState = ResourceState.Starting;
+                    break;
+                case ResourceAction.Stop:
+                    newState = ResourceState.Stopping;
+                    break;
+            }
+
             if (await CanManageResource(res, action))
             {
+                await _volatileStorageController.UpdateResourceState(resourceId, newState);
                 _webJobController.SubmitActionInQueue(resourceId, action, duration);
             }
         }

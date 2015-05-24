@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ProvisioningLibrary
 {
@@ -224,10 +225,12 @@ namespace ProvisioningLibrary
                 Console.WriteLine("Found cloud service: " + cloudServiceName);
 
                 Console.WriteLine("Fetching deployment.");
-                var deployment = cs.Deployments.ToList().First(x => x.Name == virtualMachineName);
+                //var deployment = cs.Deployments.ToList().First(x => x.Name == virtualMachineName);
+                var deployment = cs.Deployments.ToList().First(x => x.Name == "brent1");
+
                 if (deployment != null)
-                    response = VirtualMachineOperationsExtensions.GetRemoteDesktopFile(VMOperations, cloudServiceName, deployment.Name, virtualMachineName);
-            }
+                    response = await VirtualMachineOperationsExtensions.GetRemoteDesktopFileAsync(VMOperations, cloudServiceName, deployment.Name, virtualMachineName);
+                }
 
             return response.RemoteDesktopFile;
         }
@@ -240,20 +243,27 @@ namespace ProvisioningLibrary
                 try
                 {
                     vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
-                    Console.WriteLine("Found cloud service: " + cloudServiceName);
+                    //  Console.WriteLine("Found cloud service: " + cloudServiceName);
+
+                    Console.WriteLine(string.Format("Found cloud service: {0}", cloudServiceName));
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Virtual Machine not found");
+                    Console.WriteLine(string.Format("Virtual Machine for [{0}] cloud was not found!", cloudServiceName));
                     return;
                 }
 
-                Console.WriteLine("Fetching deployment.");
+                Console.WriteLine(string.Format("Fetching deployment for virtual machine [{0}].", virtualMachineName));
                 var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
                 //var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
 
-                if (deployment != null)
+                if (deployment == null)
                 {
+                    Console.Write(string.Format("Failed to fetch deployment for virtual machine [{0}] Start/Stop will exit and do nothing", 
+                        virtualMachineName));
+
+                    return;
+                }
                     var deploymantSlotName = deployment.Name;
                     var serviceName = vm.ServiceName;
 
@@ -265,25 +275,42 @@ namespace ProvisioningLibrary
                     //var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
                     var instance = deployment.RoleInstances.First(x => x.RoleName == virtualMachineName);
 
-                    if (action == VirtualMachineAction.Start)
+                    Console.WriteLine(string.Format("Machine Name[{0}] is currently at [{1}] state", 
+                                                    virtualMachineName,
+                                                    instance.InstanceStatus));
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] is currently at [{1}] state (if not at ReadyRole or StoppedVM the following start/stop will fail)",
+                                                virtualMachineName,
+                                                instance.InstanceStatus));
+
+                if (action == VirtualMachineAction.Start)
                     {
                         if (instance.InstanceStatus == "ReadyRole")
                         {
-                            Console.WriteLine("VM Already Started");
-                            return;
+                            Console.WriteLine(string.Format("VM  [{0}] Deploymentslot[{1}] roleName [{2}] already started (no start will be execute)", serviceName, deploymantSlotName, instance.RoleName));
+
+                        return;
                         }
 
-                        Console.WriteLine("Issuing Management Start cmd");
-                        //TODO this is strange but for now i leave it a is. Need to be refactored.
-                        // refer to "GSUHackfest Note #1" above
-                        //await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
-                        await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.RoleName);
+                        Console.WriteLine(string.Format("Issuing Management Start cmd Service[{0}] Deploymentslot[{1}] roleName [{2}]", serviceName, deploymantSlotName, instance.RoleName));
+                    //TODO this is strange but for now i leave it a is. Need to be refactored.
+                    // refer to "GSUHackfest Note #1" above
+                    //await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.HostName);
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] Starting..",
+                                                virtualMachineName));
+
+                    await computeClient.VirtualMachines.StartAsync(serviceName, deploymantSlotName, instance.RoleName);
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] start command issued..",
+                                          virtualMachineName));
+
                     }
                     else
                     {
-                        if (instance.InstanceStatus == "StoppedVM")
+                        if (instance.InstanceStatus == "StoppedVM" || instance.InstanceStatus == "StoppedDeallocated")
                         {
-                            Console.WriteLine("VM Already Stopped");
+                            Console.WriteLine(string.Format("VM  [{0}] Deploymentslot[{1}] roleName [{2}] already stopped (no stop will be execute)", serviceName, deploymantSlotName, instance.RoleName));
                             return;
                         }
 
@@ -291,13 +318,108 @@ namespace ProvisioningLibrary
                         VirtualMachineShutdownParameters shutdownParms = new VirtualMachineShutdownParameters();
                         shutdownParms.PostShutdownAction = PostShutdownAction.StoppedDeallocated;
 
-                        // refer to "GSUHackfest Note #1" above
-                        //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, shutdownParms);
-                        computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
+                    // refer to "GSUHackfest Note #1" above
+                    //computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.HostName, shutdownParms);
+                    // computeClient.VirtualMachines.Shutdown(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
+                    Console.WriteLine(string.Format("Machine Name[{0}] Stopping..",
+                            virtualMachineName));
+
+                    await computeClient.VirtualMachines.ShutdownAsync(serviceName, deploymantSlotName, instance.RoleName, shutdownParms);
+                    Console.WriteLine(string.Format("Machine Name[{0}] stop command issued..",
+                      virtualMachineName));
+
+                }
+            }
+            
+        }
+
+        /// <summary>
+        ///     Will wait up to 5 minutes for the specified status value
+        /// </summary>
+        /// <param name="virtualMachineName">name of VM to look for</param>
+        /// <param name="cloudServiceName">VMs cloud service</param>
+        /// <param name="desiredState">state to look for</param>
+        /// <returns>true if status requirement is met, false if time expired</returns>
+        public async Task<bool> WaitForStatus(string virtualMachineName, string cloudServiceName, string desiredState)
+        {            
+            bool returnResult = false; // default return result is false
+            int maxPoll = 5; // maximum amount of time to wait for operation
+
+            // use stopwatch to time operation
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            Console.WriteLine(string.Format("Polling Status Monitor: machine: {0}, cloud service: {1}, state: {2}",
+                virtualMachineName,
+                cloudServiceName,
+                desiredState));
+
+            using (var computeClient = new ComputeManagementClient(_credentials))
+            {
+
+                // will monitor for up to 5 minutes
+                while (stopWatch.IsRunning && stopWatch.Elapsed.Minutes <= maxPoll)
+                {
+
+                    HostedServiceGetDetailedResponse vm;
+                    try
+                    {
+                        vm = await computeClient.HostedServices.GetDetailedAsync(cloudServiceName);
+                    
+                        Console.WriteLine(string.Format("Found cloud service: {0}", cloudServiceName));
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine(string.Format("Virtual Machine for [{0}] cloud was not found!", cloudServiceName));
+                        return false;
+                    }
+
+                    Console.WriteLine(string.Format("Fetching deployment for virtual machine [{0}].", virtualMachineName));
+                    var deployment = vm.Deployments.ToList().First(x => x.Name == virtualMachineName);
+                    //var deployment = vm.Deployments.ToList().First(x => x.Name == cloudServiceName);
+
+                    if (deployment == null)
+                    {
+                        Console.Write(string.Format("Failed to fetch deployment for virtual machine [{0}] Start/Stop will exit and do nothing",
+                            virtualMachineName));
+
+                        return false;
+                    }
+                    var deploymantSlotName = deployment.Name;
+                    var serviceName = vm.ServiceName;
+
+                    Console.WriteLine("Fetching instance.");
+                    // GSUHackfest Note #1 by Brent - April 30th
+                    // the line that has been commented out worked for Gabriele's tests with a machine he
+                    // provisioned via SCAMP. But it didn't work with VMs deployed via the Azure portal. 
+                    // we'll need to revist this later to try and reconcile the differences. 
+                    //var instance = deployment.RoleInstances.First(x => x.HostName == virtualMachineName);
+
+                    var instance = deployment.RoleInstances.First(x => x.RoleName == virtualMachineName);
+
+                    Console.WriteLine(string.Format("Machine Name[{0}] is currently at [{1}] state",
+                                                    virtualMachineName,
+                                                    instance.InstanceStatus));
+
+                    if (instance.InstanceStatus == desiredState)
+                    {
+                        stopWatch.Stop(); // stop watching
+                        Console.WriteLine(string.Format("Machine Name[{0}] entered desired state of [{1}] after approximately {2:N3} minutes.",
+                                virtualMachineName,
+                                instance.InstanceStatus,
+                                stopWatch.Elapsed.TotalMinutes));
+                        returnResult = true;
+                    }
+                    else // did match, wait 10 seconds
+                    {
+                        await Task.Delay(10000);
                     }
                 }
             }
+
+            return returnResult;
         }
+
         public async Task<List<string>> GetVirtualMachineList()
         {
             var vmList = new List<string>();

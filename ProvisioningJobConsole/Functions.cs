@@ -10,12 +10,14 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.WindowsAzure.Management.Compute.Models;
 using ProvisioningLibrary;
 using System.Threading.Tasks;
+using ScampTypes.ViewModels;
 
 namespace ProvisioningJobConsole
 {
     public class Functions
     {
-        static IServiceProvider Provider = null;
+        private static IServiceProvider Provider = null;
+        private static IVolatileStorageController _volatileStorageController = null;
 
         static Functions()
         {
@@ -27,6 +29,9 @@ namespace ProvisioningJobConsole
             services.AddDocumentDbRepositories(configuration);
             services.AddKeyVaultRepositories(configuration);
             services.AddProvisioning(configuration);
+
+            services.UseVolatileStorage(configuration);
+
 
             Provider = services.BuildServiceProvider();
         }
@@ -84,10 +89,20 @@ namespace ProvisioningJobConsole
         // on an Azure Queue called queue.
         public async static void ProcessQueueMessage([QueueTrigger("processorqueue")] QueueMessage message, TextWriter log)
         {
+            Console.WriteLine(string.Format("Process Q Message: Resource[{0}] Action[{1}] RequestId[{2}]", 
+                                            message.ResourceId, 
+                                            message.Action,
+                                            message.OperationGuid.ToString()));
+
+            Console.WriteLine(string.Format("Start - Current Time: [{0}]", 
+                                             DateTime.UtcNow.ToLongTimeString()));
+
             // TODO - shouldn't be depending on ResourceController here
             var resourceController = Provider.GetService<IResourceController>();
-
+            if (_volatileStorageController == null)
+                _volatileStorageController = Provider.GetService<IVolatileStorageController>();
             var activity = new ResourceActivity(resourceController);
+            
             if (!await activity.TryInitializeAsync(message.ResourceId))
             {
                 Console.WriteLine("Resource not found");
@@ -103,6 +118,7 @@ namespace ProvisioningJobConsole
 
             try
             {
+                
                 switch (message.Action)
                 {
                     case ResourceAction.Delete:
@@ -122,42 +138,92 @@ namespace ProvisioningJobConsole
                         return;
                 }
 
-                Console.WriteLine(message);
+
+                /*
+
+                the following is logging code. it will need to 
+                be uncommented after the previous code is stable enough
+
+                */
+
+                var groupId = string.Empty;
+                if (activity.Resource != null &&
+                    activity.Resource.ResourceGroup != null)
+                    groupId = activity.Resource.ResourceGroup.Id;
+
+                await _volatileStorageController.CreateActivityLog(new ActivityLog()
+                {
+                    ResourceId = message.ResourceId,
+                    GroupId = groupId,
+                    RequestId = message.OperationGuid.ToString(),
+                    Action = message.Action.ToString(),
+                    UserId = "ProvisioningConsole"
+                });
+
+
+                //Console.WriteLine(string.Format("My orginal message was: {0}", message));
             }
             catch (Exception e)
             {
-                Console.WriteLine("Resource action failed: " + e.Message);
+                Console.WriteLine(string.Format("Process Q Message FAILED!: Resource[{0}] Action[{1}] RequestId[{2}] Error[{3}]",
+                                         message.ResourceId,
+                                         message.Action,
+                                         message.OperationGuid.ToString(), e.Message));
             }
+
+            Console.WriteLine(string.Format("End - Current Time: [{0}]",
+                             DateTime.UtcNow.ToLongTimeString()));
+
         }
 
         static async Task ActionDelete(ResourceActivity activity)
         {
-                //TODO Temporary
-                try
-                {
-                    await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
-                }
-                catch { }
 
-                await activity.ResourceController.DeleteResource(activity.Resource);
+            //TODO Temporary
+            try
+            {
+                await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
+            }
+            catch
+            {
+                Console.WriteLine(string.Format("Stop VM (to delete) [{0}] failed - machine might be stopping or stopped", activity.MachineName));
+            }
+
+            Console.WriteLine(string.Format("about to delete VM [{0}]", activity.MachineName));
+            await activity.ResourceController.DeleteResource(activity.Resource);
+            Console.WriteLine(string.Format("Deleted VM [{0}]", activity.MachineName));
+
         }
 
         static async Task ActionStop(ResourceActivity activity)
-        {
-                Trace.WriteLine("Stopping VM");
-                Console.WriteLine("Stopping VM");
-                await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
-                activity.Resource.State = ResourceState.Stopping;
-                await activity.ResourceController.UpdateResource(activity.Resource);
+        {              
+            Console.WriteLine(string.Format("Stopping VM [{0}]", activity.MachineName));
+
+            await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Stop);
+
+            // stop command completed, need to poll for updated state
+            Task<bool> monitorTask = Task.Run(() => activity.Provisioning.WaitForStatus(activity.MachineName, activity.ServiceName, "StoppedDeallocated"));
+            // when the monitor completes, update resource status
+            Task continuation = monitorTask.ContinueWith(async (antecedent) => {
+                if (antecedent.Result) // if previous completed without timeout
+                    await _volatileStorageController.UpdateResourceState(activity.Resource.Id, ResourceState.Stopped);
+            });
         }
 
 
         static async Task ActionStart(ResourceActivity activity)
         {
-            Console.WriteLine("Starting VM");
+            Console.WriteLine(string.Format("Starting VM [{0}]", activity.MachineName));
             await activity.Provisioning.StartStopVirtualMachineAsync(activity.MachineName, activity.ServiceName, VirtualMachineAction.Start);
-            activity.Resource.State = ResourceState.Starting;
-            await activity.ResourceController.UpdateResource(activity.Resource);
+
+            // start command completed, need to poll for updated state
+            Task<bool> monitorTask = Task.Run(() => activity.Provisioning.WaitForStatus(activity.MachineName, activity.ServiceName, "ReadyRole"));
+            // when the monitor completes, update resource status
+            Task continuation = monitorTask.ContinueWith(async (antecedent) => {
+                if (antecedent.Result) // if previous completed without timeout
+                    await _volatileStorageController.UpdateResourceState(activity.Resource.Id, ResourceState.Running);
+            });
+
         }
 
         static async Task ActionCreate(ResourceActivity activity)
@@ -177,18 +243,20 @@ namespace ProvisioningJobConsole
 
             if (!isCloudServiceAlreadyCreated)
             {
-                Console.WriteLine("Creating Cloud Services");
+                Console.WriteLine(string.Format("Creating Cloud Services [{0}]", activity.ServiceName));
 
                 string location = activity.ResourceController.GetServiceLocation();
                 var x = activity.Provisioning.CreateCloudService(activity.ServiceName, location);
                 x.Wait();
-                Console.WriteLine("Creating Storage");
+                Console.WriteLine(string.Format("Creating Storage for Cloud Service [{0}]", activity.ServiceName));
 
                 await activity.Provisioning.CreateStorageAccount(location, storageAccountName);
             }
 
             //TODO Need to delete disk in case is already there
-            Console.WriteLine("Creating Virtual Machine");
+
+            Console.WriteLine(string.Format("Creating Virtual Machine [{0}]", activity.ServiceName));
+
 
             var z = await activity.Provisioning.CreateVirtualMachine(activity.MachineName, activity.ServiceName, storageAccountName,
                 username, password, "Visual-Studio-2015-Ultimate", VirtualMachineRoleSize.Small, rdpPort, isCloudServiceAlreadyCreated);
