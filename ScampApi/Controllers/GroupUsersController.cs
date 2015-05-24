@@ -6,21 +6,26 @@ using ScampTypes.ViewModels;
 using System.Threading.Tasks;
 using DocumentDbRepositories;
 using System.Linq;
+using ProvisioningLibrary;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {
+    [Authorize]
     [Route("api/group/{groupId}")]
     public class GroupUsersController : Controller
     {
         private readonly IGroupRepository _groupRepository;
         private readonly IUserRepository _userRepository;
         private readonly ISecurityHelper _securityHelper;
+        private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupUsersController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository)
+        public GroupUsersController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
             _groupRepository = groupRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
+            _volatileStorageController = volatileStorageController;
         }
 
         /// <summary>
@@ -48,16 +53,21 @@ namespace ScampApi.Controllers
 
             foreach (ScampUserReference userRef in group.Members)
             {
+                // get user budget for this group
+                var groupBudget = await _volatileStorageController.GetUserBudgetState(userRef.Id, group.Id);
+
+                // build summary item for return
                 UserGroupSummary tmpSummary = new UserGroupSummary()
                 {
                     Id = userRef.Id,
                     Name = userRef.Name,
-                    totUnitsUsed = new Random().NextDouble() * (2000 - 100) + 100,
-                    totUnitsRemaining = new Random().NextDouble() * (2000 - 100) + 100
+                    totUnitsUsed = groupBudget.UnitsUsed,
+                    totUnitsRemaining = (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed)
                 };
-                rtnView.Add(tmpSummary);
+                rtnView.Add(tmpSummary); // add item to list
             }
 
+            // return list
             return new ObjectResult(rtnView) { StatusCode = 200 };
 
         }
@@ -84,12 +94,15 @@ namespace ScampApi.Controllers
 
             foreach (ScampUserGroupResources resourceRef in tmpGroup.Resources)
             {
+                // get resource usage
+                var rscState = await _volatileStorageController.GetResourceState(resourceRef.Id);
+
                 ScampResourceSummary tmpSummary = new ScampResourceSummary()
                 {
                     Id = resourceRef.Id,
                     Name = resourceRef.Name,
-                    totUnitsUsed = new Random().NextDouble() * (2000 - 100) + 100
-                    //TODO: get state from volatile store
+                    State = rscState.State,
+                    totUnitsUsed = rscState.UnitsUsed
                 };
                 rtnView.Add(tmpSummary);
             }

@@ -8,6 +8,7 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
+using ProvisioningLibrary;
 
 namespace ScampApi.Infrastructure
 {
@@ -17,12 +18,14 @@ namespace ScampApi.Infrastructure
         private readonly HttpContext Context;
         private readonly IUserRepository _userRepository;
         private readonly IGroupRepository _groupRepository;
+        private readonly ICacheProvider _cacheProvider;
 
-        public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository )
+        public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository, ICacheProvider cacheProvider)
         {
             Context = httpContextAccessor.HttpContext;
             _userRepository = userRepository;
             _groupRepository = groupRepository;
+            _cacheProvider = cacheProvider;
         }
 
         public async Task<ScampUserReference> GetUserReference()
@@ -33,6 +36,7 @@ namespace ScampApi.Infrastructure
         // retrieves the current user and stores it in cache for future calls
         public async Task<ScampUser> GetCurrentUser()
         {
+
             var userId = GetIPIDByContext();
             //TODO check if user is in cache
             ScampUser tmpUser = await GetUserById(userId);
@@ -52,23 +56,30 @@ namespace ScampApi.Infrastructure
 
         public async Task<ScampUser> GetUserById(string userId)
         {
-            var tmpUser = await _userRepository.GetUserbyId(userId);
-            if (tmpUser == null) // insert if user doesn't exist
+            ScampUser tmpUser = await _cacheProvider.GetUser(userId);
+            if (tmpUser == null) // user isn't cached
             {
-                // build user object
-                tmpUser = new ScampUser()
+                tmpUser = await _userRepository.GetUserbyId(userId);
+                if (tmpUser == null) // insert if user doesn't exist
                 {
-                    Id = userId,
-                    Name =
-                        string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
-                            Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                    IsSystemAdmin = false,
-					// get email address
-					Email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
-                };
+                    // build user object
+                    tmpUser = new ScampUser()
+                    {
+                        Id = userId,
+                        Name =
+                            string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
+                                Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
+                        IsSystemAdmin = false,
+                        // get email address
+                        Email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
+                    };
 
-                // insert into database   
-                await _userRepository.CreateUser(tmpUser);
+                    // insert into database   
+                    await _userRepository.CreateUser(tmpUser);
+                }
+
+                // doesn't work yet because underlying type from SDK isn't serializable
+                //_cacheProvider.SetUser(tmpUser); // save user to cache, no need to wait
             }
             return tmpUser;
         }

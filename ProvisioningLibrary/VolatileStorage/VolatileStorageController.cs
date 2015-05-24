@@ -32,8 +32,6 @@ namespace ProvisioningLibrary
 
         private void Connect()
         {
-
-
             Debug.WriteLine("Storage for VolatileStorge Controller is not connected");
 
                 string sActivityLogStorageConnectionString = VolatileStorageController.Configuration["ActivityLogStorage:ConnectionString"];
@@ -165,11 +163,11 @@ namespace ProvisioningLibrary
             return activtyLog;
         }
 
-        public async Task<ResourceState> GetResourceState(string resourceId)
+        public async Task<CurrentResourceState> GetResourceState(string resourceId)
         {
-            TableOperation retrieveOperation = TableOperation.Retrieve<CurrentResourceState>(CurrentResourceState.PKey, resourceId);
-            TableResult retrievedResult = await this._StateUpdateTable.ExecuteAsync(retrieveOperation);
-            return (ResourceState)((CurrentResourceState)retrievedResult.Result).State;
+            TableOperation retrieveOperation = TableOperation.Retrieve<CurrentResourceState>(resourceId, resourceId);
+            TableResult retrievedResult = await _StateUpdateTable.ExecuteAsync(retrieveOperation);
+            return (CurrentResourceState)retrievedResult.Result;
         }
 
         public async Task UpdateResourceState(CurrentResourceState newstate)
@@ -180,12 +178,41 @@ namespace ProvisioningLibrary
 
         public async Task UpdateResourceState(string resourceId, ResourceState state)
         {
-            CurrentResourceState newState = new CurrentResourceState()
-            {
-                ResourceId = resourceId,
-                State = (int)state
-            };
-            await UpdateResourceState(newState);
+            // get current resource state
+            CurrentResourceState updatedState = await this.GetResourceState(resourceId);
+            if (updatedState == null)
+                updatedState = new CurrentResourceState(resourceId);
+
+            // update with new state
+            updatedState.State = state;
+
+            // save update
+            await UpdateResourceState(updatedState);
         }
+
+        public async Task<GroupBudgetState> GetGroupBudgetState(string groupId)
+        {
+            TableOperation retrieveOperation = TableOperation.Retrieve<GroupBudgetState>(groupId, groupId);
+            TableResult retrievedResult = await _StateUpdateTable.ExecuteAsync(retrieveOperation);
+            return (GroupBudgetState)retrievedResult.Result;
+        }
+
+        public async Task<List<UserBudgetState>> GetUserBudgetStates(string userId)
+        {
+            TableContinuationToken token = null;
+
+            TableQuery<UserBudgetState> query = new TableQuery<UserBudgetState>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userId));
+            var results = await _StateUpdateTable.ExecuteQuerySegmentedAsync(query, token).ConfigureAwait(false);
+                
+            return results.ToList();
+        }
+
+        public async Task<UserBudgetState> GetUserBudgetState(string userId, string groupId)
+        {
+            TableOperation retrieveOperation = TableOperation.Retrieve<UserBudgetState>(userId, groupId);
+            TableResult retrievedResult = await _StateUpdateTable.ExecuteAsync(retrieveOperation);
+            return (UserBudgetState)retrievedResult.Result;
+        }
+
     }
 }

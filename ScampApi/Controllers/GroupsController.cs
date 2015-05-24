@@ -9,23 +9,26 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampTypes.ViewModels;
+using ProvisioningLibrary;
 using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/groups")]
     public class GroupsController : Controller
     {
         private readonly IGroupRepository _groupRepository;
         private readonly IUserRepository _userRepository;
         private readonly ISecurityHelper _securityHelper;
+        private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupsController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository)
+        public GroupsController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
             _groupRepository = groupRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
+            _volatileStorageController = volatileStorageController;
         }
 
         /// <summary>
@@ -49,33 +52,47 @@ namespace ScampApi.Controllers
             {
                 List<ScampAdminGroupReference> rtnView = new List<ScampAdminGroupReference>();
 
+                // build return view
                 foreach (ScampUserGroupMbrship group in userDoc.GroupMembership)
                 {
+                    // get group budget
+                    var groupBudget = await _volatileStorageController.GetGroupBudgetState(group.Id);
+
+                    // build return list item
                     ScampAdminGroupReference tmpGroupRef = new ScampAdminGroupReference()
                     {
                         Id = group.Id,
                         Name = group.Name,
-                        totUnitsUsed = new Random().NextDouble() * (2000 - 100) + 100,
-                        totUnitsAllocated = new Random().NextDouble() * (2000 - 100) + 100,
-                        totUnitsBudgeted = new Random().NextDouble() * (2000 - 100) + 100
+                        totUnitsUsed = groupBudget.UnitsUsed,
+                        totUnitsAllocated = groupBudget.UnitsAllocated,
+                        totUnitsBudgeted = groupBudget.UnitsUsed
                     };
+                    // add item to list
                     rtnView.Add(tmpGroupRef);
                 }
 
+                // return results
                 return new ObjectResult(rtnView) { StatusCode = 200 };
             }
             else if (view == "user") // do user view
             {
                 List<ScampUserGroupReference> rtnView = new List<ScampUserGroupReference>();
 
-                foreach(ScampUserGroupMbrship group in userDoc.GroupMembership)
+                // get user group budgets
+                var groupBudgets = await _volatileStorageController.GetUserBudgetStates(userId);
+
+                foreach (ScampUserGroupMbrship group in userDoc.GroupMembership)
                 {
+                    // get group 
+                    var groupBudget = groupBudgets.First(g => g.groupId == group.Id);
+
+                    // build return object
                     ScampUserGroupReference tmpGroupRef = new ScampUserGroupReference()
                     {
                         Id = group.Id,
                         Name = group.Name,
-                        totUnitsUsedByUser = new Random().NextDouble() * (2000 - 100) + 100,
-                        totUnitsRemainingForUser = new Random().NextDouble() * (2000 - 100) + 100
+                        totUnitsUsedByUser = groupBudget.UnitsUsed,
+                        totUnitsRemainingForUser = (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed)
                     };
                     rtnView.Add(tmpGroupRef);
                 }

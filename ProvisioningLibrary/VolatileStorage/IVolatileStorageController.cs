@@ -14,9 +14,12 @@ namespace ProvisioningLibrary
         Task<List<ActivityLog>> GetRecentActivityLogForRequest(string requestId);
         Task<List<ActivityLog>> GetRecentActivityLogForResource(string resouceId); 
         Task CreateActivityLog(ActivityLog activityLog);
-        Task<ResourceState> GetResourceState(string resourceId);
+        Task<CurrentResourceState> GetResourceState(string resourceId);
         Task UpdateResourceState(CurrentResourceState newstate);
         Task UpdateResourceState(string resourceId, ResourceState state);
         Task CreateActivityLog(List<ActivityLog> activityLogs);
+        Task<GroupBudgetState> GetGroupBudgetState(string groupId);
+        Task<List<UserBudgetState>> GetUserBudgetStates(string userId);
+        Task<UserBudgetState> GetUserBudgetState(string userId, string groupId);
     }
 }
