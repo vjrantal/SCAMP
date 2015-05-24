@@ -104,7 +104,7 @@
                                                 <span class="sr-only">Toggle Dropdown</span>
                                             </button>
                                             <ul class="dropdown-menu" role="menu" style="min-width: 200px;">
-                                                <li ng-repeat="user in groupUsers" ng-class="(user.id == selectedUserId ? 'active' : '')">
+                                                <li ng-repeat="user in groupUsers" ng-class="(user.id == selectedUserId ? 'active' : '')">    
                                                     <a ng-click="loadResources(selectedGroupId, user.id)" data-value="{{user.id}}" style="cursor:pointer">{{user.name}}
                                                         <div class="progress">
                                                             <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{user.userUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{user.userUsage}}%;">
