@@ -51,12 +51,14 @@ angular.module('scamp')
                     else
                         $scope.loadResources($scope.selectedGroupId, userGUID);
 
+                    $scope.dashboardStatus = 'loaded';
                 } else
                     throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
             },
             // resource REST call failed
             function (statusCode) {
                 console.error(statusCode);
+                $scope.dashboardStatus = 'loaded';
             }
         );
 	};
@@ -174,6 +176,7 @@ angular.module('scamp')
 	    var defaultDurationHrs = 8;
 	    console.log(actionSelection);
 	    console.log("Action '" + actionSelection + "' requested on resource " + rsc.id);
+	    $scope.dashboardStatus = 'loading';
 
 	    if (actionSelection.action == "Connect")
 	    {
@@ -188,9 +191,11 @@ angular.module('scamp')
         		
 	        fileSvc.downloadFile(Fileurl, contentType, fileName).then(		
                 function (fileName) {		
-                    console.log("File downloaded: " + fileName)		
+                    console.log("File downloaded: " + fileName);
+                    $scope.dashboardStatus = 'loaded';
                 },function (error) {		
-                    console.log("Failed to download file" + error);		
+                    console.log("Failed to download file" + error);
+                    $scope.dashboardStatus = 'loaded';
                 });		
 	    }
 	    else
@@ -204,6 +209,7 @@ angular.module('scamp')
 	        };
 
 	        event.preventDefault();
+	        $scope.dashboardStatus = 'loaded';
 	    }
 	};
 
