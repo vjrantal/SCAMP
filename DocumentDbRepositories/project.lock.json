@@ -27,18 +27,6 @@
           "compileAssemblies": [
             "lib/net40/Microsoft.Azure.Documents.Client.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Newtonsoft.Json": "4.5.11"
-          },
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/net40/Microsoft.Azure.Documents.Client.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net40/Microsoft.Azure.Documents.Client.dll"
-          ]
         }
       },
       "files": [
@@ -68,23 +56,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.ConfigurationModel.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.ConfigurationModel.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.dll"
           ]
         }
       },
@@ -119,21 +90,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
           ]
         }
       },
@@ -172,24 +128,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.DependencyInjection.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
-            "Microsoft.Framework.DependencyInjection.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.dll"
-          ]
         }
       },
       "files": [
@@ -223,21 +161,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.DependencyInjection.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.Interfaces.dll"
           ]
         }
       },
@@ -273,12 +196,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Runtime.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -296,16 +213,6 @@
       "sha": "nZX7xCBl3PXpxRCxVtVfUXn63gSzrT8aO0VB9Tp24q656IUup9EGE8SGlo0UJ9if48OacJU34ZEtKEGWIdNCzg==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/net45/Newtonsoft.Json.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Newtonsoft.Json.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {},
           "frameworkAssemblies": [],
           "runtimeAssemblies": [

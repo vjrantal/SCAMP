@@ -5,14 +5,14 @@
     "": [
       "ScampTypes >= 1.0.0-*"
     ],
-    "Asp.Net,Version=v5.0": []
+    "DNX,Version=v4.5.1": []
   },
   "libraries": {
     "Newtonsoft.Json/6.0.8": {
       "serviceable": false,
       "sha": "nZX7xCBl3PXpxRCxVtVfUXn63gSzrT8aO0VB9Tp24q656IUup9EGE8SGlo0UJ9if48OacJU34ZEtKEGWIdNCzg==",
       "frameworks": {
-        "Asp.Net,Version=v5.0": {
+        "DNX,Version=v4.5.1": {
           "dependencies": {},
           "frameworkAssemblies": [],
           "runtimeAssemblies": [

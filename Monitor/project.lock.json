@@ -38,12 +38,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Authentication.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -78,12 +72,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Authorization.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -118,12 +106,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Cors.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -159,12 +141,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Cors.Core.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -194,21 +170,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Cryptography.Internal.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net451/Microsoft.AspNet.Cryptography.Internal.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net451/Microsoft.AspNet.Cryptography.Internal.dll"
           ]
         }
       },
@@ -251,30 +212,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.DataProtection.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.AspNet.Cryptography.Internal": "1.0.0-beta4",
-            "Microsoft.AspNet.DataProtection.Interfaces": "1.0.0-beta4",
-            "Microsoft.Framework.DependencyInjection.Interfaces": "1.0.0-beta4",
-            "Microsoft.Framework.Logging.Interfaces": "1.0.0-beta4",
-            "Microsoft.Framework.OptionsModel": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "System.Security",
-            "System.Xml",
-            "System.Xml.Linq",
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net451/Microsoft.AspNet.DataProtection.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net451/Microsoft.AspNet.DataProtection.dll"
-          ]
         }
       },
       "files": [
@@ -308,21 +245,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.DataProtection.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net451/Microsoft.AspNet.DataProtection.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net451/Microsoft.AspNet.DataProtection.Interfaces.dll"
           ]
         }
       },
@@ -362,12 +284,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Diagnostics.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -398,12 +314,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Diagnostics.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -434,12 +344,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.FeatureModel.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -471,23 +375,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.FileProviders.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.AspNet.FileProviders.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.AspNet.FileProviders.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.AspNet.FileProviders.dll"
           ]
         }
       },
@@ -522,23 +409,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.FileProviders.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.Caching.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.AspNet.FileProviders.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.AspNet.FileProviders.Interfaces.dll"
           ]
         }
       },
@@ -581,12 +451,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Hosting.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -622,12 +486,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Hosting.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -660,12 +518,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Http.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -703,12 +555,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Http.Core.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -745,12 +591,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Http.Extensions.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -781,12 +621,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Http.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -820,12 +654,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.JsonPatch.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -861,12 +689,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Loader.IIS.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -884,12 +706,6 @@
       "sha": "50FEL0+abeAABvCoPs1A0Vcl65PyBKyzg06aL0H+Y+WZMoLI+Bvd1M9WKDj8nfm6K5Jh033oI7fQbOfscd8wqw==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {},
           "frameworkAssemblies": [],
           "runtimeAssemblies": [],
@@ -928,12 +744,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Mvc.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -978,12 +788,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Mvc.Core.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1022,12 +826,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Mvc.ModelBinding.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1070,12 +868,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Mvc.Razor.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1111,25 +903,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Mvc.Razor.Host.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.AspNet.FileProviders": "1.0.0-beta4",
-            "Microsoft.AspNet.Razor.Runtime": "4.0.0-beta4",
-            "Microsoft.Framework.Caching.Memory": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.AspNet.Mvc.Razor.Host.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.AspNet.Mvc.Razor.Host.dll"
-          ]
         }
       },
       "files": [
@@ -1162,12 +935,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.PageExecutionInstrumentation.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1197,21 +964,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Razor.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.AspNet.Razor.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.AspNet.Razor.dll"
           ]
         }
       },
@@ -1246,23 +998,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Razor.Runtime.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.AspNet.Razor": "4.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.AspNet.Razor.Runtime.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.AspNet.Razor.Runtime.dll"
           ]
         }
       },
@@ -1300,12 +1035,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Routing.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1323,15 +1052,6 @@
       "sha": "zPKpt9wna/Jw+PxywvKQDSVL5ZlzkE4arxpCcgrrJv2r1bwkWSAWiy6b9sp79aAzYSO9/qlt2FJPD6edeh29bg==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {
-            "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta4",
-            "Microsoft.AspNet.Loader.IIS": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {
             "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta4",
             "Microsoft.AspNet.Loader.IIS": "1.0.0-beta4"
@@ -1374,12 +1094,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.Server.WebListener.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1417,12 +1131,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.StaticFiles.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1440,21 +1148,6 @@
       "sha": "ugTW8cKNmiEtOnBxTrgLVr03DMDXXxipQ9ZF5m5vuVb8OytNqRRkhUYhwIfbsTY9h82kF4JYTVTPplwjBMovbA==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.AspNet.WebSockets.Protocol.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.AspNet.WebSockets.Protocol.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {},
           "frameworkAssemblies": [
             "mscorlib",
@@ -1501,12 +1194,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.WebSockets.Server.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1539,12 +1226,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.AspNet.WebUtilities.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -1562,14 +1243,6 @@
       "sha": "/4Z5es8TXCEn5sfzWz2uhUITmikgCfMAhehMJPQcSD2FRp2ooLTczDq3p4KOl+bcnsvaAu0aKrmdRgOvkrcwhw==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "System"
-          ],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {},
           "frameworkAssemblies": [
             "System"
@@ -1596,22 +1269,6 @@
       "sha": "7ALXqeJxiEMgnSST2qlWMThc5CIhJNFsUKYITIXXXj7gf8mF+ktEuKgUE7NWePzUgi0gq/2WmBX/4yWJuF1j6w==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {
-            "System.Collections.Immutable": "[1.1.33-beta]",
-            "System.Reflection.Metadata": "[1.0.18-beta]",
-            "Microsoft.CodeAnalysis.Analyzers": "[1.0.0-rc2]"
-          },
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.CodeAnalysis.Desktop.dll",
-            "lib/net45/Microsoft.CodeAnalysis.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.CodeAnalysis.Desktop.dll",
-            "lib/net45/Microsoft.CodeAnalysis.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {
             "System.Collections.Immutable": "[1.1.33-beta]",
             "System.Reflection.Metadata": "[1.0.18-beta]",
@@ -1658,20 +1315,6 @@
             "lib/net45/Microsoft.CodeAnalysis.CSharp.Desktop.dll",
             "lib/net45/Microsoft.CodeAnalysis.CSharp.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.CodeAnalysis.Common": "[1.0.0-rc2]"
-          },
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.CodeAnalysis.CSharp.Desktop.dll",
-            "lib/net45/Microsoft.CodeAnalysis.CSharp.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.CodeAnalysis.CSharp.Desktop.dll",
-            "lib/net45/Microsoft.CodeAnalysis.CSharp.dll"
-          ]
         }
       },
       "files": [
@@ -1704,21 +1347,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Caching.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.Caching.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.Caching.Interfaces.dll"
           ]
         }
       },
@@ -1755,24 +1383,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Caching.Memory.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.OptionsModel": "1.0.0-beta4",
-            "Microsoft.Framework.Caching.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.Caching.Memory.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.Caching.Memory.dll"
-          ]
         }
       },
       "files": [
@@ -1808,23 +1418,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.ConfigurationModel.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.ConfigurationModel.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.dll"
-          ]
         }
       },
       "files": [
@@ -1858,21 +1451,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
           ]
         }
       },
@@ -1911,24 +1489,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.DependencyInjection.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
-            "Microsoft.Framework.DependencyInjection.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.dll"
-          ]
         }
       },
       "files": [
@@ -1962,21 +1522,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.DependencyInjection.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.DependencyInjection.Interfaces.dll"
           ]
         }
       },
@@ -2016,25 +1561,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Logging.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.DependencyInjection.Interfaces": "1.0.0-beta4",
-            "Microsoft.Framework.Logging.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "System.Collections.Concurrent",
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.Logging.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.Logging.dll"
-          ]
         }
       },
       "files": [
@@ -2068,21 +1594,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Logging.Interfaces.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.Logging.Interfaces.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.Logging.Interfaces.dll"
           ]
         }
       },
@@ -2121,24 +1632,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.OptionsModel.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
-            "Microsoft.Framework.DependencyInjection.Interfaces": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.OptionsModel.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.OptionsModel.dll"
-          ]
         }
       },
       "files": [
@@ -2173,12 +1666,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Runtime.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -2213,12 +1700,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Runtime.Roslyn.Common.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -2252,12 +1733,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.Runtime.Roslyn.Interfaces.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [],
-          "compileAssemblies": []
         }
       },
       "files": [
@@ -2292,25 +1767,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.WebEncoders.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.DependencyInjection.Interfaces": "1.0.0-beta4",
-            "Microsoft.Framework.OptionsModel": "1.0.0-beta4",
-            "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.WebEncoders.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.WebEncoders.dll"
-          ]
         }
       },
       "files": [
@@ -2343,21 +1799,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Framework.WebEncoders.Core.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Framework.WebEncoders.Core.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Framework.WebEncoders.Core.dll"
-          ]
         }
       },
       "files": [
@@ -2389,21 +1830,6 @@
           ],
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Net.Http.Headers.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Net.Http.Headers.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Net.Http.Headers.dll"
           ]
         }
       },
@@ -2440,24 +1866,6 @@
           "compileAssemblies": [
             "lib/dnx451/Microsoft.Net.Http.Server.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Framework.Logging": "1.0.0-beta4",
-            "Microsoft.Net.WebSockets": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Net.Http.Server.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Net.Http.Server.dll"
-          ]
         }
       },
       "files": [
@@ -2477,21 +1885,6 @@
       "sha": "NmW6dLxY5zu7Dyb12PttLWje8wSjxrlBeUovtchbJfZe/OTRw5FFe/Z6yytLuWT3UcA+siGVv2t/br2xXkDqYg==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {},
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Net.WebSocketAbstractions.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Net.WebSocketAbstractions.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {},
           "frameworkAssemblies": [
             "mscorlib",
@@ -2537,23 +1930,6 @@
           "compileAssemblies": [
             "lib/net45/Microsoft.Net.WebSockets.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {
-            "Microsoft.Net.WebSocketAbstractions": "1.0.0-beta4"
-          },
-          "frameworkAssemblies": [
-            "mscorlib",
-            "System",
-            "System.Core",
-            "Microsoft.CSharp"
-          ],
-          "runtimeAssemblies": [
-            "lib/net45/Microsoft.Net.WebSockets.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Microsoft.Net.WebSockets.dll"
-          ]
         }
       },
       "files": [
@@ -2571,16 +1947,6 @@
       "sha": "nZX7xCBl3PXpxRCxVtVfUXn63gSzrT8aO0VB9Tp24q656IUup9EGE8SGlo0UJ9if48OacJU34ZEtKEGWIdNCzg==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/net45/Newtonsoft.Json.dll"
-          ],
-          "compileAssemblies": [
-            "lib/net45/Newtonsoft.Json.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {},
           "frameworkAssemblies": [],
           "runtimeAssemblies": [
@@ -2625,16 +1991,6 @@
           "compileAssemblies": [
             "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll"
           ]
-        },
-        "Asp.Net,Version=v5.0": {
-          "dependencies": {},
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll"
-          ],
-          "compileAssemblies": [
-            "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll"
-          ]
         }
       },
       "files": [
@@ -2651,18 +2007,6 @@
       "sha": "4PtC2U6seQthZMvXvGTxXZUqlF0oV9jzYNTkG0Yo/D6cLO5AH3lrxh2djGyKsDYnAZjBCoyA/z3vHRCeaBEp4w==",
       "frameworks": {
         "DNX,Version=v4.5.1": {
-          "dependencies": {
-            "System.Collections.Immutable": "1.1.33-beta"
-          },
-          "frameworkAssemblies": [],
-          "runtimeAssemblies": [
-            "lib/portable-net45+win8/System.Reflection.Metadata.dll"
-          ],
-          "compileAssemblies": [
-            "lib/portable-net45+win8/System.Reflection.Metadata.dll"
-          ]
-        },
-        "Asp.Net,Version=v5.0": {
           "dependencies": {
             "System.Collections.Immutable": "1.1.33-beta"
           },
