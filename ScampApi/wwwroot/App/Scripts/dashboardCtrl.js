@@ -46,7 +46,11 @@ angular.module('scamp')
                     $scope.selectedGroupId = data[0].id;
                     $scope.selectedGroupName = data[0].name;
                     
-                    $scope.loadUsers($scope.selectedGroupId);
+                    if ($scope.dashboardView == 'admin')
+                        $scope.loadUsers($scope.selectedGroupId);
+                    else
+                        $scope.loadResources($scope.selectedGroupId, userGUID);
+
                 } else
                     throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
             },
@@ -173,7 +177,7 @@ angular.module('scamp')
 
 	    if (actionSelection.action == "Connect")
 	    {
-	        var groupId = rsc.resourceGroup.id,		
+	        var groupId = $scope.selectedGroupId,
                 resourceId = rsc.id,		
                 contentType = "application/rdp; charset=utf-8",		
                 fileName = "service.rdp"		
@@ -228,8 +232,24 @@ angular.module('scamp')
 	    $('#resourceSendActionModal').modal('hide');
 	};
 
-}]);
-
+}])
+.directive("radioButton", function () {//This is a workaround due to a Bootstrap 3 bug with Angular which doesnt support radio buttons. 
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ctrl) {
+            element.bind('click', function () {
+                if (!element.hasClass('active')) {
+                    scope.$apply(function () {
+                        scope.dashboardView = attrs.value;
+                        scope.populate();
+                    });
+                }
+              }
+            );
+        }
+    }
+});
 
 angular.module('scamp')
 .controller('GroupUsersModalCtrl', function ($scope, $modalInstance, groupSvc, group, users, currentUser) {

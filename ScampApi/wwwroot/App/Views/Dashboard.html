@@ -35,11 +35,11 @@
     <h2>Dashboard Insights</h2>
     &nbsp;&nbsp;&nbsp;Select a view:
     <span class="btn-group" data-toggle="buttons">
-        <label class="btn btn-primary btn-xs active">
-            <input type="radio" ng-model="dashboardView" value="admin" ng-change='populate()'> Admin
+        <label class="btn btn-primary btn-xs" ng-class="(dashboardView=='admin' ? 'active' : '')" radio-button ng-model="dashboardView" value="admin">
+            Admin
         </label>
-        <label class="btn btn-primary btn-xs">
-            <input type="radio" ng-model="dashboardView" value="user" ng-change='populate()'> Student
+        <label class="btn btn-primary btn-xs" ng-class="(dashboardView=='user' ? 'active' : '')" radio-button ng-model="dashboardView" value="user">
+            Student
         </label>
     </span>
 </div>
@@ -88,6 +88,9 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-5" style="padding-left:4px;">
+                                        <div ng-show="dashboardView=='user'" style="display: inline;">
+                                            Your Resource usage:
+                                        </div>
                                         <div class="btn-group action-cell" ng-show="dashboardView=='admin'" style="display: inline;">
                                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{selectedUserName}}</button>
                                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -96,7 +99,7 @@
                                             </button>
                                             <ul class="dropdown-menu" role="menu" style="min-width: 200px;">
                                                 <li ng-repeat="user in groupUsers" ng-class="(user.id == selectedUserId ? 'active' : '')">
-                                                    <a ng-click="loadResources(selectedGroupId, user.id)" data-value="{{user.id}}">{{user.name}}
+                                                    <a ng-click="loadResources(selectedGroupId, user.id)" data-value="{{user.id}}" style="cursor:pointer">{{user.name}}
                                                         <div class="progress">
                                                             <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{user.userUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{user.userUsage}}%;">
                                                                 {{user.userUsage}}% Used
@@ -108,7 +111,7 @@
                                         </div> 
                                     </div>
                                     <div class="col-md-7" style="padding-left: 0px;">
-                                        <div class="progress" style="max-width: 200px;margin-top: 6px;">
+                                        <div class="progress" style="max-width: 200px;margin-top: 1px;">
                                             <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{selectedUsersUsage}}%;">
                                                 {{selectedUsersUsage}}% Used
                                             </div>
@@ -145,7 +148,7 @@
                                                             </li>
                                                         </ul>
                                                     </div>
-                                                    <i class="fa fa-laptop fa-2x" style="cursor: pointer;"></i>
+                                                    <a ng-click="confirmResourceAction({action: 'Connect'}, resource, $event)"><i class="fa fa-laptop fa-2x" style="cursor: pointer;"></i></a>
                                                 </td>
                                                 <td>{{resource.totUnitsUsed}} Units Used</td>
                                             </tr>
