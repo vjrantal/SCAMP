@@ -65,7 +65,7 @@ namespace ScampApi.Controllers
                         Name = group.Name,
                         totUnitsUsed = groupBudget.UnitsUsed,
                         totUnitsAllocated = groupBudget.UnitsAllocated,
-                        totUnitsBudgeted = groupBudget.UnitsUsed
+                        totUnitsBudgeted = groupBudget.UnitsBudgetted
                     };
                     // add item to list
                     rtnView.Add(tmpGroupRef);

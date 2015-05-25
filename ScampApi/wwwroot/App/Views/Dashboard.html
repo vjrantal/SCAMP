@@ -1,4 +1,4 @@
-﻿<div class="modal fade" style="color:#000" id="resourceSendActionModal" tabindex="-1" role="dialog" aria-labelledby="resourceSendActionModalLabel" aria-hidden="true">
+<div class="modal fade" style="color:#000" id="resourceSendActionModal" tabindex="-1" role="dialog" aria-labelledby="resourceSendActionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" style="border-style:none">
@@ -35,13 +35,14 @@
     <h2>Dashboard Insights</h2>
     &nbsp;&nbsp;&nbsp;Select a view:
     <span class="btn-group" data-toggle="buttons">
-        <label class="btn btn-primary btn-xs active">
-            <input type="radio" name="options" id="option1" autocomplete="off" checked=""> Admin
+        <label class="btn btn-primary btn-xs" ng-class="(dashboardView=='admin' ? 'active' : '')" radio-button ng-model="dashboardView" value="admin">
+            Admin
         </label>
-        <label class="btn btn-primary btn-xs">
-            <input type="radio" name="options" id="option2" autocomplete="off"> Student
+        <label class="btn btn-primary btn-xs" ng-class="(dashboardView=='user' ? 'active' : '')" radio-button ng-model="dashboardView" value="user">
+            Student
         </label>
     </span>
+    <i class="fa fa-spinner fa-pulse fa-2x" ng-show="dashboardStatus=='loading'" style="margin-left: 6px;"></i>
 </div>
 <div class="dashboard page-content container-fluid" id="dashboard_tabs" ng-init="populate()">
         <div class="row group-selection">
@@ -53,111 +54,111 @@
                     <div class="row">
                             <div class="col-md-3 dashboard-side-div">
                                 <div class="list-group">
-                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item active">
-                                        <div class="row">
-                                            <div class="col-md-3 group-item-icon">
-                                                <i class="fa fa-users"></i>
-                                            </div>
-                                            <div class="col-md-9 group-item-status">
-                                                <div>CS 101</div>
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 2%;">
-                                                        2%
+                                        <a ng-repeat="group in groups" ng-click="loadUsers(group.id)" style="cursor:pointer; padding-right: 0px" ng-class="(group.id==selectedGroupId) ? 'active' : ''" class="list-group-item resource-group-item">
+                                            <div class="row">
+                                                <div class="col-md-3 group-item-icon">
+                                                    <i class="fa fa-users"></i>
+                                                </div>
+                                                <div class="col-md-9 group-item-status">
+                                                    <div>{{group.name}}</div>
+                                                    <div class="progress" ng-show="dashboardView=='admin'">
+                                                        <div class="progress-bar progress-bar-info" role="progressbar" style="width:{{group.usageLabel}}%">
+                                                            {{group.usageLabel}}%
+                                                        </div>
+                                                        <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{group.availLabel}}%">
+                                                            {{group.availLabel}}%
+                                                        </div>
+                                                        <div class="progress-bar progress-bar-warning" role="progressbar" style="width:{{group.unallocatedLabel}}%">
+                                                            {{group.unallocatedLabel}}% Unallocated
+                                                        </div>
+                                                    </div>
+                                                    <div class="progress"  ng-show="dashboardView=='user'">
+                                                        <div class="progress-bar" role="progressbar" aria-valuenow="{{group.usageLabel}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{group.usageLabel}}%;">
+                                                            {{group.usageLabel}}%
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item">
-                                        <div class="row">
-                                            <div class="col-md-3 group-item-icon">
-                                                <i class="fa fa-users"></i>
-                                            </div>
-                                            <div class="col-md-9 group-item-status">
-                                                <div>Advanced Data Struc..</div>
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 56%;">
-                                                        56%
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item">
-                                        <div class="row">
-                                            <div class="col-md-3 group-item-icon">
-                                                <i class="fa fa-users"></i>
-                                            </div>
-                                            <div class="col-md-9 group-item-status">
-                                                <div>Web Engineering</div>
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 22%;">
-                                                        22%
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" style="padding-right: 0px" class="list-group-item resource-group-item">
-                                        <div class="row">
-                                            <div class="col-md-3 group-item-icon">
-                                                <i class="fa fa-users"></i>
-                                            </div>
-                                            <div class="col-md-9 group-item-status">
-                                                <div>Intermediate Java</div>
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 24%;">
-                                                        24%
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
+                                        </a>
                                 </div>
                             </div>
                             <div class="col-md-8 dashboard-grid-column">
-                                <table class="table table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <td>Name</td>
-                                            <td>State</td>
-                                            <td>Resource</td>
-                                            <td>Type</td>
-                                            <td>Action</td>
-                                            <td>Remaining</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- ngRepeat: resource in resources -->
-                                        <tr ng-repeat="resource in resources">
-                                            <td class="text-center">{{resource.name}}</td>
-                                            <td>{{resource.name}}</td>
-                                            <td>{{resource.resourceTypeDesc}}</td>
-                                            <td>{{resource.groupName}}</td>
-                                            <td>
-                                                <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
-                                                    <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
-                                                    <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                        <span class="caret"></span>
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                    </button>
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        <li ng-repeat="action in rscStateDescMapping[resource.state].allowableActions">
-                                                            <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-toggle="modal" data-target="#resourceSendActionModal" data-resource-id="{{resource.id}}">{{action}}</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="progress">
-                                                    <div class="progress-bar progress-bar-{{resource.usageEscalation}}" role="progressbar" aria-valuenow="{{resource.remaining}}" aria-valuemin="0" aria-valuemax="100" style="width: {{resource.remaining}}%;">
-                                                        {{resource.remaining}}%
+                                <div class="row">
+                                    <div class="col-md-12" style="padding-left:4px;"><h4>{{selectedGroupName}} User Resource Summary</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12" style="padding-left:4px;">
+                                        <div ng-show="dashboardView=='user'" style="display: inline;">
+                                            Your Resource usage:
+                                        </div>
+                                        <div class="btn-group action-cell" ng-show="dashboardView=='admin'" style="display: inline;">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="" style="color:#fff;">
+                                                    <img src="/app/images/default_profile_2_0.jpg" class="img-rounded user-avatar-sm" style="width: 25px;height: 25px;">
+                                                </span>
+                                                 {{selectedUserName}}
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="height: 37px;">
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu" style="min-width: 200px;">
+                                                <li ng-repeat="user in groupUsers" ng-class="(user.id == selectedUserId ? 'active' : '')">    
+                                                    <a ng-click="loadResources(selectedGroupId, user.id)" data-value="{{user.id}}" style="cursor:pointer">{{user.name}}
+                                                        <div class="progress">
+                                                            <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{user.userUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{user.userUsage}}%;">
+                                                                {{user.userUsage}}% Used
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="progress" style="margin-top: -13px;margin-left: 210px;padding-left: 0px;/* margin-bottom: 50px!important; */">
+                                            <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{selectedUsersUsage}}%;">
+                                                {{selectedUsersUsage}}% Used
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                <td>State</td>
+                                                <td>Type</td>
+                                                <td>Action</td>
+                                                <td>Usage</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- ngRepeat: resource in resources -->
+                                            <tr ng-repeat="resource in resources">
+                                                <td class="text-center">{{resource.name}}</td>
+                                                <td>{{resource.stateDescription}}</td>
+                                                <td>{{resource.resourceTypeDesc}}</td>
+                                                <td style="padding-top: 2px;">
+                                                    <div class="btn-group action-cell" ng-show="rscStateDescMapping[resource.state].allowableActions.length>0">
+                                                        <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{rscStateDescMapping[resource.state].allowableActions[0]}}</button>
+                                                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="caret"></span>
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" role="menu">
+                                                            <li ng-repeat="action in rscStateDescMapping[resource.state].allowableActions">
+                                                                <a href="#" ng-click="confirmResourceAction(this, resource, $event)" data-toggle="modal" data-target="#resourceSendActionModal" data-resource-id="{{resource.id}}">{{action}}</a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                    <a ng-click="confirmResourceAction({action: 'Connect'}, resource, $event)"><i class="fa fa-laptop fa-2x" style="cursor: pointer;"></i></a>
+                                                </td>
+                                                <td>{{resource.totUnitsUsed}} Units Used</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                     </div>
                 </div>
@@ -165,7 +166,7 @@
             <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fa fa-cubes"></i>&nbsp;Summary</h3>
+                        <h3 class="panel-title"><i class="fa fa-cubes"></i>&nbsp;My Summary</h3>
                     </div>
                     <div class="panel-body">
                         <div class="list-group">

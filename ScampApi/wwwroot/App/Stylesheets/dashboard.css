@@ -15,6 +15,10 @@
     padding:2em 4em;
 }
 
+h4{
+    margin-bottom: 0px!important;
+}
+
 .dashboard-grid-container{
   padding-right: 4px!important;
   padding-left: 4px!important;
@@ -23,6 +27,10 @@
 table>thead{
       font-size: 10px;
       font-weight: bold;
+}
+
+.progress-bar{
+    font-size: 8px!important;
 }
 
 table>tbody{
@@ -101,6 +109,7 @@ table>tbody{
 .resource-group-item {
   position: relative!important;
   display: block!important;
+  cursor:pointer!important;
   padding: 10px 15px!important;
   margin-bottom: -1px!important;
   background-color: #222!important;
