@@ -6,10 +6,12 @@ angular.module('scamp')
 
     var scampDashboard = new ScampDashboard($scope);
     $scope.currentRouteName = 'Dashboard';
+    $scope.isAdmin = true;
+
 	$scope.userList = null;
 	$scope.rscStateDescMapping = {
-	    0: {description: "Unknown", allowableActions : [] },
-	    1: {description: "Allocated", allowableActions : ["Start", "Delete"] },
+	    12: {description: "Unknown", allowableActions : [] },
+	    0: {description: "Allocated", allowableActions : ["Start", "Delete"] },
 	    2: {description: "Starting", allowableActions : [], previousAction: "Start" },
 	    3: {description: "Running", allowableActions : ["Connect", "Stop"] },
 	    4: {description: "Stopping", allowableActions : [], previousAction: "Stop" },
@@ -19,7 +21,7 @@ angular.module('scamp')
 	};
 
 	$scope.resourceTypes = {
-	    1: "Virtual Machine",
+	    0: "Virtual Machine",
 	    2: "Web App"
 	};
 
@@ -27,15 +29,74 @@ angular.module('scamp')
 	    scampDashboard.initialize();
 
 	    var userGUID = $scope.userProfile.id;
+        //Default the view to admin view as long as the user has administrative priviledges or keep the view as it is if it's set to admin
+	    if (!$scope.dashboardView && $scope.isAdmin || ($scope.dashboardView && $scope.dashboardView=='admin'))
+	        $scope.dashboardView = 'admin';
+	    else
+	        $scope.dashboardView = 'user';
+
 	    $scope.dashboardStatus = 'loading';
 
-	    userSvc.getResourceList(userGUID).then(
-            // resource REST call was a success
+	    userSvc.getGroupList(userGUID, $scope.dashboardView).then(
             function (data) {
-                console.log(data)
-                console.log(data)
-                console.log(data)
-                scampDashboard.render(data);
+                if (data && data.length > 0) {
+                    $scope.groups = data.map(function (item) {
+                        return scampDashboard.computeUsagePercentages(item);
+                    });
+                    $scope.selectedGroupId = data[0].id;
+                    $scope.selectedGroupName = data[0].name;
+                    
+                    if ($scope.dashboardView == 'admin')
+                        $scope.loadUsers($scope.selectedGroupId);
+                    else
+                        $scope.loadResources($scope.selectedGroupId, userGUID);
+
+                    $scope.dashboardStatus = 'loaded';
+                } else
+                    throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
+            },
+            // resource REST call failed
+            function (statusCode) {
+                console.error(statusCode);
+                $scope.dashboardStatus = 'loaded';
+            }
+        );
+	};
+
+	$scope.loadUsers = function (groupId) {
+	    if (!groupId)
+	        throw new Error("Mandatory paramter groupId needs to be specified");
+
+	    groupsSvc.getUsers(groupId).then(
+            function (data) {
+                if (data && data.length > 0) {
+                    $scope.groupUsers = data.map(function (item) {
+                        var totalUnitsAllocated = item.totUnitsUsed + item.totUnitsRemaining;
+                        item.userUsage = (totalUnitsAllocated > 0) ? Math.round((item.totUnitsUsed / totalUnitsAllocated) * 100) : 0;
+
+                        return item;
+                    });
+                    
+                    $scope.loadResources(groupId, data[0].id);
+                }
+            },
+            // resource REST call failed
+            function (statusCode) {
+                console.error(statusCode);
+            }
+        );
+	};
+
+	$scope.loadResources = function (groupId, userId) {
+	    if (!groupId || !userId)
+	        throw new Error("Mandatory paramter groupId and userId need to be specified");
+
+	    scampDashboard.setCurrentUser(userId);
+	    userSvc.getResourceList(userId, groupId).then(
+            function (data) {
+                if (data && data.length > 0) {
+                    scampDashboard.render(data);
+                }
             },
             // resource REST call failed
             function (statusCode) {
@@ -115,10 +176,11 @@ angular.module('scamp')
 	    var defaultDurationHrs = 8;
 	    console.log(actionSelection);
 	    console.log("Action '" + actionSelection + "' requested on resource " + rsc.id);
+	    $scope.dashboardStatus = 'loading';
 
 	    if (actionSelection.action == "Connect")
 	    {
-	        var groupId = rsc.resourceGroup.id,		
+	        var groupId = $scope.selectedGroupId,
                 resourceId = rsc.id,		
                 contentType = "application/rdp; charset=utf-8",		
                 fileName = "service.rdp"		
@@ -129,9 +191,11 @@ angular.module('scamp')
         		
 	        fileSvc.downloadFile(Fileurl, contentType, fileName).then(		
                 function (fileName) {		
-                    console.log("File downloaded: " + fileName)		
+                    console.log("File downloaded: " + fileName);
+                    $scope.dashboardStatus = 'loaded';
                 },function (error) {		
-                    console.log("Failed to download file" + error);		
+                    console.log("Failed to download file" + error);
+                    $scope.dashboardStatus = 'loaded';
                 });		
 	    }
 	    else
@@ -145,6 +209,7 @@ angular.module('scamp')
 	        };
 
 	        event.preventDefault();
+	        $scope.dashboardStatus = 'loaded';
 	    }
 	};
 
@@ -173,8 +238,24 @@ angular.module('scamp')
 	    $('#resourceSendActionModal').modal('hide');
 	};
 
-}]);
-
+}])
+.directive("radioButton", function () {//This is a workaround due to a Bootstrap 3 bug with Angular which doesnt support radio buttons. 
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ctrl) {
+            element.bind('click', function () {
+                if (!element.hasClass('active')) {
+                    scope.$apply(function () {
+                        scope.dashboardView = attrs.value;
+                        scope.populate();
+                    });
+                }
+              }
+            );
+        }
+    }
+});
 
 angular.module('scamp')
 .controller('GroupUsersModalCtrl', function ($scope, $modalInstance, groupSvc, group, users, currentUser) {

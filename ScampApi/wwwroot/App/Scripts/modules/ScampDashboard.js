@@ -9,6 +9,10 @@
         { maxUsage: 101, cssClass: "danger" }
     ];
 
+    var isNumber = function (o) {
+        return typeof o === 'number' && isFinite(o);
+    };
+
     var chartsToRender = [
                 { fieldName: 'usageEscalation', domElement: 'usageDonutChart' },
                 { fieldName: 'groupName', domElement: 'groupDonutChart' },
@@ -49,6 +53,38 @@
          //   renderCharts(scope.resources);
     };
 
+    this.setCurrentUser = function (userId) {
+        var user = scope.groupUsers.filter(function (item) {
+            if (item.id == userId) return true;
+            else return false;
+        });
+
+        if (user && user.length == 1)
+            user = user[0];
+        else
+            throw new Error("Unable to find user " + userId + " in the group user list");
+
+        scope.selectedUserId = user.id;
+        scope.selectedUserName = user.name;
+        var totalUnitsAllocated = user.totUnitsUsed + user.totUnitsRemaining;
+        scope.selectedUsersUsage = (totalUnitsAllocated > 0) ? Math.round((user.totUnitsUsed / totalUnitsAllocated) * 100) : 0;
+    }
+
+    this.computeUsagePercentages = function (group) {
+        if (scope.dashboardView == 'admin') {
+            group.usageLabel = (group.totUnitsBudgeted > 0) ? Math.round((group.totUnitsUsed / group.totUnitsBudgeted) * 100) : 0;
+            group.availLabel = (group.totUnitsBudgeted > 0) ? Math.round(((group.totUnitsAllocated - group.totUnitsUsed) / group.totUnitsBudgeted) * 100) : 0;
+            group.unallocatedLabel = 100 - (group.usageLabel + group.availLabel);
+        } else {
+            var totalUnitsAllocated = group.totUnitsRemainingForUser + group.totUnitsUsedByUser;
+
+            group.usageLabel = (totalUnitsAllocated > 0) ? Math.round((group.totUnitsUsedByUser / totalUnitsAllocated) * 100) : 0;
+            group.availLabel = (totalUnitsAllocated > 0) ? Math.round((group.totUnitsRemainingForUser / totalUnitsAllocated) * 100) : 0;
+        }
+
+        return group;
+    };
+
     var setResources = function(rspData){
         scope.resources = rspData.filter(function (item) {
             return scope.rscStateDescMapping[item.state];//Make sure the state code is valid
@@ -63,11 +99,10 @@
         var alertClassArr = resourceUsageEscalationLevels.filter(function (el) { return rsc.remaining < el.maxUsage; });
 
         rsc.usageEscalation = alertClassArr && alertClassArr.length > 0 ? alertClassArr[0].cssClass : "danger";
-        rsc.groupName = rsc.resourceGroup.name;
-        rsc.groupId = rsc.resourceGroup.id;
         rsc.state = currentState;
         rsc.stateDescription = scope.rscStateDescMapping[currentState].description;
-        rsc.resourceTypeDesc = scope.resourceTypes[rsc.resourceType];
+        rsc.resourceTypeDesc = scope.resourceTypes[rsc.type];
+        rsc.usage = (isNumber(rsc.totUnitsUsed)?rsc.totUnitsUsed.toFixed(2):0)+' Units';
     };
 
     var renderCharts = function(rscs){

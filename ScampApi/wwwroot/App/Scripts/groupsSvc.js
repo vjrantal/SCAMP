@@ -1,14 +1,28 @@
 ﻿'use strict';
 angular.module('scamp')
 .factory('groupsSvc', ['$http', '$q', function ($http, $q) {
-    var apiPath = '/api/groups/';
+    var apiPath = '/api/group/';
+
+    var restAjaxPromise = function (action, url) {
+        var deferred = $q.defer();
+
+        $http({ method: action, url: url }).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, headers, config) {
+                deferred.reject(status);
+            })
+
+        return deferred.promise;
+    };
 
     return {
         getItems: function () {
             return $http.get(apiPath);
         },
-        getItem: function (id) {
-            return $http.get(apiPath + id);
+        getUsers: function (id) {
+            return restAjaxPromise('GET', apiPath + id + '/users');
         },
         postItem: function (item) {
             return $http.post(apiPath, item);
