@@ -68,7 +68,7 @@ The Key Vault cmdlets and scripts require Azure Resource Manager, so type the fo
 
 	New-AzureKeyVault -VaultName 'ScampKeyVault' -ResourceGroupName 'ScampResourceGroup' -Location 'North Europe'
 
-- **VaultName** will be the **KeyVault:Url** that you will use later in the debugSettings.json file.
+- **VaultName** will be the **KeyVault:Url** that you will use later in the launchSettings.json file.
 - ResourceGroupName is the Resource Group Name in Azure.
 - Location parameter, use the command [Get-AzureLocation](https://msdn.microsoft.com/library/azure/dn654582.aspx). If you need more information, type: `Get-Help Get-AzureLocation`
 
@@ -93,18 +93,18 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
 
 1. TODO:
 2. Open the solution in Visual Studio 2015 CTP 6
-3. In the Projects -> ScampAPI -> Properties folder, create a file: **debugSettings.json**:
+3. In the Projects -> ScampAPI -> Properties folder, create a file: **launchSettings.json**:
 
 
 
 ```javascript
 {
-    "profiles": [
-        {
-            "name": "IIS Express",
-            "launchBrowser": true,
-            "launchUrl": "https://localhost:44300/",
-            "environmentVariables": {
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:8080/",
+      "environmentVariables": {
                 "APPSETTING_ClientId": "<clientId-from above App in AAD>",
                 "APPSETTING_TenantId": "<tenantId-from above App in AAD->",
                 "APPSETTING_RedirectUri": "https://localhost:44300/",
@@ -124,7 +124,7 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
 
             }
         }
-    ]
+    }
 }
 
 ```
