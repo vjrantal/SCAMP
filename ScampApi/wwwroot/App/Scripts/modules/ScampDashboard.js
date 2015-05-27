@@ -53,6 +53,20 @@
          //   renderCharts(scope.resources);
     };
 
+    this.updateSummaryPanel = function(data){
+        scope.summary = {
+            'totUnitsUsed': data.totUnitsUsed,
+            'pctUsed': (data.totUnitsAllocated > 0) ? Math.round((data.totUnitsUsed / data.totUnitsAllocated) * 100) : 0,  
+            'pctAllocated': (data.unitsBudgeted > 0) ? Math.round((data.totUnitsAllocated / data.unitsBudgeted) * 100) : 0,
+            'budget': data.unitsBudgeted,
+            'noGroups': data.totGroups,
+            'totUnitsAllocated': data.totUnitsAllocated
+        };
+
+        scope.summary['pctUnallocated'] = (scope.summary['pctAllocated'] != 0 ) ? 100 - scope.summary['pctAllocated'] : 0;
+        scope.summary['pctRemaining'] = (scope.summary['pctUsed'] != 0 ) ? 100 - scope.summary['pctUsed'] : 0;
+    }
+
     this.setCurrentUser = function (userId) {
         var user = scope.groupUsers.filter(function (item) {
             if (item.id == userId) return true;

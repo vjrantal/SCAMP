@@ -45,12 +45,15 @@ angular.module('scamp')
                     });
                     $scope.selectedGroupId = data[0].id;
                     $scope.selectedGroupName = data[0].name;
+                    var summaryPanelType = 'usage';
                     
-                    if ($scope.dashboardView == 'admin')
+                    if ($scope.dashboardView == 'admin') {
                         $scope.loadUsers($scope.selectedGroupId);
-                    else
+                        summaryPanelType = 'budget';
+                    } else
                         $scope.loadResources($scope.selectedGroupId, userGUID);
 
+                    $scope.updateSummaryPanel(userGUID, summaryPanelType);
                     $scope.dashboardStatus = 'loaded';
                 } else
                     throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
@@ -87,9 +90,22 @@ angular.module('scamp')
         );
 	};
 
+	$scope.updateSummaryPanel = function (userId, type) {
+	    dashboardSvc.getSummary(userId, type).then(
+            function (data) {
+                if (data) 
+                    scampDashboard.updateSummaryPanel(data, type);
+            },
+            // resource REST call failed
+            function (statusCode) {
+                console.error(statusCode);
+            }
+        );
+	};
+
 	$scope.loadResources = function (groupId, userId) {
 	    if (!groupId || !userId)
-	        throw new Error("Mandatory paramter groupId and userId need to be specified");
+	        throw new Error("Mandatory parameter groupId and userId need to be specified");
 
 	    scampDashboard.setCurrentUser(userId);
 	    userSvc.getResourceList(userId, groupId).then(
