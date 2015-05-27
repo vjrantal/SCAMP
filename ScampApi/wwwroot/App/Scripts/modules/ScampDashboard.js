@@ -56,7 +56,7 @@
     this.updateSummaryPanel = function(data){
         scope.summary = {
             'totUnitsUsed': data.totUnitsUsed,
-            'pctUsed': (data.totUnitsAllocated > 0) ? Math.round((data.totUnitsUsed / data.totUnitsAllocated) * 100) : 0,
+            'pctUsed': (data.totUnitsAllocated > 0) ? Math.round((data.totUnitsUsed / data.totUnitsAllocated) * 100) : 0,  
             'pctAllocated': (data.unitsBudgeted > 0) ? Math.round((data.totUnitsAllocated / data.unitsBudgeted) * 100) : 0,
             'budget': data.unitsBudgeted,
             'noGroups': data.totGroups,
