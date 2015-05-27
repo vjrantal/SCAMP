@@ -31,6 +31,9 @@ namespace DocumentDbRepositories
 
         [JsonProperty(PropertyName = "groupmbrship")]
         public List<ScampUserGroupMbrship> GroupMembership { get; set; }
+
+        [JsonProperty(PropertyName = "budget")]
+        public ScampUserBudget budget { get; set; }
     }
 
     public class ScampUserGroupMbrship
