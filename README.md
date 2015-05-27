@@ -28,6 +28,8 @@ From your shell or command line:
 ```
 11. Also, get the ClientID from the Application settings.  On the Application -> Configure tab, grap the "CLIENT ID" value.
 
+Repeat steps 5-11 for a non HTTP URL such as 'http://localhost:44000/' if you wish to do development without SSL. 
+
 ### Step 3:  Configure the Scamp Web App to use your Azure Active Directory tenant
 TODO
 
@@ -103,7 +105,7 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:8080/",
+      "launchUrl": "http://localhost:44000/",
       "environmentVariables": {
                 "APPSETTING_ClientId": "<clientId-from above App in AAD>",
                 "APPSETTING_TenantId": "<tenantId-from above App in AAD->",
