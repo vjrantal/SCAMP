@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DocumentDbRepositories;
 using System.Linq;
 using ProvisioningLibrary;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {

@@ -17,7 +17,7 @@ using Microsoft.AspNet.StaticFiles;
 using ProvisioningLibrary;
 using ScampTypes.ViewModels;
 using IConfiguration = Microsoft.Framework.ConfigurationModel.IConfiguration;
-
+using System.IdentityModel.Tokens;
 
 namespace ScampApi
 {
@@ -39,7 +39,8 @@ namespace ScampApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.Configure<MvcOptions>(options=> {
+            services.Configure<MvcOptions>(options =>
+            {
                 var jsonFormatter = (JsonOutputFormatter)(options.OutputFormatters
                     .First(formatter => formatter.Instance is JsonOutputFormatter)
                     .Instance);
@@ -50,7 +51,7 @@ namespace ScampApi
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ILinkHelper, LinkHelper>();
             
-            services.AddScoped <ISecurityHelper, SecurityHelper>();
+            services.AddScoped<ISecurityHelper, SecurityHelper>();
 
             services.AddSingleton <IWebJobController, WebJobController>();
             services.AddSingleton<IVolatileStorageController, VolatileStorageController>();
@@ -67,6 +68,12 @@ namespace ScampApi
         {
             app.UseOAuthBearerAuthentication(options =>
             {
+                options.AutomaticAuthentication = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateLifetime = false
+                };
+
                 options.Audience = Configuration.Get("ClientId");
                 options.Authority = String.Format(Configuration.Get("AadInstance"), Configuration.Get("TenantId"));
             });

@@ -5,6 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
+.vs/
+*.lock.json
 
 # Build results
 [Dd]ebug/
@@ -15,9 +17,11 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+[Aa]rtifacts/
 
 # Roslyn cache directories
 *.ide/
+
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

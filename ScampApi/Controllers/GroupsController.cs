@@ -10,6 +10,7 @@ using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using ScampTypes.ViewModels;
 using ProvisioningLibrary;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {

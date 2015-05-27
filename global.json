@@ -1,5 +1,4 @@
-{
-  "sources": [
-    "wrap"
-  ]
+﻿{
+    "projects": [ "src", "test" ]
+  
 }

@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.IO;
 using Newtonsoft.Json;
 using ProvisioningLibrary;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers.Controllers
 {
@@ -80,7 +81,7 @@ namespace ScampApi.Controllers.Controllers
                 {
                     totGroups = userDoc.GroupMembership.Count()
                 };
-                
+
                 // summarize resource usage
                 foreach(var rscBudget in usrBudgets)
                 {
@@ -135,7 +136,7 @@ namespace ScampApi.Controllers.Controllers
                     resourceList.Add(tmpSummary);
                 }
             }
- 
+
             return new ObjectResult(resourceList) { StatusCode = 200 };
         }
 

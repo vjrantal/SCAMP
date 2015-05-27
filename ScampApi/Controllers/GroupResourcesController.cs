@@ -10,9 +10,10 @@ using DocumentDbRepositories.Implementation;
 using Microsoft.AspNet.Mvc;
 using ProvisioningLibrary;
 using ScampApi.Infrastructure;
-using System.IO;
+using System.IO; 
 using Microsoft.AspNet.Http;
 using ScampTypes.ViewModels;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {
@@ -42,7 +43,7 @@ namespace ScampApi.Controllers
 
         //[HttpGet]
         //public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
-        //{
+                //{
         //    //LINKED TO UI
         //    var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
 
@@ -57,9 +58,9 @@ namespace ScampApi.Controllers
         //        //});
         //        summary.Remaining = rnd.Next(0, 100);
         //    });
-
-        //    return ressummary;
  
+        //    return ressummary;
+
         //}
 
         // allows you to take the specified action (start, stop) on a specified resource

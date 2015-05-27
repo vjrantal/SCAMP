@@ -1,5 +1,11 @@
-{
+﻿{
     "version": "1.0.0-*",
+  "description": "",
+  "authors": [ "" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
     "dependencies": {
         "Microsoft.WindowsAzure.Management.Libraries": "2.0.0",
         "Microsoft.IdentityModel.Clients.ActiveDirectory": "2.14.201151115",
@@ -9,9 +15,8 @@
         "StackExchange.Redis": "1.0.450.0"
     },
 
-    "frameworks": {
-        "aspnet50": {
-
+  "frameworks" : {
+    "dnx451": { }
+    }
         }
     }
-} }

@@ -22,7 +22,7 @@ namespace ScampApi.Infrastructure
 
         public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository, ICacheProvider cacheProvider)
         {
-            Context = httpContextAccessor.Value;
+            Context = httpContextAccessor.HttpContext;
             _userRepository = userRepository;
             _groupRepository = groupRepository;
             _cacheProvider = cacheProvider;

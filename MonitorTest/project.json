@@ -7,6 +7,6 @@
 		"MonitorTest": "run"
 	},
 	"frameworks": {
-		"aspnet50": { }
+		"dnx451": { }
 	}
 }

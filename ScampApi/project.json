@@ -1,14 +1,21 @@
-{
-    /* Click to learn more about project.json  http://go.microsoft.com/fwlink/?LinkID=517074 */
+﻿{
     "webroot": "wwwroot",
     "version": "1.0.0-*",
+  "description": "",
+  "authors": [ "" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
     "dependencies": {
-        "Microsoft.AspNet.Server.IIS": "1.0.0-beta3",
-        "Microsoft.AspNet.Mvc": "6.0.0-beta3",
-        "Microsoft.AspNet.StaticFiles": "1.0.0-beta3",
-        "Microsoft.AspNet.Server.WebListener": "1.0.0-beta3",
-        "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta3",
-        "Microsoft.AspNet.Security.OAuthBearer": "1.0.0-beta3",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta4",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta4",
+    "Microsoft.AspNet.Mvc": "6.0.0-*",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta4",
+    "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta4",
+    "Microsoft.Framework.DependencyInjection": "1.0.0-beta4",
+    "Microsoft.AspNet.Authentication.OAuthBearer": "1.0.0-beta4",
+    "Newtonsoft.Json": "6.0.8",
         "AutoMapper": "3.3.1",
         "DocumentDbRepositories": "1.0.0-*",
         "ProvisioningLibrary": "1.0.0-*",
@@ -17,21 +24,24 @@
         "ScampTypes": "1.0.0-*"
     },
 
-    "frameworks": {
-        "aspnet50": {
+  "commands": {
+    "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000"
+  },
 
-        }
-    },
+    "frameworks": {
+    "dnx451": { }
+  },
+
+  "publishExclude": [
+    "node_modules",
+    "bower_components",
+    "**.xproj",
+    "**.user",
+    "**.vspscc"
+  ],
     "exclude": [
         "wwwroot",
         "node_modules",
         "bower_components"
-    ],
-    "bundleExclude": [
-        "node_modules",
-        "bower_components",
-        "**.kproj",
-        "**.user",
-        "**.vspscc"
     ]
 }
