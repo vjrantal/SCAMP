@@ -1,13 +1,19 @@
 'use strict';
 angular.module('scamp')
-.factory('dashboardSvc', ['$http', function ($http) {
+.factory('dashboardSvc', ['$http', '$q', function ($http, $q) {
     var apiPath = '/api/user';
+
     return {
         getItems: function () {
             return $http.get(apiPath);
         },
         getItem: function (id) {
             return $http.get(apiPath + id);
+        },
+        getSummary: function(userId, summaryType){
+            var url = apiPath + '/' + userId + '/' + summaryType + '/summary';
+
+            return scamp.utils.restAjaxPromise($http, $q, 'GET', url);
         },
         postItem: function (item) {
             return $http.post(apiPath, item);

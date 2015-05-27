@@ -171,20 +171,24 @@
                     <div class="panel-body">
                         <div class="list-group">
                             <a href="#" class="list-group-item">
-                                <span class="badge">5 Groups</span>
+                                <span class="badge">{{summary.noGroups}} Groups</span>
                                 <i class="fa fa-fw fa-calendar"></i>Resource Groups
                             </a>
                             <a href="#" class="list-group-item">
-                                <span class="badge">10% Remaining</span>
+                                <span class="badge">{{summary.pctRemaining}}% Remaining</span>
                                 <i class="fa fa-fw fa-comment"></i>Remaining Monitor
                             </a>
                             <a href="#" class="list-group-item">
-                                <span class="badge">505 Units</span>
+                                <span class="badge">{{summary.totUnitsUsed}} Units</span>
                                 <i class="fa fa-fw fa-truck"></i>Total Resources being used
                             </a>
                             <a href="#" class="list-group-item">
-                                <span class="badge">1000 Units</span>
+                                <span class="badge">{{summary.budget}} Units</span>
                                 <i class="fa fa-fw fa-money"></i>Total Budget
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <span class="badge">{{summary.pctUnallocated}}%</span>
+                                <i class="fa fa-fw fa-money"></i>Percent Unallocated
                             </a>
                         </div>
                     </div>
