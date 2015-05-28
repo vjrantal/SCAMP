@@ -18,14 +18,12 @@ namespace ScampApi.Infrastructure
         private readonly HttpContext Context;
         private readonly IUserRepository _userRepository;
         private readonly IGroupRepository _groupRepository;
-        private readonly ICacheProvider _cacheProvider;
 
-        public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository, ICacheProvider cacheProvider)
+        public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository)
         {
             Context = httpContextAccessor.HttpContext;
             _userRepository = userRepository;
             _groupRepository = groupRepository;
-            _cacheProvider = cacheProvider;
         }
 
         public async Task<ScampUserReference> GetUserReference()
@@ -56,31 +54,25 @@ namespace ScampApi.Infrastructure
 
         public async Task<ScampUser> GetUserById(string userId)
         {
-            ScampUser tmpUser = await _cacheProvider.GetUser(userId);
-            if (tmpUser == null) // user isn't cached
+            ScampUser tmpUser = await _userRepository.GetUserbyId(userId);
+            if (tmpUser == null) // insert if user doesn't exist
             {
-                tmpUser = await _userRepository.GetUserbyId(userId);
-                if (tmpUser == null) // insert if user doesn't exist
+                // build user object
+                tmpUser = new ScampUser()
                 {
-                    // build user object
-                    tmpUser = new ScampUser()
-                    {
-                        Id = userId,
-                        Name =
-                            string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
-                                Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
-                        IsSystemAdmin = false,
-                        // get email address
-                        Email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
-                    };
+                    Id = userId,
+                    Name =
+                        string.Format("{0} {1}", Context.User.FindFirst(ClaimTypes.GivenName).Value,
+                            Context.User.FindFirst(ClaimTypes.Surname).Value).Trim(),
+                    IsSystemAdmin = false,
+                    // get email address
+                    Email = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("email") || c.Type.Contains("upn")).Value
+                };
 
-                    // insert into database   
-                    await _userRepository.CreateUser(tmpUser);
-                }
-
-                // doesn't work yet because underlying type from SDK isn't serializable
-                //_cacheProvider.SetUser(tmpUser); // save user to cache, no need to wait
+                // insert into database   
+                await _userRepository.CreateUser(tmpUser);
             }
+
             return tmpUser;
         }
         public async Task<bool> IsGroupAdmin(string groupId)
