@@ -37,14 +37,16 @@ angular.module('scamp')
     };
 
     $scope.isLoggedOn = adalService.userInfo.isAuthenticated;
-    console.log('$scope.isLoggedOn: ' + $scope.isLoggedOn);
 
     var checkUserLogin = function () {
       if ($scope.isLoggedOn) {
         fetchUserProfile();
       }
       else {
-        $scope.$on('adal:loginSuccess', fetchUserProfile);
+        $scope.$on('adal:loginSuccess', function () {
+          $scope.isLoggedOn = adalService.userInfo.isAuthenticated;
+          fetchUserProfile();
+        });
       }
     };
     checkUserLogin();
