@@ -26,44 +26,50 @@ angular.module('scamp')
 	};
 
 	$scope.populate = function () {
+	  var populateDashboard = function () {
 	    scampDashboard.initialize();
-
 	    var userGUID = $scope.userProfile.id;
-        //Default the view to admin view as long as the user has administrative priviledges or keep the view as it is if it's set to admin
-	    if (!$scope.dashboardView && $scope.isAdmin || ($scope.dashboardView && $scope.dashboardView=='admin'))
-	        $scope.dashboardView = 'admin';
+	    //Default the view to admin view as long as the user has administrative priviledges or keep the view as it is if it's set to admin
+	    if (!$scope.dashboardView && $scope.isAdmin || ($scope.dashboardView && $scope.dashboardView == 'admin'))
+	      $scope.dashboardView = 'admin';
 	    else
-	        $scope.dashboardView = 'user';
+	      $scope.dashboardView = 'user';
 
 	    $scope.dashboardStatus = 'loading';
 
-	    userSvc.getGroupList(userGUID, $scope.dashboardView).then(
-            function (data) {
-                if (data && data.length > 0) {
-                    $scope.groups = data.map(function (item) {
-                        return scampDashboard.computeUsagePercentages(item);
-                    });
-                    $scope.selectedGroupId = data[0].id;
-                    $scope.selectedGroupName = data[0].name;
-                    var summaryPanelType = 'usage';
-                    
-                    if ($scope.dashboardView == 'admin') {
-                        $scope.loadUsers($scope.selectedGroupId);
-                        summaryPanelType = 'budget';
-                    } else
-                        $scope.loadResources($scope.selectedGroupId, userGUID);
+	    userSvc.getGroupList(userGUID, $scope.dashboardView)
+      .then(function (data) {
+        if (data && data.length > 0) {
+          $scope.groups = data.map(function (item) {
+            return scampDashboard.computeUsagePercentages(item);
+          });
+          $scope.selectedGroupId = data[0].id;
+          $scope.selectedGroupName = data[0].name;
+          var summaryPanelType = 'usage';
 
-                    $scope.updateSummaryPanel(userGUID, summaryPanelType);
-                    $scope.dashboardStatus = 'loaded';
-                } else
-                    throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
-            },
-            // resource REST call failed
-            function (statusCode) {
-                console.error(statusCode);
-                $scope.dashboardStatus = 'loaded';
-            }
-        );
+          if ($scope.dashboardView == 'admin') {
+            $scope.loadUsers($scope.selectedGroupId);
+            summaryPanelType = 'budget';
+          } else
+            $scope.loadResources($scope.selectedGroupId, userGUID);
+
+          $scope.updateSummaryPanel(userGUID, summaryPanelType);
+          $scope.dashboardStatus = 'loaded';
+        } else {
+          throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
+        }
+      })
+      .catch(function (statusCode) {
+        // resource REST call failed
+        console.error(statusCode);
+        $scope.dashboardStatus = 'loaded';
+      });
+	  };
+	  if ($scope.userProfile) {
+	    populateDashboard();
+	  } else {
+	    $scope.$on('userProfileFetched', populateDashboard);
+	  }
 	};
 
 	$scope.loadUsers = function (groupId) {
