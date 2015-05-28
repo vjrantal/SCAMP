@@ -29,6 +29,7 @@ angular.module('scamp')
 	  var populateDashboard = function () {
 	    scampDashboard.initialize();
 	    var userGUID = $scope.userProfile.id;
+
 	    //Default the view to admin view as long as the user has administrative priviledges or keep the view as it is if it's set to admin
 	    if (!$scope.dashboardView && $scope.isAdmin || ($scope.dashboardView && $scope.dashboardView == 'admin'))
 	      $scope.dashboardView = 'admin';
