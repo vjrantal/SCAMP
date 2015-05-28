@@ -3,7 +3,8 @@ angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap'])
 .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$locationProvider', function ($routeProvider, $httpProvider, adalProvider, $locationProvider) {
 
     $routeProvider.when("/Home", {
-        controller: "homeCtrl",
+        // Not setting the home controller here, because it is included already
+        // in the HTML content.
         templateUrl: "/App/Views/Home.html",
     }).when("/settings/groupMgr", {
         controller: "GroupManagerController",
