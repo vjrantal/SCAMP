@@ -14,27 +14,48 @@ angular.module('scamp')
         return viewLocation === $location.path();
     };
 
+    var fetchUserProfile = function () {
+      // Switch to dashboard already before fetching the user profile
+      // to avoid the view flickering before the fetch completes.
+      $location.path("/dashboard");
+
+      console.log("getting user profile data");
+
+      // fetch user profile data from API
+      homeSvc.getUserProfile().success(function (results) {
+        console.log("get successfull");
+        $scope.userProfile = results;
+        $scope.loadingMessage = "";
+        console.log($scope.userProfile);
+        $scope.$broadcast('userProfileFetched');
+      }).error(function (err) {
+        console.log("get failed");
+        $scope.error = err;
+        $scope.loadingMessage = "";
+        console.log("error:" + err);
+      });
+    };
+
     $scope.isLoggedOn = adalService.userInfo.isAuthenticated;
 
-    if ($scope.isLoggedOn) {
-        console.log("getting user profile data");
-
-        // fetch user profile data from API
-        homeSvc.getUserProfile().success(function (results) {
-            console.log("get successfull");
-            $scope.userProfile = results;
-            $scope.loadingMessage = "";
-            console.log($scope.userProfile);
-            $location.path("/dashboard");
-            $scope.$broadcast('userProfileFetched');
-            //$window.location.href.path("/dashboard");
-        }).error(function (err) {
-            console.log("get failed");
-            $scope.error = err;
-            $scope.loadingMessage = "";
-            console.log("error:" + err);
-
-        })
-    }
-
+    var checkUserLogin = function () {
+      if ($scope.isLoggedOn) {
+        fetchUserProfile();
+      }
+      else {
+        $scope.$on('adal:loginSuccess', function () {
+          $scope.isLoggedOn = adalService.userInfo.isAuthenticated;
+          fetchUserProfile();
+        });
+      }
+    };
+    checkUserLogin();
+    // Subscribe to route changes and if we are entering the home view again,
+    // go ahead and check the user login as if we would have entered the view
+    // for the first time.
+    $scope.$on('$routeChangeSuccess', function (event, next, current) {
+      if (next.loadedTemplateUrl === '/App/Views/Home.html') {
+        checkUserLogin();
+      }
+    });
 }]);
