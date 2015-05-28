@@ -1,12 +1,15 @@
 'use strict';
 angular.module('scamp')
 .factory('systemSettingsSvc', ['$http', '$q', function ($http, $q) {
+    var apiPath = '/api/settings/';
+    var apiPathSysAdmins = apiPath + 'sysadmins/';
+
     return {
         // gets a list of all the SCAMP system admins
-        getSystemAdmins: function () {
+        getSysAdmins: function () {
             var deferred = $q.defer();
 
-            $http({ method: 'GET', url: '/api/settings/admins' }).
+            $http({ method: 'GET', url: apiPathSysAdmins }).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
@@ -18,12 +21,12 @@ angular.module('scamp')
         },
 
         // revoke user's SCAMP system admin permissions
-        revokeAdmin: function (id) {
+        revokeSysAdmin: function (id) {
             console.log("removing system admin permissions on id:" + id);
 
             var deferred = $q.defer();
            
-            $http.delete('/api/settings/admins/'+ id).
+            $http.delete(apiPathSysAdmins + id).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
@@ -36,12 +39,12 @@ angular.module('scamp')
         },
 
         // revoke user's SCAMP system admin permissions
-        grandAdmin: function (id) {
+        grantSysAdmin: function (id) {
         console.log("adding system admin permissions on id:" + id);
 
         var deferred = $q.defer();
            
-        $http.delete('/api/settings/admins/'+ id).
+            $http.delete(apiPathSysAdmins + id).
             success(function (data, status, headers, config) {
                 deferred.resolve(data);
             }).
