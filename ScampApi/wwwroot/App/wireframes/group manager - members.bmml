@@ -298,10 +298,10 @@
         <color>6710886</color>
       </controlProperties>
     </control>
-    <control controlID="147" controlTypeID="com.balsamiq.mockups::ModalScreen" x="181" y="91" w="820" h="319" measuredW="320" measuredH="240" zOrder="48" locked="false" isInGroup="-1">
+    <control controlID="147" controlTypeID="com.balsamiq.mockups::ModalScreen" x="181" y="82" w="820" h="319" measuredW="320" measuredH="240" zOrder="48" locked="false" isInGroup="-1">
       <controlProperties>
         <href>group%20manager%20-%20summary%26bm%3Bgroup%20manager%20-%20summary.bmml%26bm%3Bgroup%20manager%20-%20summary.bmml%26bm%3Bgroup%20manager%20-%20summary.bmml</href>
-        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%220%2C81%2C820%2C400%22%20href%3D%22group%2520manager%2520-%2520summary.bmml%22%20alt%3D%22group%20manager%20-%20summary%22%20id%3D%22147%22/%3E</map>
+        <map>%3Carea%20shape%3D%22rect%22%20coords%3D%220%2C72%2C820%2C391%22%20href%3D%22group%2520manager%2520-%2520summary.bmml%22%20alt%3D%22group%20manager%20-%20summary%22%20id%3D%22147%22/%3E</map>
       </controlProperties>
     </control>
     <control controlID="149" controlTypeID="com.balsamiq.mockups::TitleWindow" x="215" y="130" w="747" h="257" measuredW="450" measuredH="400" zOrder="49" locked="false" isInGroup="-1">
@@ -336,11 +336,11 @@
         <text>Add%20Group</text>
       </controlProperties>
     </control>
-    <control controlID="160" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="237" y="229" w="530" h="143" measuredW="200" measuredH="182" zOrder="55" locked="false" isInGroup="-1">
+    <control controlID="160" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="237" y="229" w="530" h="143" measuredW="200" measuredH="152" zOrder="55" locked="false" isInGroup="-1">
       <controlProperties>
         <position>right</position>
         <selectedIndex>1</selectedIndex>
-        <text>Summary%0AMembers%0AAdministrators%0ATemplates</text>
+        <text>Summary%0AMembers%0ATemplates</text>
       </controlProperties>
     </control>
     <control controlID="161" controlTypeID="com.balsamiq.mockups::Button" x="543" y="200" w="115" h="27" measuredW="101" measuredH="27" zOrder="56" locked="false" isInGroup="-1">
@@ -361,21 +361,66 @@
         <icon>CircledXIcon%7Cxsmall</icon>
       </controlProperties>
     </control>
-    <control controlID="176" controlTypeID="com.balsamiq.mockups::DataGrid" x="244" y="265" w="414" h="97" measuredW="307" measuredH="48" zOrder="59" locked="false" isInGroup="-1">
+    <control controlID="176" controlTypeID="com.balsamiq.mockups::DataGrid" x="244" y="265" w="414" h="97" measuredW="293" measuredH="78" zOrder="59" locked="false" isInGroup="-1">
       <controlProperties>
         <size>10</size>
-        <text>Member%20Name%5E%2C%20Units%20Allocated%20%5Ev%2C%20Role%20v%2C%20Remove%0AErik%20Schlegel%2C%2037%2C%20Default%20CS%20101%2C</text>
+        <text>Member%20Name%5E%2C%20Admin%20User%2C%20Allocated%20Units%20v%2C%20Remove%0AErik%20Schlegel%2C%2C%20%2C%0AAlbert%20Einstein%2C%2C%20%2C</text>
       </controlProperties>
     </control>
-    <control controlID="177" controlTypeID="com.balsamiq.mockups::ComboBox" x="246" y="238" w="151" h="-1" measuredW="155" measuredH="24" zOrder="60" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>CS%20101%20-%20Default%20Role</text>
-      </controlProperties>
-    </control>
-    <control controlID="178" controlTypeID="com.balsamiq.mockups::Icon" x="609" y="286" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="61" locked="false" isInGroup="-1">
+    <control controlID="178" controlTypeID="com.balsamiq.mockups::Icon" x="601" y="286" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="60" locked="false" isInGroup="-1">
       <controlProperties>
         <color>13576743</color>
         <icon>TrashIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="179" controlTypeID="com.balsamiq.mockups::SearchBox" x="246" y="235" w="-1" h="-1" measuredW="120" measuredH="25" zOrder="61" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Find%20Member</text>
+      </controlProperties>
+    </control>
+    <control controlID="181" controlTypeID="com.balsamiq.mockups::Component" x="341" y="226" w="577" h="22" measuredW="577" measuredH="22" zOrder="62" locked="false" isInGroup="-1">
+      <controlProperties>
+        <override controlID="0">
+          <text>An%20admin%20can%20add%20a%20member%20to%20the%20group%20if%20one%20is%20not%20already%20provisioned</text>
+        </override>
+        <src>./assets/Callouts%20(Blue).bmml#Callout%20Arrow%20Left</src>
+      </controlProperties>
+    </control>
+    <control controlID="182" controlTypeID="com.balsamiq.mockups::TextInput" x="476" y="282" w="-1" h="-1" measuredW="26" measuredH="24" zOrder="63" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <text>37</text>
+      </controlProperties>
+    </control>
+    <control controlID="183" controlTypeID="com.balsamiq.mockups::CheckBox" x="373" y="241" w="-1" h="-1" measuredW="104" measuredH="19" zOrder="64" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <text>Show%20Admins%20Only</text>
+      </controlProperties>
+    </control>
+    <control controlID="184" controlTypeID="com.balsamiq.mockups::CheckBox" x="387" y="283" w="-1" h="-1" measuredW="20" measuredH="21" zOrder="65" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="185" controlTypeID="com.balsamiq.mockups::CheckBox" x="387" y="311" w="-1" h="-1" measuredW="20" measuredH="21" zOrder="66" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <state>selected</state>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="186" controlTypeID="com.balsamiq.mockups::Icon" x="601" y="315" w="-1" h="-1" measuredW="16" measuredH="16" zOrder="67" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>13576743</color>
+        <icon>TrashIcon%7Cxsmall</icon>
+      </controlProperties>
+    </control>
+    <control controlID="187" controlTypeID="com.balsamiq.mockups::TextInput" x="476" y="313" w="-1" h="-1" measuredW="26" measuredH="24" zOrder="68" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>10</size>
+        <text>37</text>
       </controlProperties>
     </control>
   </controls>
