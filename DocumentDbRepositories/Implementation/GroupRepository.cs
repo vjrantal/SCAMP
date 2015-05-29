@@ -55,6 +55,20 @@ namespace DocumentDbRepositories.Implementation
             return group;
         }
 
+        public async Task<List<ScampResourceGroupWithResources>> GetGroupsByBudgetOwner(string userId)
+        {
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var groupQuery = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroupWithResources>(docdb.Collection.SelfLink)
+                             where g.Budget.OwnerId == userId && g.Type == "group"
+                             select g;
+            List<ScampResourceGroupWithResources> groupList = await groupQuery.AsDocumentQuery().ToListAsync();
+
+            return groupList;
+        }
+
+
         public async Task<IEnumerable<ScampResourceGroup>> GetGroups()
         {
             if (!(await docdb.IsInitialized))

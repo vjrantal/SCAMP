@@ -15,6 +15,7 @@ namespace DocumentDbRepositories
     {
         Task<ScampResourceGroup> GetGroup(string groupID);
         Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID);
+        Task<List<ScampResourceGroupWithResources>> GetGroupsByBudgetOwner(string userId);
         Task<IEnumerable<ScampResourceGroup>> GetGroups();
         Task<IEnumerable<ScampResourceGroup>> GetGroupsByUser(ScampUserReference user);
         Task CreateGroup(ScampResourceGroup newGroup);
@@ -43,6 +44,7 @@ namespace DocumentDbRepositories
     public interface ISystemSettingsRepository
     {
         Task<List<ScampUser>> GetSystemAdministrators();
+        Task<List<ScampUser>> GetGroupManagers();
         Task<StyleSettings> GetSiteStyleSettings();
     }
 }
