@@ -74,9 +74,6 @@ namespace ScampApi.Controllers.Controllers
             {
                 return new ObjectResult(string.Format("view '{0}' not supported", view)) { StatusCode = 400 };
             }
-
-            return new ObjectResult(null) { StatusCode = 200 };
-
         }        
 	}
 }

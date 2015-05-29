@@ -55,6 +55,7 @@ namespace ScampApi
 
             services.AddSingleton <IWebJobController, WebJobController>();
             services.AddSingleton<IVolatileStorageController, VolatileStorageController>();
+            services.AddSingleton<IGraphAPIProvider, GraphAPIProvider>();
 
             services.AddInstance(Configuration);
 

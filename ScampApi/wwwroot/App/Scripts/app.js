@@ -18,37 +18,13 @@ angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap'])
         controller: "resourcesCtrl",
         templateUrl: "/App/Views/Resources.html",
         requireADLogin: true
-    }).when("/logs", {
-        controller: "logsCtrl",
-        templateUrl: "/App/Views/Logs.html",
-        requireADLogin: true
     }).when("/settings", {
-        controller: "settingsCtrl",
+        controller: "settingsAdminsCtrl",
         templateUrl: "/App/Views/Settings.html",
         requireADLogin: true
     }).when("/settings/admins", {
         controller: "settingsAdminsCtrl",
         templateUrl: "/App/Views/SettingsAdmins.html",
-        requireADLogin: true
-    }).when("/settings/subs/edit/", {
-        controller: "settingsSubSetupCtrl",
-        templateUrl: "/App/Views/SettingsSubSetup.html",
-        requireADLogin: true
-    }).when("/settings/subs/edit/:subId", {
-        controller: "settingsSubSetupCtrl",
-        templateUrl: "/App/Views/SettingsSubSetup.html",
-        requireADLogin: true
-    }).when("/settings/subs/:subId", {
-        controller: "settingsSubDetailsCtrl",
-        templateUrl: "/App/Views/SettingsSubDetails.html",
-        requireADLogin: true
-    }).when("/settings/subs", {
-        controller: "settingsSubsCtrl",
-        templateUrl: "/App/Views/SettingsSubs.html",
-        requireADLogin: true
-    }).when("/settings/logs", {
-        controller: "settingsLogsCtrl",
-        templateUrl: "/App/Views/SettingsLogs.html",
         requireADLogin: true
     }).otherwise({ redirectTo: "/Home" });
 

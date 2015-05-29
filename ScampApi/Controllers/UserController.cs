@@ -23,14 +23,16 @@ namespace ScampApi.Controllers.Controllers
         private readonly ISecurityHelper _securityHelper;
         private readonly IResourceRepository _resourceRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IGraphAPIProvider _graphAPIProvider;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public UserController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
+        public UserController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController, IGraphAPIProvider graphAPIProvider)
         {
             _resourceRepository = resourceRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
             _volatileStorageController = volatileStorageController;
+            _graphAPIProvider = graphAPIProvider;
         }
 
         // retrieves the current user
@@ -50,7 +52,8 @@ namespace ScampApi.Controllers.Controllers
             {
                 Id = tmpUser.Id,
                 Name = tmpUser.Name,
-                Email = tmpUser.Email
+                Email = tmpUser.Email,
+                IsSystemAdmin = tmpUser.IsSystemAdmin
             };
 
             return user;
@@ -95,9 +98,6 @@ namespace ScampApi.Controllers.Controllers
             {
                 return new ObjectResult(string.Format("view '{0}' not supported", view)) { StatusCode = 400 };
             }
-
-            return new ObjectResult(null) { StatusCode = 200 };
-
         }
 
         // get a list of the user's resources
@@ -141,22 +141,13 @@ namespace ScampApi.Controllers.Controllers
         }
 
 
-        [HttpGet("byname/{searchparm}", Name = "Users.SearchByName")]
-        public async Task<List<ScampUserReference>> GetByName(string searchparm)
+        [HttpGet("FindbyUPN/{searchparm}")]
+        public async Task<IActionResult> findUserbyUPN(string searchparm)
         {
             //TODO: implement search
-            string searchStr = "https://scamp.search.windows.net/indexes/userindex/docs?api-version=2015-02-28&search=brent";
+            UserSummary founduser = await _graphAPIProvider.FindUser(searchparm);
 
-            //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(searchStr));
-            var req = HttpWebRequest.CreateHttp(searchStr);
-            req.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-            req.Headers.Add("api-key:0228F8886E1F40C4B53F05316E5B9CA1");
-
-            var response = (HttpWebResponse) await req.GetResponseAsync();
-            var result = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
-
-            var users = JsonConvert.DeserializeObject<List<ScampUserReference>>(result);
-            return users;
+            return new ObjectResult(founduser) { StatusCode = 200 };
         }
 
 

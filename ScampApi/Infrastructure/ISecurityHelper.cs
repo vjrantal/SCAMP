@@ -5,7 +5,7 @@ namespace ScampApi.Infrastructure
 {
     public interface ISecurityHelper
     {
-        string GetIPIDByContext();
+        //string GetIPIDByContext();
         Task<ScampUser> GetCurrentUser();
         Task<ScampUser> GetUserById(string IPID);
         Task<ScampUserReference> GetUserReference();

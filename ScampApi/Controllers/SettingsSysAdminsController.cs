@@ -10,27 +10,32 @@ using Microsoft.AspNet.Authorization;
 namespace ScampApi.Controllers.Controllers
 {
     [Authorize]
-    [Route("api/settings/admins")]
-    public class SettingsAdminController : Controller
+    [Route("api/settings/sysadmins")]
+    public class SettingsSysAdminController : Controller
     {
-        private ILinkHelper _linkHelper;
         private readonly ISystemSettingsRepository _settingsRepository;
         private readonly IUserRepository _userRepository;
         private ISecurityHelper _securityHelper;
 
-        public SettingsAdminController(ILinkHelper linkHelper, ISystemSettingsRepository settingsRepository, IUserRepository userRepository, ISecurityHelper securityHelper)
+        public SettingsSysAdminController(ISystemSettingsRepository settingsRepository, IUserRepository userRepository, ISecurityHelper securityHelper)
         {
-            _linkHelper = linkHelper;
             _settingsRepository = settingsRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
         }
 
-        // Retrieve a list of system administrators
+        /// <summary>
+        /// Retrieve a list of system administrators
+        /// </summary>
+        /// <returns>List of users with System Admin permission</returns>
         [HttpGet(Name = "Admin.Get")]
-        public async Task<List<User>> Get()
+        public async Task<IActionResult> Get()
         {
-            List<User> rtnList = null;
+            // only system admins can access this functionality
+            if (!await _securityHelper.IsSysAdmin())
+                return new HttpStatusCodeResult(403); // Forbidden
+
+            List<UserSummary> rtnView = new List<UserSummary>();
 
             // fetch user from database
             List<ScampUser> adminList = await _settingsRepository.GetSystemAdministrators();
@@ -38,53 +43,52 @@ namespace ScampApi.Controllers.Controllers
             // map data model to view model
             if (adminList != null)
             {
-                rtnList = new List<User>();
-
                 foreach (ScampUser tmpUser in adminList)
                 {
-                    rtnList.Add(new User
+                    rtnView.Add(new UserSummary
                     {
                         Id = tmpUser.Id,
                         Name = tmpUser.Name
                     });
                 }
-            }        
+            }
 
-            return rtnList;
+            // return list
+            return new ObjectResult(rtnView) { StatusCode = 200 };
         }
 
         // grant a user system administrator permission
         [HttpPost("{userId}", Name = "Admin.Grant")]
-        public async Task grantAdmin(string userId)
+        public async Task<IActionResult> grantAdmin(string userId)
         {
             // grant specified user "system admin" rights
-            await updateAdmin(userId, true);
+            return await updateAdmin(userId, true);
         }
 
         // revoke system administrator permissions for a user
         [HttpDelete("{userId}", Name = "Admin.Revoke")]
-        public async Task revokeAdmin(string userId)
+        public async Task<IActionResult> revokeAdmin(string userId)
         {
-            //TODO: check for last remaining admin
-            List<User> userList = await Get();
-            if (userList.Count <= 1)
-                throw new InvalidOperationException("This would remove the last system admin. There must always be at least 1.");
+            // check for last remaining admin
+            List<ScampUser> adminList = await _settingsRepository.GetSystemAdministrators();
+            if (adminList.Count <= 1)
+                return new ObjectResult("This would remove the last system admin. There must always be at least 1.") { StatusCode = 403 };
 
             // revoke admin rights
-            await updateAdmin(userId, false);
+            return await updateAdmin(userId, false);
         }
 
-        private async Task updateAdmin(string userId, bool isAdmin)
+        private async Task<IActionResult> updateAdmin(string userId, bool isAdmin)
         {
             // ensure requestor has system admin permissions
             if (!await _securityHelper.IsSysAdmin())
-                throw new AccessViolationException("Access Denied, requestor is not a system administrator");
-            
-            //TODO: need exception handling
+                return new ObjectResult("Access Denied, requestor is not a system administrator") { StatusCode = 403 };
 
             ScampUser user = await _userRepository.GetUserbyId(userId);
             
-            //TODO: make sure we got a user and throw a 404 if not 
+            // if user wasn't found, return error
+            if (user == null)
+                return new ObjectResult("specified user does not exist") { StatusCode = 400 };
 
             // only perform update if value needs to be changed
             if (user.IsSystemAdmin != isAdmin)
@@ -95,6 +99,8 @@ namespace ScampApi.Controllers.Controllers
                 // save updated setting
                 await _userRepository.UpdateUser(user);
             }
+
+            return new ObjectResult(null) { StatusCode = 200 };
         }
     }
 }

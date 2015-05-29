@@ -31,26 +31,26 @@ namespace ScampApi.Infrastructure
             return  Mapper.Map<ScampUserReference>(await GetCurrentUser());
         } 
 
-        // retrieves the current user and stores it in cache for future calls
+        // retrieves the current user
         public async Task<ScampUser> GetCurrentUser()
         {
 
-            var userId = GetIPIDByContext();
+            var userId = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier")).Value;
             //TODO check if user is in cache
             ScampUser tmpUser = await GetUserById(userId);
             // TODO put the user object into cache
             return tmpUser;
         }
 
-        public string GetIPIDByContext()
-        {
-            // get Tenant and Object ID claims
-            string tenantID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("tenantid")).Value;
-            string objectID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier")).Value;
-            // create SCAMP UserID
-            string IPID = string.Format("{0}-{1}", tenantID, objectID);
-            return IPID;
-        }
+        //public string GetIPIDByContext()
+        //{
+        //    // get Tenant and Object ID claims
+        //    string tenantID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("tenantid")).Value;
+        //    string objectID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier")).Value;
+        //    // create SCAMP UserID
+        //    string IPID = string.Format("{0}-{1}", tenantID, objectID);
+        //    return IPID;
+        //}
 
         public async Task<ScampUser> GetUserById(string userId)
         {

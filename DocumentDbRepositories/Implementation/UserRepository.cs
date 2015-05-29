@@ -44,9 +44,6 @@ namespace DocumentDbRepositories.Implementation
                 return;
 
             //TODO: likely need to do more here
-
-            //ScampUser tmpUser = (dynamic)userDoc;
-            user.IsSystemAdmin = false;
             var savedUser = await docdb.Client.ReplaceDocumentAsync(user.SelfLink, user);
 
             // exception handling, etc... 
