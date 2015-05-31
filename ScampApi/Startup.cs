@@ -78,7 +78,9 @@ namespace ScampApi
                 options.Authority = String.Format(Configuration.Get("AadInstance"), Configuration.Get("TenantId"));
             });
 
-            //app.UseStaticFiles();
+            // Required by kestrel and web commands.
+            app.UseStaticFiles();
+
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>
             {

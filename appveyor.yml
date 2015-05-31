@@ -1,0 +1,19 @@
+version: 1.0.{build}
+os: Visual Studio 2015 RC
+environment:
+  DNX_FEED: https://www.nuget.org/api/v2
+  APPSETTING_ClientId:
+    secure: TxO8zwY46T7BnQDX8lEcp1laMl+1Y6YTolmNQuD/KDzi+XQQhOlt4ks4UooL2TP7
+  APPSETTING_TenantId:
+    secure: c2t3nyLB7qHzPdQUkZzeNp9chniaUYsvHHX6kEXChX0=
+install:
+  - set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+  - dnvm install -a default 1.0.0-beta4
+  - set PATH=C:\Users\appveyor\.dnx\runtimes\dnx-clr-win-x86.1.0.0-beta4\bin;%PATH%
+  - cd ScampApi
+  - npm install -g grunt-cli
+  - npm install
+build_script:
+  - grunt build
+test_script:
+  - grunt test
