@@ -11,7 +11,7 @@ using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/group/{groupId}")]
     public class GroupUsersController : Controller
     {
@@ -69,6 +69,38 @@ namespace ScampApi.Controllers
 
             // return list
             return new ObjectResult(rtnView) { StatusCode = 200 };
+
+        }
+
+        /// <summary>
+        /// returns a view of a group's information
+        /// </summary>
+        /// <param name="groupId">Id of group to get list of users for</param>
+        /// <returns></returns>
+        [HttpPut("user/{userId}")]
+        public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
+        {
+            //TODO: add in group admin/manager authorization check
+            //if (!await CurrentUserCanViewGroup(group))
+            //    return new HttpStatusCodeResult(403); // Forbidden
+            //}
+
+            // get group details
+            var group = await _groupRepository.GetGroup(groupId);
+            if (group == null)
+            {
+                return HttpNotFound();
+            }
+
+            // make sure user isn't already in group
+
+            // create document updates
+            _groupRepository.AddUserToGroup(groupId, userId);
+
+            // create volatile storage budget entry for user
+
+            // return list
+            return new ObjectResult(null) { StatusCode = 200 };
 
         }
 
