@@ -17,7 +17,7 @@ namespace ScampTypes.ViewModels
         public double totUnitsRemaining { get; set; }
     }
 
-    public sealed class UserSummary
+    public class UserSummary
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -33,6 +33,15 @@ namespace ScampTypes.ViewModels
     public sealed class UserBudgetSummary : UserUsageSummary
     {
         public double totUnitsAllocated { get; set; }
+    }
+
+    public sealed class GroupManagerSummary : UserSummary
+    {
+        public double unitsBudgeted { get; set; }
+        public double totUnitsUsed { get; set; }
+        public double totUnitsAllocated { get; set; }
+        public int totGroups { get; set; }
+        public DateTime endDate { get; set; }
     }
 
     public sealed class GroupResource

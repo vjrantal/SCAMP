@@ -19,12 +19,8 @@ angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap'])
         templateUrl: "/App/Views/Resources.html",
         requireADLogin: true
     }).when("/settings", {
-        controller: "settingsAdminsCtrl",
+        controller: "settingsCtrl",
         templateUrl: "/App/Views/Settings.html",
-        requireADLogin: true
-    }).when("/settings/admins", {
-        controller: "settingsAdminsCtrl",
-        templateUrl: "/App/Views/SettingsAdmins.html",
         requireADLogin: true
     }).otherwise({ redirectTo: "/Home" });
 

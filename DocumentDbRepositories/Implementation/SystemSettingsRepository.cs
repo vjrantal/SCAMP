@@ -28,6 +28,20 @@ namespace DocumentDbRepositories.Implementation
             return adminList;
         }
 
+        // get a list of system administrators
+        public async Task<List<ScampUser>> GetGroupManagers()
+        {
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var managers = from u in docdb.Client.CreateDocumentQuery<ScampUser>(docdb.Collection.SelfLink)
+                         where u.budget != null && u.Type == "user"
+                           select u;
+            var managerList = await managers.AsDocumentQuery().ToListAsync();
+            return managerList;
+        }
+        
+
         public async Task<StyleSettings> GetSiteStyleSettings()
         {
             string rtnResult = string.Empty;

@@ -3,6 +3,7 @@ angular.module('scamp')
 .factory('systemSettingsSvc', ['$http', '$q', function ($http, $q) {
     var apiPath = '/api/settings/';
     var apiPathSysAdmins = apiPath + 'sysadmins/';
+    var apiPathgrpManagers = apiPath + 'groupmanagers/';
 
     return {
         // gets a list of all the SCAMP system admins
@@ -10,6 +11,21 @@ angular.module('scamp')
             var deferred = $q.defer();
 
             $http({ method: 'GET', url: apiPathSysAdmins }).
+                success(function (data, status, headers, config) {
+                    deferred.resolve(data);
+                }).
+                error(function (data, status, headers, config) {
+                    deferred.reject(status);
+                })
+
+            return deferred.promise;
+        },
+
+        getGroupManagers: function () {
+            console.log("calling: systemSettingsSvc.getGroupManagers");
+            var deferred = $q.defer();
+
+            $http({ method: 'GET', url: apiPathgrpManagers }).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
