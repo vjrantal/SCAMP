@@ -8,15 +8,20 @@
 
     "dependencies": {
         "Microsoft.WindowsAzure.Management.Libraries": "2.0.0",
-        "Microsoft.IdentityModel.Clients.ActiveDirectory": "2.14.201151115",
         "WindowsAzure.Storage": "4.3.0",
         "DocumentDbRepositories": "1.0.0-*",
         "KeyVaultRepositories": "1.0.0-*",
-        "StackExchange.Redis": "1.0.450.0",
-        "Microsoft.Azure.ActiveDirectory.GraphClient": "2.0.8"
+        "StackExchange.Redis": "1.0.450.0"
     },
 
     "frameworks": {
-        "dnx451": { }
+        "dnx451": {
+            "frameworkAssemblies": {
+                "System.Web": "4.0.0.0",
+                "System.Runtime.Serialization": "4.0.0.0",
+                "System.Xml.Serialization": "4.0.0.0",
+                "System.Xml": "4.0.0.0"
+            }
+        }
     }
 } }
