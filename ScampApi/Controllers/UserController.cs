@@ -16,7 +16,7 @@ using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/user")]
     public class UserController : Controller
     {
@@ -140,7 +140,12 @@ namespace ScampApi.Controllers.Controllers
             return new ObjectResult(resourceList) { StatusCode = 200 };
         }
 
-
+        /// <summary>
+        /// does a 'starts with' search against Azure AD User Principal Names
+        ///  returning the first item that matches
+        /// </summary>
+        /// <param name="searchparm"></param>
+        /// <returns>returns the user's Id and Name if found, otherwise returns null</returns>
         [HttpGet("FindbyUPN/{searchparm}")]
         public async Task<IActionResult> findUserbyUPN(string searchparm)
         {
@@ -148,28 +153,6 @@ namespace ScampApi.Controllers.Controllers
             UserSummary founduser = await _graphAPIProvider.FindUser(searchparm);
 
             return new ObjectResult(founduser) { StatusCode = 200 };
-        }
-
-
-        // POST api/values
-        [HttpPost("{userId}")]
-        public void Post(int userId,[FromBody]string value)
-        {
-            throw new NotImplementedException();
-        }
-
-        // PUT api/values/5
-        [HttpPut("{userId}")]
-        public void Put(int userId, [FromBody]string value)
-        {
-            throw new NotImplementedException();
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{userId}")]
-        public void Delete(int userId)
-        {
-            throw new NotImplementedException();
         }
 
 		private UserSummary map(ScampUser docDbUSer)
