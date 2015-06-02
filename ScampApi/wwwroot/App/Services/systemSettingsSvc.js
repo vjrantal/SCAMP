@@ -85,6 +85,42 @@ angular.module('scamp')
                 })
 
             return deferred.promise;
+        },
+
+        // update subscription
+        upsertSubscription: function (subscription) {
+            console.log("calling: systemSettingsSvc.upsertSubscription");
+            console.log(subscription);
+
+            var deferred = $q.defer();
+
+            $http.put(apiPathSubscriptions, subscription).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, headers, config) {
+                deferred.reject(status);
+            })
+
+            return deferred.promise;
+        },
+
+        // request deletion of a subscription
+        deleteSubscription: function (subscriptionId) {
+            console.log("calling: systemSettingsSvc.deleteSubscription");
+            console.log(subscriptionId);
+
+            var deferred = $q.defer();
+
+            $http.delete(apiPathSubscriptions + subscriptionId).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, headers, config) {
+                deferred.reject(status);
+            })
+
+            return deferred.promise;
         }
 
     };

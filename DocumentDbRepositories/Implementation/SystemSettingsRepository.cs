@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Documents.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,12 +58,21 @@ namespace DocumentDbRepositories.Implementation
             return await settingQuery.AsDocumentQuery().FirstOrDefaultAsync(); ;
         }
 
-        public async Task CreateSubscription(ScampSubscription newSubscription)
+        #region Subscription Management Methods
+        public async Task UpsertSubscription(ScampSubscription subscription)
         {
             if (!(await docdb.IsInitialized))
                 return;
 
-            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newSubscription);
+            if (string.IsNullOrEmpty(subscription.Id))
+            {
+                subscription.Id = Guid.NewGuid().ToString();
+                await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, subscription);
+            }
+            else
+                await docdb.Client.ReplaceDocumentAsync(subscription.SelfLink, subscription);
+
+            // exception handling, etc... 
         }
 
         public async Task<ScampSubscription> GetSubscription(string subscriptionId)
@@ -71,7 +81,7 @@ namespace DocumentDbRepositories.Implementation
                 return null;
 
             var query = from sub in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
-                        where sub.Id == subscriptionId && sub.Type == "subscription"
+                        where sub.Id == subscriptionId && sub.Deleted == false && sub.Type == "subscription"
                         select sub;
             return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
@@ -82,10 +92,11 @@ namespace DocumentDbRepositories.Implementation
                 return null;
 
             var query = from sub in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
-                        where sub.Type == "subscription"
+                        where sub.Type == "subscription" && sub.Deleted == false
                         select sub;
             return await query.AsDocumentQuery().ToListAsync();
         }
 
+        #endregion
     }
 }

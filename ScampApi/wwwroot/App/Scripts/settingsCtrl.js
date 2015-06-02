@@ -21,7 +21,7 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
-    }
+    };
     
     // get the list of current system administrators
     $scope.getGroupManagers = function () {
@@ -36,7 +36,7 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
-    }
+    };
 
     // revoke system administrator permissions for the selected user
     $scope.confirmDeleteAdmin = function (user) {
@@ -78,7 +78,61 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
-    }
+    };
 
+    // launch the subscription modal pop-up and set up for add/edit
+    $scope.confirmSubscriptionUpdate = function (subscription, $event) {
+        console.log("calling settingsCtrl.confirmSubscriptionUpdate");
+
+        $scope.subscriptionActionLabel = (subscription == null ? "Add" : "Update");
+
+        $event.preventDefault();
+    };
+
+    // close execute subscription modal pop-up action and close window
+    $scope.subscriptionSave = function (subscription, $event) {
+        console.log("calling settingsCtrl.subscriptionSave");
+
+        //TODO: validate parameters
+
+        // do insert/update
+        systemSettingsSvc.upsertSubscription(subscription).then(
+            // get succeeded
+            function (data) {
+                window.alert("Subscription successfully added")
+                // reload list of system admins
+                $scope.getSubscriptions();
+            },
+            // get failed
+            function (status) {
+                window.alert("Add/Update failed");
+            }
+        );
+        
+        $('#updateSubscriptionModal').modal('hide');
+    };
+
+    // revoke system administrator permissions for the selected user
+    $scope.confirmDeleteSubscription = function (subscription) {
+        console.log("calling settingsCtrl.confirmDeleteSubscription");
+
+        var wndRsp = window.confirm("Are you sure you want to remove subscription '" + subscription.name + "'? All SCAMP managed resources withing this subscription will be permanently destroyed.")
+        if (wndRsp == true) {
+            systemSettingsSvc.deleteSubscription(subscription.id).then(
+                // get succeeded
+                function (data) {
+                    window.alert("Subscription deletion has been requested.")
+                    // reload list of system admins
+                    $scope.getSubscriptions();
+                },
+                // get failed
+                function (status) {
+                    window.alert("deletion failed");
+                }
+            );
+        } else {
+            window.alert("Operation Cancelled.");
+        }
+    };
 
 }]);

@@ -39,9 +39,9 @@ namespace DocumentDbRepositories
     {
         Task<List<ScampUser>> GetSystemAdministrators();
         Task<List<ScampUser>> GetGroupManagers();
-        Task CreateSubscription(ScampSubscription newSubscription);
         Task<ScampSubscription> GetSubscription(string subscriptionId);
         Task<List<ScampSubscription>> GetSubscriptions();
+        Task UpsertSubscription(ScampSubscription updatedSubscription);
         Task<StyleSettings> GetSiteStyleSettings();
     }
 }

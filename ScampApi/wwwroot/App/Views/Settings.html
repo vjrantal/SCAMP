@@ -96,8 +96,8 @@
 
                 <div class="panel panel-default" ng-show="settingsView == 'subscriptions'">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Subscriptions 33</h3>
-                        <span class="pull-right"><a href="">Add Subscription</a></span>
+                        <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Subscriptions</h3>
+                        <span class="pull-right"><a href="" ng-click="confirmSubscriptionUpdate(subscription, $event)" data-toggle="modal" data-target="#updateSubscriptionModal" data-resource-id="{{resource.id}}">Add Subscription</a></span>
                     </div>
                     <div class="row">
                         <div class="col-md-8 dashboard-grid-column" ng-init="getSubscriptions()">
@@ -120,7 +120,37 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" style="color:#000" id="updateSubscriptionModal" tabindex="-1" role="dialog" aria-labelledby="updateSubscriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="border-style:none">
+                <h3 class="modal-title col-md-10">Subscription Details y</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body pull-left">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">Subscription Name: <input type="text" ng-model="subscription.name" required ng-minlength="8" ng-maxlength="32" ngtrim=true /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">Subscription Id: <input type="text" ng-model="subscription.azureSubscriptionId" required ng-minlength="8" ng-maxlength="32" ngtrim=true /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">Admin User: <input type="text" ng-model="subscription.azureAdminUser" required ngtrim=true /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">Admin Password: <input type="password" ng-model="subscription.azureAdminPassword" required ng-minlength="6" /></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="subscriptionSave(subscription, $event)">{{ subscriptionActionLabel }} Subscription</button>
             </div>
         </div>
     </div>
