@@ -99,6 +99,9 @@ namespace ScampApi.Controllers
             if (userList.Count() > 0) // user is already in the list
                 return new ObjectResult("designated user is already a member of specified group") { StatusCode = 400 };
 
+            //TODO: Issue #152
+            // check to make sure enough remains in the group allocation to allow add of user
+
             // create document updates
             await _groupRepository.AddUserToGroup(groupId, userId);
 
@@ -109,6 +112,9 @@ namespace ScampApi.Controllers
                 UnitsUsed = 0
             };
             await _volatileStorageController.AddUserBudgetState(newBudget);
+            //TODO: Issue #152
+            // update group budget allocation to reflect addition of new user
+
 
             // return list
             return new ObjectResult(null) { StatusCode = 200 };
