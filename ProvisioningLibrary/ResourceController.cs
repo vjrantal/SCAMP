@@ -12,14 +12,14 @@ namespace ProvisioningLibrary
     internal class ResourceController : IResourceController
     {
         private readonly IResourceRepository _resourceRepository;
-        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ISystemSettingsRepository _settingsRepository;
         private readonly IGroupRepository _groupRepository;
         private readonly IKeyRepository _keyRepository;
 
-        public ResourceController(IResourceRepository resourceRepository, ISubscriptionRepository subscriptionRepository, IGroupRepository groupRepository, IKeyRepository keyRepository)
+        public ResourceController(IResourceRepository resourceRepository, ISystemSettingsRepository settingsRepository, IGroupRepository groupRepository, IKeyRepository keyRepository)
         {
             _resourceRepository = resourceRepository;
-            _subscriptionRepository = subscriptionRepository;
+            _settingsRepository = settingsRepository;
             _groupRepository = groupRepository;
             _keyRepository = keyRepository;
         }
@@ -32,7 +32,7 @@ namespace ProvisioningLibrary
 
         public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
-            var subscription = await _subscriptionRepository.GetSubscription(subscriptionId);
+            var subscription = await _settingsRepository.GetSubscription(subscriptionId);
 
             return subscription;
         }
@@ -42,7 +42,7 @@ namespace ProvisioningLibrary
 
             //Need to add the logic of choosing a subscription.
             //For now is the first in the store
-            var c = await _subscriptionRepository.GetSubscriptions();
+            var c = await _settingsRepository.GetSubscriptions();
             var selected = c.LastOrDefault();
             selected.AzureManagementThumbnail = await _keyRepository.GetSecret(selected.Id, "cert");
             return selected;

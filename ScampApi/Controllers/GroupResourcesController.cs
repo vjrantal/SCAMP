@@ -26,10 +26,10 @@ namespace ScampApi.Controllers
         private ISecurityHelper _securityHelper;
         private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
-        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ISystemSettingsRepository _settingsRepository;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository, IVolatileStorageController volatileStorageController)
+        public GroupResourcesController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISystemSettingsRepository settingsRepository, IVolatileStorageController volatileStorageController)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
@@ -37,7 +37,7 @@ namespace ScampApi.Controllers
             _groupRepository = groupRepository;
             _groupRepository = groupRepository;
             _webJobController = webJobController;
-            _subscriptionRepository = subscriptionRepository;
+            _settingsRepository = settingsRepository;
             _volatileStorageController = volatileStorageController;
         }
 
@@ -81,7 +81,7 @@ namespace ScampApi.Controllers
             }
 
           
-            ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
+            ScampSubscription sub = await _settingsRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
 
 

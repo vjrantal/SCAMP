@@ -26,7 +26,6 @@ namespace DocumentDbRepositories.Implementation
             this.Services.AddInstance(this);
             this.Services.AddTransient<IGroupRepository, GroupRepository>();
             this.Services.AddTransient<IResourceRepository, ResourceRepository>();
-            this.Services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
             this.Services.AddTransient<IUserRepository, UserRepository>();
             this.Services.AddTransient<ISystemSettingsRepository, SystemSettingsRepository>();
         }

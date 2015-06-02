@@ -10,6 +10,7 @@ angular.module('scamp')
 
     // get the list of current system administrators
     $scope.getSystemAdmins = function () {
+        console.log("calling: settingsCtrl.getSystemAdmins");
         systemSettingsSvc.getSysAdmins().then(
             // get succeeded
             function (data) {
@@ -24,6 +25,7 @@ angular.module('scamp')
     
     // get the list of current system administrators
     $scope.getGroupManagers = function () {
+        console.log("calling: settingsCtrl.getGroupManagers");
         systemSettingsSvc.getGroupManagers().then(
             // get succeeded
             function (data) {
@@ -61,5 +63,22 @@ angular.module('scamp')
                 window.alert("Operation Cancelled.");
             }
         }
-    };
+    }
+
+    // get the list of configured subscriptions
+    $scope.getSubscriptions = function () {
+        console.log("calling: settingsCtrl.getSubscriptions");
+        systemSettingsSvc.getSubscriptions().then(
+            // get succeeded
+            function (data) {
+                $scope.subList = data;
+            },
+            // get failed
+            function (statusCode) {
+                console.log(statusCode);
+            }
+        );
+    }
+
+
 }]);

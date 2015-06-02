@@ -56,5 +56,36 @@ namespace DocumentDbRepositories.Implementation
             // execute query and return results
             return await settingQuery.AsDocumentQuery().FirstOrDefaultAsync(); ;
         }
+
+        public async Task CreateSubscription(ScampSubscription newSubscription)
+        {
+            if (!(await docdb.IsInitialized))
+                return;
+
+            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newSubscription);
+        }
+
+        public async Task<ScampSubscription> GetSubscription(string subscriptionId)
+        {
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from sub in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
+                        where sub.Id == subscriptionId && sub.Type == "subscription"
+                        select sub;
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
+        }
+
+        public async Task<List<ScampSubscription>> GetSubscriptions()
+        {
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from sub in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
+                        where sub.Type == "subscription"
+                        select sub;
+            return await query.AsDocumentQuery().ToListAsync();
+        }
+
     }
 }

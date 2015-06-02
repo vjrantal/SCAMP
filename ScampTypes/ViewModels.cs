@@ -150,4 +150,12 @@ namespace ScampTypes.ViewModels
     public string CacheLocation { get; set; }
     public string RedirectUri { get; set; }
     }
+
+    public sealed class SubscriptionSummary
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string AzureSubscriptionId { get; set; }
+    }
+
 }
