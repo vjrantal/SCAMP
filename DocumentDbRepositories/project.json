@@ -1,21 +1,20 @@
 {
     "version": "1.0.0-*",
-  "description": "",
-  "authors": [ "" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+    "description": "",
+    "authors": [ "" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
 
     "dependencies": {
-    "Newtonsoft.Json": "6.0.8",
-                    "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
-                "Microsoft.Framework.DependencyInjection": "1.0.0-beta4",
-      "Microsoft.Azure.Documents.Client": "0.9.2-preview",
-      "ScampTypes" :"1.0.0-*"
+        "Newtonsoft.Json": "7.0.1-beta3",
+        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta4",
+        "Microsoft.Azure.Documents.Client": "0.9.3-preview",
+        "ScampTypes": "1.0.0-*"
     },
 
-  "frameworks" : {
-    "dnx451": { }
-        }
+    "frameworks": {
+        "dnx451": { }
     }
-}
+} }

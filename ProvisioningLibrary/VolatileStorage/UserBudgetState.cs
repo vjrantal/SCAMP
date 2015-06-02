@@ -37,7 +37,7 @@ namespace ProvisioningLibrary
                 return this.RowKey;
             }
         }
-        public long UnitsBudgetted { get; set; }
-        public long UnitsUsed { get; set; }
+        public double UnitsBudgetted { get; set; }
+        public double UnitsUsed { get; set; }
     }
 }

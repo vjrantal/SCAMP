@@ -11,7 +11,7 @@ using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/group/{groupId}")]
     public class GroupUsersController : Controller
     {
@@ -70,6 +70,48 @@ namespace ScampApi.Controllers
             // return list
             return new ObjectResult(rtnView) { StatusCode = 200 };
 
+        }
+
+        /// <summary>
+        /// returns a view of a group's information
+        /// </summary>
+        /// <param name="groupId">Id of group to get list of users for</param>
+        /// <returns></returns>
+        [HttpPut("user/{userId}")]
+        public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
+        {
+            //TODO: add in group admin/manager authorization check
+            //if (!await CurrentUserCanViewGroup(group))
+            //    return new HttpStatusCodeResult(403); // Forbidden
+            //}
+
+            // get group details
+            var rscGroup = await _groupRepository.GetGroup(groupId);
+            if (rscGroup == null)
+            {
+                return new ObjectResult("designated group does not exist") { StatusCode = 400 };
+            }
+
+            // make sure user isn't already in group
+            IEnumerable<ScampUserReference> userList = from ur in rscGroup.Members
+                where ur.Id == userId
+                select ur;
+            if (userList.Count() > 0) // user is already in the list
+                return new ObjectResult("designated user is already a member of specified group") { StatusCode = 400 };
+
+            // create document updates
+            await _groupRepository.AddUserToGroup(groupId, userId);
+
+            // create volatile storage budget entry for user
+            var newBudget = new UserBudgetState(userId, groupId)
+            {
+                UnitsBudgetted = rscGroup.Budget.DefaultUserAllocation,
+                UnitsUsed = 0
+            };
+            await _volatileStorageController.AddUserBudgetState(newBudget);
+
+            // return list
+            return new ObjectResult(null) { StatusCode = 200 };
         }
 
         [HttpGet("user/{userId}/resources")]

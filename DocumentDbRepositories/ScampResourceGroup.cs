@@ -22,7 +22,7 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "members")]
 		public List<ScampUserReference> Members { get; set; }
         [JsonProperty(PropertyName = "budget")]
-        public ScampUserBudget Budget { get; set; }
+        public ScampGroupBudget Budget { get; set; }
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "group"; } }
