@@ -16,11 +16,20 @@ namespace DocDbSetup
 
         static void Main(string[] args)
         {
-            // setup DocumentDB client 
-            Uri endpoint = new Uri("");
-            string authKey = "";
-            string databaseId = "";
-            string collectionId = "";
+            if (args.Count() < 4)
+            {
+                Console.WriteLine("You must specify the following parameters: Document DB endpoint URL, secret key, database name, and collection name.");
+                Console.WriteLine("Program terminated. Press any key to exit");
+                Console.ReadKey();
+                return; // exit program
+
+            }
+
+            // setup DocumentDB client using passed parameters
+            Uri endpoint = new Uri(args[0]);
+            string authKey = args[1];
+            string databaseId = args[2];
+            string collectionId = args[3];
 
             var connectionPolicy = new ConnectionPolicy()
             {
