@@ -214,5 +214,12 @@ namespace ProvisioningLibrary
             return (UserBudgetState)retrievedResult.Result;
         }
 
+        public async Task AddUserBudgetState(UserBudgetState budget)
+        {
+            TableOperation operation = TableOperation.InsertOrReplace(budget);
+            TableResult retrievedResult = await _StateUpdateTable.ExecuteAsync(operation);
+            return;
+        }
+
     }
 }

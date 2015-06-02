@@ -21,5 +21,6 @@ namespace ProvisioningLibrary
         Task<GroupBudgetState> GetGroupBudgetState(string groupId);
         Task<List<UserBudgetState>> GetUserBudgetStates(string userId);
         Task<UserBudgetState> GetUserBudgetState(string userId, string groupId);
+        Task AddUserBudgetState(UserBudgetState budget);
     }
 }

@@ -26,5 +26,7 @@ namespace DocumentDbRepositories
         public string OwnerId { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "defaultUserAllocation")]
+        public double DefaultUserAllocation { get; set; } 
     }
 }

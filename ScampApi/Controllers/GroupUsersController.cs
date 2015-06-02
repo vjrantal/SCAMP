@@ -86,22 +86,32 @@ namespace ScampApi.Controllers
             //}
 
             // get group details
-            var group = await _groupRepository.GetGroup(groupId);
-            if (group == null)
+            var rscGroup = await _groupRepository.GetGroup(groupId);
+            if (rscGroup == null)
             {
-                return HttpNotFound();
+                return new ObjectResult("designated group does not exist") { StatusCode = 400 };
             }
 
             // make sure user isn't already in group
+            IEnumerable<ScampUserReference> userList = from ur in rscGroup.Members
+                where ur.Id == userId
+                select ur;
+            if (userList.Count() > 0) // user is already in the list
+                return new ObjectResult("designated user is already a member of specified group") { StatusCode = 400 };
 
             // create document updates
-            _groupRepository.AddUserToGroup(groupId, userId);
+            await _groupRepository.AddUserToGroup(groupId, userId);
 
             // create volatile storage budget entry for user
+            var newBudget = new UserBudgetState(userId, groupId)
+            {
+                UnitsBudgetted = rscGroup.Budget.DefaultUserAllocation,
+                UnitsUsed = 0
+            };
+            await _volatileStorageController.AddUserBudgetState(newBudget);
 
             // return list
             return new ObjectResult(null) { StatusCode = 200 };
-
         }
 
         [HttpGet("user/{userId}/resources")]
