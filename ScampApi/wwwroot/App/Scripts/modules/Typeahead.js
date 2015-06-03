@@ -45,10 +45,7 @@ function Typeahead($scope, config, itemSelectionCB) {
         //prefetch: '../data/films/post_1960.json',
         remote: {
             url: remoteURL,
-            wildcard: queryStr,
-            transform: function (rsp) {
-                console.log(rsp);
-            }
+            wildcard: queryStr
         }
     });
 

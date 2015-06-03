@@ -3,10 +3,13 @@ angular.module('scamp')
 .controller('settingsCtrl', ['$scope', '$location', 'systemSettingsSvc', 'adalAuthenticationService', function ($scope, $location, systemSettingsSvc, adalService) {
     $scope.currentRouteName = 'Settings';
 
-    var selectedUser = function (userId) {
+    var grantAdmin = function (userId) {
         window.alert("you selected" + userId);
     };
 
+    var grantAdmin = function (userId) {
+        window.alert("you selected" + userId);
+    };
 
     var valueProperty = 'id'; //The property name for the unique id of the selected option from the RPC
 
