@@ -26,8 +26,6 @@ namespace DocumentDbRepositories
         public string SubscriptionId { get; set; }
         [JsonProperty(PropertyName = "resourceType")]
         public ResourceType ResourceType { get; set; }
-        [JsonProperty(PropertyName = "state")]
-        public ResourceState State { get; set; }
         [JsonProperty(PropertyName = "cloudServiceName")]
         public string CloudServiceName { get; set; }
         [JsonProperty(PropertyName = "userName")]

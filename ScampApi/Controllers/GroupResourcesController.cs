@@ -26,10 +26,10 @@ namespace ScampApi.Controllers
         private ISecurityHelper _securityHelper;
         private IGroupRepository _groupRepository;
         private IWebJobController _webJobController;
-        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ISystemSettingsRepository _settingsRepository;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupResourcesController(ILinkHelper linkHelper,ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISubscriptionRepository subscriptionRepository, IVolatileStorageController volatileStorageController)
+        public GroupResourcesController(ILinkHelper linkHelper, ISecurityHelper securityHelper, IResourceRepository resourceRepository, IGroupRepository groupRepository, IWebJobController webJobController, ISystemSettingsRepository settingsRepository, IVolatileStorageController volatileStorageController)
         {
             _linkHelper = linkHelper;
             _resourceRepository = resourceRepository;
@@ -37,7 +37,7 @@ namespace ScampApi.Controllers
             _groupRepository = groupRepository;
             _groupRepository = groupRepository;
             _webJobController = webJobController;
-            _subscriptionRepository = subscriptionRepository;
+            _settingsRepository = settingsRepository;
             _volatileStorageController = volatileStorageController;
         }
 
@@ -80,8 +80,7 @@ namespace ScampApi.Controllers
                 //TODO return error
             }
 
-          
-            ScampSubscription sub = await _subscriptionRepository.GetSubscription(res.SubscriptionId);
+            ScampSubscription sub = await _settingsRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
 
 
@@ -136,7 +135,7 @@ namespace ScampApi.Controllers
                 ResourceGroup = grpRef,
                 Name = Regex.Replace(groupResource.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
                 ResourceType = ResourceType.VirtualMachine,
-                State = ResourceState.Allocated
+                //State = ResourceState.Allocated
             };
 
             // can user preform this action
@@ -167,7 +166,7 @@ namespace ScampApi.Controllers
             var checkPermission = await CanManageResource(res, ResourceAction.Delete);
             if(checkPermission)
             {
-                res.State = ResourceState.Deleting;
+                //res.State = ResourceState.Deleting;
                 await  _resourceRepository.UpdateResource( res);
                 _webJobController.SubmitActionInQueue(resourceId,ResourceAction.Delete );
             }

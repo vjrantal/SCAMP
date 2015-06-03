@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Documents.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -56,5 +57,46 @@ namespace DocumentDbRepositories.Implementation
             // execute query and return results
             return await settingQuery.AsDocumentQuery().FirstOrDefaultAsync(); ;
         }
+
+        #region Subscription Management Methods
+        public async Task UpsertSubscription(ScampSubscription subscription)
+        {
+            if (!(await docdb.IsInitialized))
+                return;
+
+            if (string.IsNullOrEmpty(subscription.Id))
+            {
+                subscription.Id = Guid.NewGuid().ToString();
+                await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, subscription);
+            }
+            else
+                await docdb.Client.ReplaceDocumentAsync(subscription.SelfLink, subscription);
+
+            // exception handling, etc... 
+        }
+
+        public async Task<ScampSubscription> GetSubscription(string subscriptionId)
+        {
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from sub in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
+                        where sub.Id == subscriptionId && sub.Deleted == false && sub.Type == "subscription"
+                        select sub;
+            return await query.AsDocumentQuery().FirstOrDefaultAsync();
+        }
+
+        public async Task<List<ScampSubscription>> GetSubscriptions()
+        {
+            if (!(await docdb.IsInitialized))
+                return null;
+
+            var query = from sub in docdb.Client.CreateDocumentQuery<ScampSubscription>(docdb.Collection.SelfLink)
+                        where sub.Type == "subscription" && sub.Deleted == false
+                        select sub;
+            return await query.AsDocumentQuery().ToListAsync();
+        }
+
+        #endregion
     }
 }

@@ -35,17 +35,13 @@ namespace DocumentDbRepositories
         Task DeleteResource(string resourceId);
     }
 
-    public interface ISubscriptionRepository
-    {
-        Task CreateSubscription(ScampSubscription newSubscription);
-        Task<ScampSubscription> GetSubscription(string subscriptionId);
-        Task<List<ScampSubscription>> GetSubscriptions();
-    }
-
     public interface ISystemSettingsRepository
     {
         Task<List<ScampUser>> GetSystemAdministrators();
         Task<List<ScampUser>> GetGroupManagers();
+        Task<ScampSubscription> GetSubscription(string subscriptionId);
+        Task<List<ScampSubscription>> GetSubscriptions();
+        Task UpsertSubscription(ScampSubscription updatedSubscription);
         Task<StyleSettings> GetSiteStyleSettings();
     }
 }

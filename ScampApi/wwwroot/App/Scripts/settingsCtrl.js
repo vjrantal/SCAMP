@@ -10,6 +10,7 @@ angular.module('scamp')
 
     // get the list of current system administrators
     $scope.getSystemAdmins = function () {
+        console.log("calling: settingsCtrl.getSystemAdmins");
         systemSettingsSvc.getSysAdmins().then(
             // get succeeded
             function (data) {
@@ -20,10 +21,11 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
-    }
+    };
     
     // get the list of current system administrators
     $scope.getGroupManagers = function () {
+        console.log("calling: settingsCtrl.getGroupManagers");
         systemSettingsSvc.getGroupManagers().then(
             // get succeeded
             function (data) {
@@ -34,7 +36,7 @@ angular.module('scamp')
                 console.log(statusCode);
             }
         );
-    }
+    };
 
     // revoke system administrator permissions for the selected user
     $scope.confirmDeleteAdmin = function (user) {
@@ -61,5 +63,76 @@ angular.module('scamp')
                 window.alert("Operation Cancelled.");
             }
         }
+    }
+
+    // get the list of configured subscriptions
+    $scope.getSubscriptions = function () {
+        console.log("calling: settingsCtrl.getSubscriptions");
+        systemSettingsSvc.getSubscriptions().then(
+            // get succeeded
+            function (data) {
+                $scope.subList = data;
+            },
+            // get failed
+            function (statusCode) {
+                console.log(statusCode);
+            }
+        );
     };
+
+    // launch the subscription modal pop-up and set up for add/edit
+    $scope.confirmSubscriptionUpdate = function (subscription, $event) {
+        console.log("calling settingsCtrl.confirmSubscriptionUpdate");
+
+        $scope.subscriptionActionLabel = (subscription == null ? "Add" : "Update");
+
+        $event.preventDefault();
+    };
+
+    // close execute subscription modal pop-up action and close window
+    $scope.subscriptionSave = function (subscription, $event) {
+        console.log("calling settingsCtrl.subscriptionSave");
+
+        //TODO: validate parameters
+
+        // do insert/update
+        systemSettingsSvc.upsertSubscription(subscription).then(
+            // get succeeded
+            function (data) {
+                window.alert("Subscription successfully added")
+                // reload list of system admins
+                $scope.getSubscriptions();
+            },
+            // get failed
+            function (status) {
+                window.alert("Add/Update failed");
+            }
+        );
+        
+        $('#updateSubscriptionModal').modal('hide');
+    };
+
+    // revoke system administrator permissions for the selected user
+    $scope.confirmDeleteSubscription = function (subscription) {
+        console.log("calling settingsCtrl.confirmDeleteSubscription");
+
+        var wndRsp = window.confirm("Are you sure you want to remove subscription '" + subscription.name + "'? All SCAMP managed resources withing this subscription will be permanently destroyed.")
+        if (wndRsp == true) {
+            systemSettingsSvc.deleteSubscription(subscription.id).then(
+                // get succeeded
+                function (data) {
+                    window.alert("Subscription deletion has been requested.")
+                    // reload list of system admins
+                    $scope.getSubscriptions();
+                },
+                // get failed
+                function (status) {
+                    window.alert("deletion failed");
+                }
+            );
+        } else {
+            window.alert("Operation Cancelled.");
+        }
+    };
+
 }]);

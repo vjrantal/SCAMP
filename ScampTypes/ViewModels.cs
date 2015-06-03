@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace ScampTypes.ViewModels
@@ -150,4 +151,19 @@ namespace ScampTypes.ViewModels
     public string CacheLocation { get; set; }
     public string RedirectUri { get; set; }
     }
+
+    public sealed class SubscriptionView
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+        [JsonProperty(PropertyName = "azureSubscriptionId")]
+        public string AzureSubscriptionId { get; set; }
+        [JsonProperty(PropertyName = "azureAdminUser")]
+        public string AzureAdminUser { get; set; }
+        [JsonProperty(PropertyName = "azureAdminPassword")]
+        public string AzureAdminPassword { get; set; }
+    }
+
 }

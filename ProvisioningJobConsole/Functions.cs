@@ -235,7 +235,7 @@ namespace ProvisioningJobConsole
             string storageAccountName = activity.ServiceName;
             int rdpPort = r.Next(3000, 4000);
 
-            activity.Resource.State = ResourceState.Starting;
+            //activity.Resource.State = ResourceState.Starting;
             await activity.ResourceController.UpdateResource(activity.Resource);
 
             var isCloudServiceAlreadyCreated =
