@@ -3,16 +3,15 @@ angular.module('scamp')
 .controller('settingsCtrl', ['$scope', '$location', 'systemSettingsSvc', 'adalAuthenticationService', function ($scope, $location, systemSettingsSvc, adalService) {
     $scope.currentRouteName = 'Settings';
 
-    var grantAdmin = function (userId) {
-        window.alert("you selected" + userId);
-    };
-
-    var grantAdmin = function (userId) {
+    var grantManager = function (userId) {
         window.alert("you selected" + userId);
     };
 
     var valueProperty = 'id'; //The property name for the unique id of the selected option from the RPC
 
+    /// 
+    // set up the type ahead control for system admins
+    ///
     var sysAdminLookupConfig = {
         componentId: 'addSysAdmin',
         minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
@@ -23,7 +22,27 @@ angular.module('scamp')
             displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
         }
     };
+    // callback method for when a user is selected
+    var selectedSystemAdmin = function (e, datum) {
+        systemSettingsSvc.grantSysAdmin(datum[valueProperty]).then(
+            // get succeeded
+            function (data) {
+                window.alert("System Administrator Permissions granted")
+                // reload list of system admins
+                $scope.getSystemAdmins();
+            },
+            // get failed
+            function (status) {
+                window.alert("Add failed");
+            }
+        );
+    };
+    // connecting the config and callback with the control
+    var sysAdminTypeaheadControl = new Typeahead($scope, sysAdminLookupConfig, selectedSystemAdmin);
 
+    /// 
+    // set up the type ahead control for group managers
+    ///
     var sysGroupLookupConfig = {
         componentId: 'addGrpManager',
         minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
@@ -34,12 +53,10 @@ angular.module('scamp')
             displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
         }
     };
-
-    var selItemCB = function (e, datum) {
-        selectedUser(datum[valueProperty]);
+    var selectedGroupManager = function (e, datum) {
+        grantManager(datum[valueProperty]);
     }; //The CB referenced for each instance an item is selected from the typeahead.
-    var sysAdminTypeaheadControl = new Typeahead($scope, sysAdminLookupConfig, selItemCB);
-    var sysGroupTypeaheadControl = new Typeahead($scope, sysGroupLookupConfig, selItemCB);
+    var sysGroupTypeaheadControl = new Typeahead($scope, sysGroupLookupConfig, selectedGroupManager);
 
     // set default setting "tab" view
     if (!$scope.settingsView)

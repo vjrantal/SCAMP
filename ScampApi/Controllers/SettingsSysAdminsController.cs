@@ -86,9 +86,12 @@ namespace ScampApi.Controllers.Controllers
 
             ScampUser user = await _userRepository.GetUserbyId(userId);
             
-            // if user wasn't found, return error
+            // if user wasn't found, add them to the scamp DB
             if (user == null)
+            {
                 return new ObjectResult("specified user does not exist") { StatusCode = 400 };
+
+            }
 
             // only perform update if value needs to be changed
             if (user.IsSystemAdmin != isAdmin)

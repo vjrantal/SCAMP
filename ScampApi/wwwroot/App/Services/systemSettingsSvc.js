@@ -61,7 +61,7 @@ angular.module('scamp')
 
             var deferred = $q.defer();
            
-                $http.delete(apiPathSysAdmins + id).
+                $http.post(apiPathSysAdmins + id).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
