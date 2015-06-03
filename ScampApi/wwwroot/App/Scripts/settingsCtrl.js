@@ -85,6 +85,7 @@ angular.module('scamp')
         console.log("calling settingsCtrl.confirmSubscriptionUpdate");
 
         $scope.subscriptionActionLabel = (subscription == null ? "Add" : "Update");
+        $scope.selectedSubscription = subscription;
 
         $event.preventDefault();
     };
@@ -94,12 +95,13 @@ angular.module('scamp')
         console.log("calling settingsCtrl.subscriptionSave");
 
         //TODO: validate parameters
+        // https://github.com/SimpleCloudManagerProject/SCAMP/issues/192
 
         // do insert/update
         systemSettingsSvc.upsertSubscription(subscription).then(
             // get succeeded
             function (data) {
-                window.alert("Subscription successfully added")
+                window.alert("Subscription successfully saved")
                 // reload list of system admins
                 $scope.getSubscriptions();
             },

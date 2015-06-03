@@ -75,6 +75,20 @@ namespace DocumentDbRepositories.Implementation
             // exception handling, etc... 
         }
 
+        /// <summary>
+        /// Deletes a subscription document. Should only be used on failure of keyvault insertion
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <returns>nothing</returns>
+        public async Task DeleteSubscription(ScampSubscription subscription)
+        {
+            if (!(await docdb.IsInitialized))
+                throw new Exception("DocumentDB Controller did not initialize");
+
+            await docdb.Client.DeleteDocumentAsync(subscription.SelfLink);
+        }
+
+
         public async Task<ScampSubscription> GetSubscription(string subscriptionId)
         {
             if (!(await docdb.IsInitialized))
