@@ -1,8 +1,9 @@
 ﻿/*
  This wrapper module is intended(but not limited to) being used as a typeahead front-end control sourced against a restful service
  Reference the API documentation for follow-on questions https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#jquerytypeaheadoptions-datasets
- usage: <div id="remote">
-                <ng-input class="typeahead" type="text" placeholder="Search for SCAMP users">
+ usage: 
+        <div id="remote">
+            <input class="typeahead" type="text" placeholder="Search for SCAMP users">
         </div>
 
  required 
@@ -23,6 +24,8 @@
  var myTypeaheadControl = new Typeahead($scope, myConfig, selItemCB);
 
 */
+
+
 
 function Typeahead($scope, config, itemSelectionCB) {
     this.scope = $scope;
@@ -46,15 +49,19 @@ function Typeahead($scope, config, itemSelectionCB) {
         }
     });
 
-    $('#' + componentId + ' .typeahead').typeahead({
-        minLength: minLength,
-        hint: true,
-        highlight: true
-    },{
-        display: displayProperty,
-        source: remoteCall,
-        name: 'users'
+    $(document).ready(function () {
+        $('#' + componentId + ' .typeahead').typeahead({
+            minLength: minLength,
+            hint: true,
+            highlight: true
+        }, {
+            display: displayProperty,
+            source: remoteCall,
+            name: 'users'
+        });
+
+        $('#' + componentId).on("typeahead:selected typeahead:autocompleted", itemSelectionCB);
     });
 
-    $('#' + componentId).on("typeahead:selected typeahead:autocompleted", itemSelectionCB);
+
 }

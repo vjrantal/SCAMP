@@ -13,7 +13,18 @@ angular.module('scamp')
     var sysAdminLookupConfig = {
         componentId: 'addSysAdmin',
         minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
-        scopeValueBindedPropertyOnSelection: 'Id',
+        scopeValueBindedPropertyOnSelection: 'id',
+        remote: {
+            url: '/api/user/FindbyUPN/%QUERY',
+            queryStr: '%QUERY',
+            displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
+        }
+    };
+
+    var sysGroupLookupConfig = {
+        componentId: 'addGrpManager',
+        minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
+        scopeValueBindedPropertyOnSelection: 'id',
         remote: {
             url: '/api/user/FindbyUPN/%QUERY',
             queryStr: '%QUERY',
@@ -25,6 +36,7 @@ angular.module('scamp')
         selectedUser(datum[valueProperty]);
     }; //The CB referenced for each instance an item is selected from the typeahead.
     var sysAdminTypeaheadControl = new Typeahead($scope, sysAdminLookupConfig, selItemCB);
+    var sysGroupTypeaheadControl = new Typeahead($scope, sysGroupLookupConfig, selItemCB);
 
     // set default setting "tab" view
     if (!$scope.settingsView)
