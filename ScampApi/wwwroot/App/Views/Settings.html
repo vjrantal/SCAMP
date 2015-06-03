@@ -45,7 +45,9 @@
                 <div class="panel panel-default" ng-show="settingsView == 'sysAdmins'">
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;System Administrators</h3>
-                        <span class="pull-right"><a href="">Add New Admin</a></span>
+                        <div id="addSysAdmin">
+                            Add New Admin: <input class="typeahead" type="text" placeholder="Search for SCAMP users">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-8 dashboard-grid-column" ng-init="getSystemAdmins()">
@@ -70,7 +72,9 @@
                 <div class="panel panel-default" ng-show="settingsView == 'grpManagers'">
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Group Managers</h3>
-                        <span class="pull-right"><a href="">Add New Manager</a></span>
+                        <div id="addGrpManager">
+                            Add New Manager: <input class="typeahead" type="text" placeholder="Search for SCAMP users">
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-8 dashboard-grid-column" ng-init="getGroupManagers()">

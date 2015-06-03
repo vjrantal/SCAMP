@@ -3,7 +3,29 @@ angular.module('scamp')
 .controller('settingsCtrl', ['$scope', '$location', 'systemSettingsSvc', 'adalAuthenticationService', function ($scope, $location, systemSettingsSvc, adalService) {
     $scope.currentRouteName = 'Settings';
 
- 
+    var selectedUser = function (userId) {
+        window.alert("you selected" + userId);
+    };
+
+
+    var valueProperty = 'id'; //The property name for the unique id of the selected option from the RPC
+
+    var sysAdminLookupConfig = {
+        componentId: 'addSysAdmin',
+        minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
+        scopeValueBindedPropertyOnSelection: 'Id',
+        remote: {
+            url: '/api/user/FindbyUPN/%QUERY',
+            queryStr: '%QUERY',
+            displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
+        }
+    };
+
+    var selItemCB = function (e, datum) {
+        selectedUser(datum[valueProperty]);
+    }; //The CB referenced for each instance an item is selected from the typeahead.
+    var sysAdminTypeaheadControl = new Typeahead($scope, sysAdminLookupConfig, selItemCB);
+
     // set default setting "tab" view
     if (!$scope.settingsView)
         $scope.settingsView = "sysAdmins";
