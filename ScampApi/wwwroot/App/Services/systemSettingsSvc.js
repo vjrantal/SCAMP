@@ -55,7 +55,7 @@ angular.module('scamp')
             return deferred.promise;
         },
 
-        // revoke user's SCAMP system admin permissions
+        // grant user's SCAMP system admin permissions
         grantSysAdmin: function (user) {
             console.log("adding system admin permissions on id:" + user.id);
 
@@ -68,6 +68,23 @@ angular.module('scamp')
                 error(function (data, status, headers, config) {
                     deferred.reject(status);
                 })
+
+            return deferred.promise;
+        },
+
+        // grant user's SCAMP system admin permissions
+        updateManager: function (groupmanager) {
+            console.log("addin/updating group manager permissions on id:" + groupmanager.id);
+
+            var deferred = $q.defer();
+
+            $http.post(apiPathgrpManagers, groupmanager).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, headers, config) {
+                deferred.reject(status);
+            })
 
             return deferred.promise;
         },
@@ -113,6 +130,24 @@ angular.module('scamp')
             var deferred = $q.defer();
 
             $http.delete(apiPathSubscriptions + subscriptionId).
+            success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, headers, config) {
+                deferred.reject(status);
+            })
+
+            return deferred.promise;
+        },
+
+        // request deletion of group manager permissions
+        deleteGroupManager: function (userId) {
+            console.log("calling: systemSettingsSvc.deleteGroupManager");
+            console.log(userId);
+
+            var deferred = $q.defer();
+
+            $http.delete(apiPathgrpManagers + userId).
             success(function (data, status, headers, config) {
                 deferred.resolve(data);
             }).

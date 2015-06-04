@@ -79,6 +79,73 @@ namespace ScampApi.Controllers.Controllers
             // return list
             return new ObjectResult(rtnView) { StatusCode = 200 };
         }
+
+        // grant a user system administrator permission
+        [HttpPost]
+        public async Task<IActionResult> grantGroupManager([FromBody] GroupManagerSummary groupManagerSummary)
+        {
+            // ensure requestor has system admin permissions
+            if (!await _securityHelper.IsSysAdmin())
+                return new ObjectResult("Access Denied, requestor is not a system administrator") { StatusCode = 403 };
+
+            ScampUser tmpUser = await _userRepository.GetUserbyId(groupManagerSummary.Id);
+            bool doingAdd = tmpUser == null;
+
+            // if we're doing add operations
+            if (doingAdd)
+            {
+                // build new document
+                tmpUser = new ScampUser()
+                {
+                    Id = groupManagerSummary.Id,
+                    Name = groupManagerSummary.Name
+                };
+            }
+
+            // do validation
+            // https://github.com/SimpleCloudManagerProject/SCAMP/issues/196
+
+            // set budget info
+            if (tmpUser.budget == null)
+                tmpUser.budget = new ScampUserBudget();
+            tmpUser.budget.Amount = groupManagerSummary.unitsBudgeted;
+
+            // save changes
+            if (doingAdd) // create user 
+                    await _userRepository.CreateUser(tmpUser);
+            else // else must be update
+                await _userRepository.UpdateUser(tmpUser);
+
+            return new ObjectResult(null) { StatusCode = 204 };
+        }
+
+        /// <summary>
+        /// revokes group manager permissions
+        /// </summary>
+        /// <returns>user to remove group manager permissions on</returns>
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> Delete(string userId)
+        {
+            // only system admins can access this functionality
+            if (!await _securityHelper.IsSysAdmin())
+                return new HttpStatusCodeResult(403); // Forbidden
+
+            // get subscription
+            ScampUser tmpUser = await _userRepository.GetUserbyId(userId);
+            if (tmpUser == null) // if not found
+                return new ObjectResult("specified group manager does not exist") { StatusCode = 400 };
+
+            //TODO: kick off process to clean up all resources in the managers groups
+            // https://github.com/SimpleCloudManagerProject/SCAMP/issues/197
+
+            // mark subscription as deleted
+            tmpUser.budget = null;
+            await _userRepository.UpdateUser(tmpUser);
+
+            // return success
+            return new ObjectResult(null) { StatusCode = 204 };
+        }
+
     }
- 
+
 }

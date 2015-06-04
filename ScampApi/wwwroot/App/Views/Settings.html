@@ -74,9 +74,7 @@
                 <div class="panel panel-default" ng-show="settingsView == 'grpManagers'">
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Group Managers</h3>
-                        <div id="addGrpManager">
-                            Add New Manager: <input class="typeahead" type="text" placeholder="Search for SCAMP users">
-                        </div>
+                        <span class="pull-right"><a ng-click="confirmManagerUpdate(null, $event)" data-toggle="modal" data-target="#updateManagerModal"><i class="fa fa-plus-square-o fa-lg" /> Add Manager</a></span>
                     </div>
                     <div class="row">
                         <div class="col-md-8 dashboard-grid-column" ng-init="getGroupManagers()">
@@ -84,7 +82,7 @@
                                 <table class="table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <td>Actions</td>
+                                            <td colspan="2">Actions</td>
                                             <td>Name</td>
                                             <td>Budget</td>
                                         </tr>
@@ -92,6 +90,7 @@
                                     <tbody>
                                         <tr ng-repeat="groupManager in mgrList">
                                             <td><a ng-click="confirmDeleteManager(groupManager)"><i class="fa fa-trash-o fa-lg" ng-click="" alt="Remove" /> Delete</a></td>
+                                            <td><a ng-click="confirmManagerUpdate(groupManager, $event)" data-toggle="modal" data-target="#updateManagerModal"><i class="fa fa-pencil fa-lg" alt="Edit" /> Edit</a></td>
                                             <td class="text-left">{{groupManager.name}}</td>
                                             <td class="text-left">display budget stuff here</td>
                                         </tr>
@@ -138,6 +137,46 @@
     </div>
 </div>
 
+<!-- modal dialog for adding subscriptions -->
+<div class="modal fade" style="color:#000" id="updateManagerModal" tabindex="-1" role="dialog" aria-labelledby="updateManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="border-style:none">
+                <h3 class="modal-title col-md-10">Manager Details</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis maximus facilisis. Aliquam sit amet odio at purus semper hendrerit et nec leo. Etiam non fringilla dolor. Ut imperdiet turpis non consectetur tincidunt. Nam imperdiet lectus eleifend lacus semper laoreet eu vel urna. Morbi placerat, mauris id lobortis convallis, lectus tellus viverra mi, ut dictum ligula ipsum sed ipsum. Vivamus et felis lectus.
+                <table>
+                    <tbody>
+                        <tr>
+                            <td align="right">Group Manager:</td>
+                            <td>
+                                <div id="addGrpManager" ng-show="selectedGroupManager.id == null">
+                                    <input class="typeahead" type="text" placeholder="Search for SCAMP users">
+                                </div>
+                                <div ng-show="selectedGroupManager.id != null">{{selectedGroupManager.name}}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Allocated Budget:</td>
+                            <td> <input type="text" ng-model="selectedGroupManager.unitsBudgeted" required ngtrim=true /></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Budget Expiry Date:</td>
+                            <td> need to replace with data picker</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="managerSave(selectedGroupManager, $event)">{{ managerActionLabel }} Manager</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal dialog for adding subscriptions -->
 <div class="modal fade" style="color:#000" id="updateSubscriptionModal" tabindex="-1" role="dialog" aria-labelledby="updateSubscriptionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
