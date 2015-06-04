@@ -56,12 +56,12 @@ angular.module('scamp')
         },
 
         // revoke user's SCAMP system admin permissions
-        grantSysAdmin: function (id) {
-            console.log("adding system admin permissions on id:" + id);
+        grantSysAdmin: function (user) {
+            console.log("adding system admin permissions on id:" + user.id);
 
             var deferred = $q.defer();
            
-                $http.post(apiPathSysAdmins + id).
+                $http.post(apiPathSysAdmins, user).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).

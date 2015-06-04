@@ -24,12 +24,10 @@ angular.module('scamp')
     };
     // callback method for when a user is selected
     var selectedSystemAdmin = function (e, datum) {
-        systemSettingsSvc.grantSysAdmin(datum[valueProperty]).then(
+        systemSettingsSvc.grantSysAdmin(datum).then(
             // get succeeded
-            function (data) {
-                window.alert("System Administrator Permissions granted")
-                // reload list of system admins
-                $scope.getSystemAdmins();
+            function (data) {                
+                $scope.getSystemAdmins(); // reload list of system admins
             },
             // get failed
             function (status) {
@@ -104,7 +102,6 @@ angular.module('scamp')
                 systemSettingsSvc.revokeSysAdmin(user.id).then(
                     // get succeeded
                     function (data) {
-                        window.alert("System Administrator Permissions revoked")
                         // reload list of system admins
                         $scope.getSystemAdmins();
                     },

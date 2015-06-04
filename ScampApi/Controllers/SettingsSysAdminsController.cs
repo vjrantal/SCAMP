@@ -58,11 +58,34 @@ namespace ScampApi.Controllers.Controllers
         }
 
         // grant a user system administrator permission
-        [HttpPost("{userId}", Name = "Admin.Grant")]
-        public async Task<IActionResult> grantAdmin(string userId)
+        [HttpPost]
+        public async Task<IActionResult> grantAdmin([FromBody] UserSummary usrSummary)
         {
-            // grant specified user "system admin" rights
-            return await updateAdmin(userId, true);
+            // ensure requestor has system admin permissions
+            if (!await _securityHelper.IsSysAdmin())
+                return new ObjectResult("Access Denied, requestor is not a system administrator") { StatusCode = 403 };
+
+            ScampUser tmpUser = await _userRepository.GetUserbyId(usrSummary.Id);
+
+            // if user wasn't found, add them to the scamp DB
+            if (tmpUser == null)
+            {
+                // build new document
+                tmpUser = new ScampUser()
+                {
+                    Id = usrSummary.Id,
+                    Name = usrSummary.Name,
+                    IsSystemAdmin = true
+                };
+                // create user 
+                await _userRepository.CreateUser(tmpUser);
+            }
+            else
+            {
+                tmpUser.IsSystemAdmin = true;
+                await _userRepository.UpdateUser(tmpUser); // save updated setting
+            }
+            return new ObjectResult(null) { StatusCode = 204 };
         }
 
         // revoke system administrator permissions for a user
@@ -74,36 +97,16 @@ namespace ScampApi.Controllers.Controllers
             if (adminList.Count <= 1)
                 return new ObjectResult("This would remove the last system admin. There must always be at least 1.") { StatusCode = 403 };
 
-            // revoke admin rights
-            return await updateAdmin(userId, false);
-        }
+            ScampUser tmpUser = await _userRepository.GetUserbyId(userId);
 
-        private async Task<IActionResult> updateAdmin(string userId, bool isAdmin)
-        {
-            // ensure requestor has system admin permissions
-            if (!await _securityHelper.IsSysAdmin())
-                return new ObjectResult("Access Denied, requestor is not a system administrator") { StatusCode = 403 };
-
-            ScampUser user = await _userRepository.GetUserbyId(userId);
-            
             // if user wasn't found, add them to the scamp DB
-            if (user == null)
-            {
-                return new ObjectResult("specified user does not exist") { StatusCode = 400 };
+            if (tmpUser == null)
+                return new ObjectResult("Specified user does not exist") { StatusCode = 400 };
 
-            }
-
-            // only perform update if value needs to be changed
-            if (user.IsSystemAdmin != isAdmin)
-            {
-                // if not, grant them permission
-                user.IsSystemAdmin = isAdmin;
-
-                // save updated setting
-                await _userRepository.UpdateUser(user);
-            }
-
-            return new ObjectResult(null) { StatusCode = 200 };
+            // revoke admin rights
+            tmpUser.IsSystemAdmin = false;
+            await _userRepository.UpdateUser(tmpUser); // save updated setting
+            return new ObjectResult(null) { StatusCode = 204 };
         }
     }
 }
