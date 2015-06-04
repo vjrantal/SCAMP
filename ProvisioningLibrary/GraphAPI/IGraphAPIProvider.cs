@@ -11,7 +11,7 @@ namespace ProvisioningLibrary
 {
     public interface IGraphAPIProvider 
     {
-        Task<UserSummary> FindUser(string search);
+        Task<List<UserSummary>> FindUser(string search);
 
     }
 }

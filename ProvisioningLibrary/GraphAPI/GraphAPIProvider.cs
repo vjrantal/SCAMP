@@ -165,12 +165,13 @@ namespace ProvisioningLibrary
         /// </summary>
         /// <param name="search">search value to use</param>
         /// <returns>returns a match if one if found, otherwise returns null</returns>
-        public async Task<UserSummary> FindUser(string search)
+        public async Task<List<UserSummary>> FindUser(string search)
         {
             DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(SearchResults));
+            List<UserSummary> rtnList = new List<UserSummary>();
 
             // create search URI
-            string searchURI = string.Format("https://graph.windows.net/{0}/users?api-version=2013-04-05&$top=1&$filter=startswith(userPrincipalName,'{1}')",
+            string searchURI = string.Format("https://graph.windows.net/{0}/users?api-version=2013-04-05&$top=5&$filter=startswith(userPrincipalName,'{1}')",
                 GraphAPIProvider.Configuration[_cfgPropertyTenantId], 
                 search);
             // create event handler for response
@@ -188,11 +189,19 @@ namespace ProvisioningLibrary
             SearchResults srcResults = (SearchResults)ser.ReadObject(new MemoryStream(byteArray));
 
             if (srcResults.value.Count > 0)
-                return new UserSummary()
+            {
+                UserSummary tmpUser = null;
+                foreach (AADUser fndUser in srcResults.value)
                 {
-                    Id = srcResults.value[0].objectId,
-                    Name = srcResults.value[0].displayName
-                };
+                    tmpUser = new UserSummary()
+                    {
+                        Id = fndUser.objectId,
+                        Name = fndUser.displayName
+                    };
+                    rtnList.Add(tmpUser);
+                }
+                return rtnList;
+            }
             else
                 return null;
         }

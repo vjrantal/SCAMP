@@ -150,9 +150,9 @@ namespace ScampApi.Controllers.Controllers
         public async Task<IActionResult> findUserbyUPN(string searchparm)
         {
             //TODO: implement search
-            UserSummary founduser = await _graphAPIProvider.FindUser(searchparm);
+            List<UserSummary> foundusers = await _graphAPIProvider.FindUser(searchparm);
 
-            return new ObjectResult(founduser) { StatusCode = 200 };
+            return new ObjectResult(foundusers) { StatusCode = 200 };
         }
 
 		private UserSummary map(ScampUser docDbUSer)
