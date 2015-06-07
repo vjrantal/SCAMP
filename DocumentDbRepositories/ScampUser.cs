@@ -15,6 +15,7 @@ namespace DocumentDbRepositories
         public ScampUser()
         {
             GroupMembership = new List<ScampUserGroupMbrship>();
+            budget = new ScampUserBudget();
         }
 
         [JsonProperty(PropertyName = "name")]

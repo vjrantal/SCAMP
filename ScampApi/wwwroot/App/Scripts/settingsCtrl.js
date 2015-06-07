@@ -3,10 +3,6 @@ angular.module('scamp')
 .controller('settingsCtrl', ['$scope', '$location', 'systemSettingsSvc', 'adalAuthenticationService', function ($scope, $location, systemSettingsSvc, adalService) {
     $scope.currentRouteName = 'Settings';
 
-    var grantManager = function (userId) {
-        window.alert("you selected" + userId);
-    };
-
     var valueProperty = 'id'; //The property name for the unique id of the selected option from the RPC
 
     /// 
@@ -41,7 +37,7 @@ angular.module('scamp')
     /// 
     // set up the type ahead control for group managers
     ///
-    var sysGroupLookupConfig = {
+    var sysGroupLookupConfig = { // configuration for the lookup control
         componentId: 'addGrpManager',
         minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
         scopeValueBindedPropertyOnSelection: 'id',
@@ -51,9 +47,14 @@ angular.module('scamp')
             displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
         }
     };
+    // lookup controls callback
     var selectedGroupManager = function (e, datum) {
-        grantManager(datum[valueProperty]);
-    }; //The CB referenced for each instance an item is selected from the typeahead.
+        // check if user is already in list
+
+        // if not, set them as selected
+        $scope.selectedManagerUser = datum;
+    };
+    // connecting the config and callback with the control
     var sysGroupTypeaheadControl = new Typeahead($scope, sysGroupLookupConfig, selectedGroupManager);
 
     // set default setting "tab" view
@@ -92,7 +93,6 @@ angular.module('scamp')
 
     // revoke system administrator permissions for the selected user
     $scope.confirmDeleteAdmin = function (user) {
-
         // make sure we have more than 1 system admin
         if ($scope.adminList.length <= 1) {
             window.alert("There has to be at least one System Administrator. Action not allowed.");
@@ -141,6 +141,19 @@ angular.module('scamp')
         $event.preventDefault();
     };
 
+    // launch the Manager modal pop-up and set up for add/edit
+    $scope.confirmManagerUpdate = function (manager, $event) {
+        console.log("calling settingsCtrl.confirmManagerUpdate");
+
+        $scope.managerActionLabel = (manager == null ? "Add" : "Update");
+        if (manager == null)
+            manager = {}; // create empty object
+
+        $scope.selectedGroupManager = manager;
+
+        $event.preventDefault();
+    };
+
     // close execute subscription modal pop-up action and close window
     $scope.subscriptionSave = function (subscription, $event) {
         console.log("calling settingsCtrl.subscriptionSave");
@@ -165,11 +178,41 @@ angular.module('scamp')
         $('#updateSubscriptionModal').modal('hide');
     };
 
+    // close execute subscription modal pop-up action and close window
+    $scope.managerSave = function (groupManager, $event) {
+        console.log("calling settingsCtrl.subscriptionSave");
+
+        //TODO: validate parameters
+        // https://github.com/SimpleCloudManagerProject/SCAMP/issues/196
+
+        // if we were doing an add, update object with selected user
+        if (groupManager.id == null) {
+            groupManager.id = $scope.selectedManagerUser.id;
+            groupManager.name = $scope.selectedManagerUser.name
+        }
+
+        // do insert/update
+        systemSettingsSvc.updateManager(groupManager).then(
+            // get succeeded
+            function (data) {
+                console.log("group manager saved.")
+                // reload list of system admins
+                $scope.getGroupManagers();
+            },
+            // get failed
+            function (status) {
+                window.alert("group manager Add/Update failed");
+            }
+        );
+
+        $('#updateManagerModal').modal('hide');
+    };
+
     // revoke system administrator permissions for the selected user
     $scope.confirmDeleteSubscription = function (subscription) {
         console.log("calling settingsCtrl.confirmDeleteSubscription");
 
-        var wndRsp = window.confirm("Are you sure you want to remove subscription '" + subscription.name + "'? All SCAMP managed resources withing this subscription will be permanently destroyed.")
+        var wndRsp = window.confirm("Are you sure you want to remove subscription '" + subscription.name + "'? All SCAMP managed resources within this subscription will be permanently destroyed.")
         if (wndRsp == true) {
             systemSettingsSvc.deleteSubscription(subscription.id).then(
                 // get succeeded
@@ -187,5 +230,29 @@ angular.module('scamp')
             window.alert("Operation Cancelled.");
         }
     };
+
+    // revoke group manager permissions for the selected user
+    $scope.confirmDeleteManager = function (groupManager) {
+        console.log("calling settingsCtrl.confirmDeleteManager");
+
+        var wndRsp = window.confirm("Are you sure you want to remove '" + groupManager.name + "' as a group manager? All SCAMP managed resources associated with their groups will be permanently destroyed.")
+        if (wndRsp == true) {
+            systemSettingsSvc.deleteGroupManager(groupManager.id).then(
+                // get succeeded
+                function (data) {
+                    window.alert("Group Manager resource deletion has been requested.")
+                    // reload list of group managers
+                    $scope.getGroupManagers();
+                },
+                // get failed
+                function (status) {
+                    window.alert("deletion failed");
+                }
+            );
+        } else {
+            window.alert("Operation Cancelled.");
+        }
+    };
+
 
 }]);
