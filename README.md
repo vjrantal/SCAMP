@@ -94,7 +94,7 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
 ### Step 6:  Configure the Scamp Application to use your Azure Active Directory tenant
 
 1. TODO:
-2. Open the solution in Visual Studio 2015 CTP 6
+2. Open the solution in Visual Studio 2015 RC
 3. In the Projects -> ScampAPI -> Properties folder, create a file: **launchSettings.json**:
 
 
