@@ -6,8 +6,8 @@ angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap', 'ui.bootstrap
         // Not setting the home controller here, because it is included already
         // in the HTML content.
         templateUrl: "/App/Views/Home.html",
-    }).when("/settings/groupMgr", {
-        controller: "GroupManagerController",
+    }).when("/group-manager", {
+        controller: "groupManagerCtrl",
         templateUrl: "/App/Views/GroupManager.html",
         requireADLogin: true
     }).when("/dashboard", {
