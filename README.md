@@ -15,6 +15,7 @@ SCAMP has several dependencies that must be met. These are as follows:
 - Document DB
 - Azure Storage (tables)
 - Key Vault
+- An Azure Web app slot if you want to host SCAMP for others.
 - Azure Subscription Access: a user identity with permissions to create/manage Virtual Machines and Web Sites.
 
 Instructions for helping provision these services and configuring SCAMP to leverage them can be found later in this document. 
@@ -45,7 +46,7 @@ The next step in setting up SCAMP is to set up the necessary hosted services on 
 
 As you set up the resources, please pay close attention to the values you are asked to capture. These will be used later when you try to run SCAMP for the first time. Additionally, when possible you may want to place all the Azure services into the same resource group. When not possibly, you'll at least want to place them into the same Azure region.  
 
-NOTE: If you are working as part of a team, you may opt to have a single set of services that are shared by all the team members. If this is the case, you may be provided with all the necessary application configuration values and can proceed to the [Running SCAMP](#Running SCAMP for the first time) section of this document.
+NOTE: If you are working as part of a team, you may opt to have a single set of services that are shared by all the team members. If this is the case, you may be provided with all the necessary application configuration values and can proceed to the [Running SCAMP](#running-scamp-for-the-first-time) section of this document.
 
 ### Create an Azure Storage account
 SCAMP requires 1-3 storage accounts. For most implementations, a single storage account will do, but the system was built to support separate accounts should you need additional scalability from your solution.
@@ -60,6 +61,9 @@ SCAMP requires a single DocumentDB account. Please [leverage the official instru
 After you have created the account, be sure to note the **account URI**, and one of its **keys**. These can be found by viewing the settings->keys blade in the Azure portal. 
 
 Next up, you'll need to [create a database](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-database/), and [a collection](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-collection/). Note the name of the database and the collection as these will be used to set up the runtime configuration for SCAMP later in this document
+
+### Create an Azure Web App
+If you intend to make SCAMP available to others, you will need to create an Azure Web App to host the solution so others can access it. 
 
 ### Setting Azure Active Directory Tenant ###
 
