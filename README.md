@@ -6,9 +6,9 @@ For more details, please see [www.simplecloudmgr.org](http://www.simplecloudmgr.
 ##Pre-requisites##
 SCAMP has several dependencies that must be met. These are as follows:
 
-Visual Studio 2015 (min version: RC Community Edition) - SCAMP has been built based on ASP.NET 5 (DNX). As a result you need this version of Visual Studio to work with the code. SCAMP is not currently compatible with Visual Studio Core due to several nuget package dependencies that are not yet compatible with DNX. 
+**Visual Studio 2015 (min version: RC Community Edition)** - SCAMP has been built based on ASP.NET 5 (DNX). As a result you need this version of Visual Studio to work with the code. SCAMP is not currently compatible with Visual Studio Core due to several nuget package dependencies that are not yet compatible with DNX. 
 
-Azure Services: SCAMP, as a cloud management solution also has dependencies on the following Azure hosted services:
+**Azure Hosted Services** - SCAMP, as a cloud management solution also has dependencies on the following Azure hosted services:
 
 
 - Azure Active Directory (ability to register an application and access keys)
@@ -17,34 +17,45 @@ Azure Services: SCAMP, as a cloud management solution also has dependencies on t
 - Key Vault
 - Azure Subscription Access: a user identity with permissions to create/manage Virtual Machines and Web Sites.
 
+Instructions for helping provision these services and configuring SCAMP to leverage them can be found later in this document. 
+
 ##First Time Build##
 When starting work with SCAMP, we encourage you to attempt to clone the source code and get a "clean" build. SCAMP has many Nuget package dependencies and this helps ensure that they are all resolved cleanly. 
 
-### Step 1:  Clone or download this repository
+#### Step 1:  Clone or download this repository
 
 From your shell or command line:
 
 	git clone https://github.com/SimpleCloudManagerProject/Scamp
 
-### Step 2: Open Project
+#### Step 2: Open Project
 Launch Visual Studio 2015 and from the file menu, select File->Open->Project/Solution. Navigate to the folder/directory where you cloned the SCAMP repository and select the file scamp.sln. 
 
 Visual Studio will begin to load the project. This also involves the download of all dependent Nuget packages. Depending on the speed of your internet connection, this process could take several minutes. You can monitor the process via the "output" window. 
 
 Wait for the process to complete and the project to be fully loaded before continuing to the next step. 
-   
+
+#### Step 3: Build the solution
+With the Nuget packages all resolved, we're ready to build the project. In Visual Studio select Build->Rebuild Solution to start the process. Due to some yet unknown issues, your first build attempt may fail. If it does, simply try the build again and it should complete without error.
+
+If you encounter an error at any point in this process, [please post an issue](https://github.com/SimpleCloudManagerProject/SCAMP/issues/new) to our GitHub repository.  
+
+##Azure Services Setup##
+The next step in setting up SCAMP is to set up the necessary hosted services on which SCAMP will depend. In this section will walk you through creating and configuring these services.
+
+As we set up the resources, please pay close attention to the values you are asked to capture. These will be used later when you try to run SCAMP for the first time. 
+
+NOTE: If you are working as part of a team, you may opt to have a single set of services that are shared by all the team members. If this is the case, you may be provided with all the necessary application configuration values and can proceed to the "Running SCAMP" section of this document.
+
+### Create an Azure Storage account
+
+### Create a DocumentDB collection
 
 ### Setting Azure Active Directory Tenant ###
 
 You an use an existing Azure Active Directory AAD tenant (all Azure subscriptions have one associated with it). Or create a new AAD tenant in the [Portal](https://manage.windowsazure.com).  See [http://www.windowsazure.com](http://www.windowsazure.com).  
 
-### Step 1:  Clone or download this repository
-
-From your shell or command line:
-
-	git clone https://github.com/SimpleCloudManagerProject/Scamp
-
-### Step 2:  Register the Scamp Web App on your Azure Active Directory tenant
+#### Step 1:  Register the Scamp Web App on your Azure Active Directory tenant
 
 1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
 2. Click on Active Directory in the left hand nav.
@@ -63,10 +74,22 @@ From your shell or command line:
 
 Repeat steps 5-11 for a non HTTP URL such as 'http://localhost:44000/' if you wish to do development without SSL. 
 
-### Step 3:  Configure the Scamp Web App to use your Azure Active Directory tenant
+#### Step 2:  Creating an application key
+This will be used by Key Vault, allowing the application access to the vault's secrets. 
+
 TODO
 
-### Step 4: Create a KeyVault repository
+#### Step 3:  Enable the OAuth2 implicit grant for your application
+
+By default, applications provisioned in Azure AD are not enabled to use the OAuth2 implicit grant. In order to run this sample, you need to explicitly opt in.
+
+1. From the former steps, your browser should still be on the Azure management portal - and specifically, displaying the Configure tab of your application's entry.
+2. Using the Manage Manifest button in the drawer, download the manifest file for the application and save it to disk.
+3. Open the manifest file with a text editor. Search for the `oauth2AllowImplicitFlow` property. You will find that it is set to `false`; change it to `true` and save the file.
+4. Using the Manage Manifest button, upload the updated manifest file. Save the configuration of the app.
+
+
+### Create a KeyVault repository
 For this step you will need Azure PowerShell version 0.8.13 or later.
 You can also read the following tutorials to get familiar with Azure Resource Manager in Windows PowerShell:
 
@@ -115,21 +138,14 @@ Applications that use a key vault must authenticate and has permission granted.
 4. Scroll to the **keys** section, select the duration, and then click **SAVE**. The page refreshes and now shows a key value. This value will be **KeyVault:AuthClientSecret** in the config.
 5. Copy the client ID value from this page. This value will be  **KeyVault:AuthClientId** in the config.
 
-### Step 5:  Enable the OAuth2 implicit grant for your application
+##Running SCAMP for the first time##
 
-By default, applications provisioned in Azure AD are not enabled to use the OAuth2 implicit grant. In order to run this sample, you need to explicitly opt in.
-
-1. From the former steps, your browser should still be on the Azure management portal - and specifically, displaying the Configure tab of your application's entry.
-2. Using the Manage Manifest button in the drawer, download the manifest file for the application and save it to disk.
-3. Open the manifest file with a text editor. Search for the `oauth2AllowImplicitFlow` property. You will find that it is set to `false`; change it to `true` and save the file.
-4. Using the Manage Manifest button, upload the updated manifest file. Save the configuration of the app.
 
 ### Step 6:  Configure the Scamp Application to use your Azure Active Directory tenant
 
 1. TODO:
 2. Open the solution in Visual Studio 2015 RC
 3. In the Projects -> ScampAPI -> Properties folder, create a file: **launchSettings.json**:
-
 
 
 ```javascript
@@ -162,21 +178,6 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
     }
 }
 
-```
-
-### Step 6: Configure IIS Express bindings for HTTPS
-1. Start the Project - this will launch the site and automatically setup the IIS Express site.
-2. It will fail as the bindings for the site to support HTTPS on port 44300 haven't been added yet. We just ran it now to force the creation of the site.
-2. Until the VS 2015 CTP tooling has the settings, you have to modify IIS Express configuration.
-2. Open your **%USERPROFILE%\Documents\IISExpress\config\applicationhost.config** file
-3. locate the <site... element that contains your site
-4. Add a new binding as follows so the <../sites/bindings> section looks like:
-
-````
-<bindings>
-    <binding protocol="http" bindingInformation="*:10838:localhost" />
-    <binding protocol="https" bindingInformation="*:44300:localhost" />
-</bindings>
 ````
 
 ### Running with specific Tenant and Client ID ###
@@ -233,7 +234,3 @@ APPSETTING_KeyVault:AuthClientSecret
 ```
 "DefaultEndpointsProtocol=https;AccountName=[AccountName];AccountKey=[AccountKey]"
 ```
-
-#### Sample Data Generation ####
-
-There is a temporary endpoint to aid the demo scenario (that we should plan to remove). Hit /sampledata to generate sample data. There's still some work to do to generate more meaningful sample data.
