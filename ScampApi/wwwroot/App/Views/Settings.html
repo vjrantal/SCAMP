@@ -160,11 +160,21 @@
                         </tr>
                         <tr>
                             <td align="right">Allocated Budget:</td>
-                            <td> <input type="text" ng-model="selectedGroupManager.unitsBudgeted" required ngtrim=true /></td>
+                            <td>
+                              <input type="text" class="form-control" ng-model="selectedGroupManager.unitsBudgeted" ng-required="true" ng-trim="true" />
+                            </td>
                         </tr>
                         <tr>
                             <td align="right">Budget Expiry Date:</td>
-                            <td><input ui-date ng-model="selectedGroupManager.endDate"></td>
+                            <td>
+                              <p class="input-group">
+                                <input type="text" class="form-control" ng-model="selectedGroupManager.endDate" datepicker-popup="shortDate" ng-required="true"
+                                       is-open="budgetExpiryDateOpened" min-date="budgetExpiryMinDate" />
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default" ng-click="budgetExpiryDateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                              </p>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
