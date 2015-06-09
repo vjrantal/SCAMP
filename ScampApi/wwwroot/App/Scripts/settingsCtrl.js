@@ -254,5 +254,13 @@ angular.module('scamp')
         }
     };
 
+    // Set the minimun expiry date for today
+    $scope.budgetExpiryMinDate = new Date();
+    $scope.budgetExpiryDateOpened = false;
+    $scope.budgetExpiryDateOpen = function ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
 
+        $scope.budgetExpiryDateOpened = true;
+    };
 }]);
