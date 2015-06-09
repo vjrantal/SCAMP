@@ -29,7 +29,7 @@ From your shell or command line:
 	git clone https://github.com/SimpleCloudManagerProject/Scamp
 
 #### Step 2: Open Project
-Launch Visual Studio 2015 and from the file menu, select File->Open->Project/Solution. Navigate to the folder/directory where you cloned the SCAMP repository and select the file scamp.sln. 
+Launch Visual Studio 2015 and from the file menu, select File->Open->Project/Solution. Navigate to the folder/directory where you cloned the SCAMP repository and select the file *Scamp.sln*. 
 
 Visual Studio will begin to load the project. This also involves the download of all dependent Nuget packages. Depending on the speed of your internet connection, this process could take several minutes. You can monitor the process via the "output" window. 
 
@@ -43,13 +43,23 @@ If you encounter an error at any point in this process, [please post an issue](h
 ##Azure Services Setup##
 The next step in setting up SCAMP is to set up the necessary hosted services on which SCAMP will depend. In this section will walk you through creating and configuring these services.
 
-As we set up the resources, please pay close attention to the values you are asked to capture. These will be used later when you try to run SCAMP for the first time. 
+As you set up the resources, please pay close attention to the values you are asked to capture. These will be used later when you try to run SCAMP for the first time. Additionally, when possible you may want to place all the Azure services into the same resource group. When not possibly, you'll at least want to place them into the same Azure region.  
 
-NOTE: If you are working as part of a team, you may opt to have a single set of services that are shared by all the team members. If this is the case, you may be provided with all the necessary application configuration values and can proceed to the "Running SCAMP" section of this document.
+NOTE: If you are working as part of a team, you may opt to have a single set of services that are shared by all the team members. If this is the case, you may be provided with all the necessary application configuration values and can proceed to the [Running SCAMP](#Running SCAMP for the first time) section of this document.
 
 ### Create an Azure Storage account
+SCAMP requires 1-3 storage accounts. For most implementations, a single storage account will do, but the system was built to support separate accounts should you need additional scalability from your solution.
+
+Following [the official instructions to create a storage account](https://azure.microsoft.com/en-us/documentation/articles/storage-create-storage-account/) in azure. When you have finished creating the account, you will need to save the **Azure Storage Connection String** for the account to be used when we set up the runtime configuration for SCAMP later in this document. [This article](https://azure.microsoft.com/en-us/documentation/articles/storage-configure-connection-string/) explains how to use the storage account name and key to craft a connection string like the following
+
+	DefaultEndpointsProtocol=[http|https];AccountName=myAccountName;AccountKey=myAccountKey
 
 ### Create a DocumentDB collection
+SCAMP requires a single DocumentDB account. Please [leverage the official instructions  to create an account](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-account/). For development as well as many small SCAMP deployments, the *S1* account tier will be acceptable. The DocumentDB account creation process could take upwards of 10 minutes. 
+
+After you have created the account, be sure to note the **account URI**, and one of its **keys**. These can be found by viewing the settings->keys blade in the Azure portal. 
+
+Next up, you'll need to [create a database](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-database/), and [a collection](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-collection/). Note the name of the database and the collection as these will be used to set up the runtime configuration for SCAMP later in this document
 
 ### Setting Azure Active Directory Tenant ###
 
