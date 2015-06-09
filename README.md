@@ -1,5 +1,38 @@
-# Simple Cloud Manager Project - Web Application #
-This project contains a Single Page Web App that contains both the Views/Pages along with the Web API in support of the pages.
+# Simple Cloud Manager Project #
+This repository contains all the executable code associated with the Simple Cloud Manager Project (SCAMP). SCAMP allows for the simplified management of Azure hosted virtual machines and web sites by providing an easy to use user interface and basic cost control measures. 
+
+For more details, please see [www.simplecloudmgr.org](http://www.simplecloudmgr.org)
+
+##Pre-requisites##
+SCAMP has several dependencies that must be met. These are as follows:
+
+Visual Studio 2015 (min version: RC Community Edition) - SCAMP has been built based on ASP.NET 5 (DNX). As a result you need this version of Visual Studio to work with the code. SCAMP is not currently compatible with Visual Studio Core due to several nuget package dependencies that are not yet compatible with DNX. 
+
+Azure Services: SCAMP, as a cloud management solution also has dependencies on the following Azure hosted services:
+
+
+- Azure Active Directory (ability to register an application and access keys)
+- Document DB
+- Azure Storage (tables)
+- Key Vault
+- Azure Subscription Access: a user identity with permissions to create/manage Virtual Machines and Web Sites.
+
+##First Time Build##
+When starting work with SCAMP, we encourage you to attempt to clone the source code and get a "clean" build. SCAMP has many Nuget package dependencies and this helps ensure that they are all resolved cleanly. 
+
+### Step 1:  Clone or download this repository
+
+From your shell or command line:
+
+	git clone https://github.com/SimpleCloudManagerProject/Scamp
+
+### Step 2: Open Project
+Launch Visual Studio 2015 and from the file menu, select File->Open->Project/Solution. Navigate to the folder/directory where you cloned the SCAMP repository and select the file scamp.sln. 
+
+Visual Studio will begin to load the project. This also involves the download of all dependent Nuget packages. Depending on the speed of your internet connection, this process could take several minutes. You can monitor the process via the "output" window. 
+
+Wait for the process to complete and the project to be fully loaded before continuing to the next step. 
+   
 
 ### Setting Azure Active Directory Tenant ###
 
