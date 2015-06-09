@@ -10,12 +10,11 @@ SCAMP has several dependencies that must be met. These are as follows:
 
 **Azure Hosted Services** - SCAMP, as a cloud management solution also has dependencies on the following Azure hosted services:
 
-
-- Azure Active Directory (ability to register an application and access keys)
-- Document DB
 - Azure Storage (tables)
-- Key Vault
+- Document DB
 - An Azure Web app slot if you want to host SCAMP for others.
+- Azure Active Directory (ability to register an application and access keys)
+- Key Vault
 - Azure Subscription Access: a user identity with permissions to create/manage Virtual Machines and Web Sites.
 
 Instructions for helping provision these services and configuring SCAMP to leverage them can be found later in this document. 
@@ -51,7 +50,7 @@ NOTE: If you are working as part of a team, you may opt to have a single set of 
 ### Create an Azure Storage account
 SCAMP requires 1-3 storage accounts. For most implementations, a single storage account will do, but the system was built to support separate accounts should you need additional scalability from your solution.
 
-Following [the official instructions to create a storage account](https://azure.microsoft.com/en-us/documentation/articles/storage-create-storage-account/) in azure. When you have finished creating the account, you will need to save the **Azure Storage Connection String** for the account to be used when we set up the runtime configuration for SCAMP later in this document. [This article](https://azure.microsoft.com/en-us/documentation/articles/storage-configure-connection-string/) explains how to use the storage account name and key to craft a connection string like the following
+Following [the official instructions to create a storage account](https://azure.microsoft.com/en-us/documentation/articles/storage-create-storage-account/) in azure. When you have finished creating the account, you will need to use the Account Name and one of its keys to [create an **Azure Storage Connection String**](https://azure.microsoft.com/en-us/documentation/articles/storage-configure-connection-string/) to be used when we set up the [run-time configuration](#running-scamp-for-the-first-time) for SCAMP later in this document.The string will follow the following format:
 
 	DefaultEndpointsProtocol=[http|https];AccountName=myAccountName;AccountKey=myAccountKey
 
@@ -60,40 +59,29 @@ SCAMP requires a single DocumentDB account. Please [leverage the official instru
 
 After you have created the account, be sure to note the **account URI**, and one of its **keys**. These can be found by viewing the settings->keys blade in the Azure portal. 
 
-Next up, you'll need to [create a database](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-database/), and [a collection](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-collection/). Note the name of the database and the collection as these will be used to set up the runtime configuration for SCAMP later in this document
+Next up, you'll need to [create a database](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-database/), and [a collection](https://azure.microsoft.com/en-us/documentation/articles/documentdb-create-collection/). Note the name of the database and the collection as these will be used to set up the [run-time configuration](#running-scamp-for-the-first-time) for SCAMP later in this document
 
 ### Create an Azure Web App
-If you intend to make SCAMP available to others, you will need to create an Azure Web App to host the solution so others can access it. 
+If you intend to make SCAMP available to others, you will need to create an Azure Web App to host the solution so others can access it. A basic tutorial on provisioning a Web App can be [found here](https://azure.microsoft.com/en-us/documentation/articles/app-service-web-app-azure-portal/#navigation-example-create-a-web-app). A Basic (*B1*) plan will be sufficient for most small implementations. If the slot is only to be used for development purposes, the Free or Shared tiers may be preferable.
 
-### Setting Azure Active Directory Tenant ###
+When setting up the site, please note the **Web App URL** that will be used to access it. This value will be used in the next step. 
 
-You an use an existing Azure Active Directory AAD tenant (all Azure subscriptions have one associated with it). Or create a new AAD tenant in the [Portal](https://manage.windowsazure.com).  See [http://www.windowsazure.com](http://www.windowsazure.com).  
+If prompted while creating the site, do not select from any of the available gallery options. In this step, we're creating an empty deployment slot that we will deploy SCAMP to later. 
 
-#### Step 1:  Register the Scamp Web App on your Azure Active Directory tenant
+### Registering your application with Azure AD ###
 
-1. Sign in to the [Azure management portal](https://manage.windowsazure.com).
-2. Click on Active Directory in the left hand nav.
-3. Click the directory tenant where you wish to register the sample application.
-4. Click the Applications tab.
-5. In the drawer, click Add.
-6. Click "Add an application my organization is developing".
-7. Enter a friendly name for the application, for example "Scamp", select "Web Application and/or Web API", and click next.
-8. For the sign-on URL, enter the base URL for the sample, `https://localhost:44300/`. We'll use this later.
-9. For the App ID URI, enter `https://<your_tenant_name>/Scamp`, replacing `<your_tenant_name>` with the name of your Azure AD tenant.  Save the configuration.
-10. Also, get the TenantID from the URL in your browser. eg. below in the URL you'll see a guid which is your Tenant ID.
-```
-../ActiveDirectoryExtension/Directory/<tenantId>/directoryQuickStart
-```
-11. Also, get the ClientID from the Application settings.  On the Application -> Configure tab, grap the "CLIENT ID" value.
+SCAMP uses Azure Active Directory to authenticate users. You can use an existing Azure Active Directory or Office 365 tenant (all Azure subscriptions have one associated with it). Or create a new AAD tenant in the [Portal](https://manage.windowsazure.com).  See [http://www.windowsazure.com](http://www.windowsazure.com).  
 
-Repeat steps 5-11 for a non HTTP URL such as 'http://localhost:44000/' if you wish to do development without SSL. 
+#### Step 1: Register your application with Azure Active Directory
+To allow SCAMP to use your tenant, you will need to register the application URLs that could be used. When running locally, the SCAMP project defaults to HTTP://locahost:44000. Alternatively, you can access it from HTTPS://localhost:44300. If you plan to run it from a host Azure Web App, you'll need the URL you captured from the previous step. 
 
-#### Step 2:  Creating an application key
-This will be used by Key Vault, allowing the application access to the vault's secrets. 
+To register your application, follow the appropriate instructions:
+- [Register with Azure AD](https://azure.microsoft.com/en-us/documentation/articles/mobile-services-how-to-register-active-directory-authentication/)
+- [Register with Office 365](https://msdn.microsoft.com/en-us/office/office365/howto/add-common-consent-manually)
 
-TODO
+In both cases, make sure you register the URL for each location you want to be able to run the application from. You'll also need to note your tenant ID (mydomain.com), the tenant ID (available from the portal URL or via [PowerShell](http://blogs.technet.com/b/heyscriptingguy/archive/2013/12/31/get-windows-azure-active-directory-tenant-id-in-windows-powershell.aspx)), and the client ID for each application you registered. 
 
-#### Step 3:  Enable the OAuth2 implicit grant for your application
+#### Step 2:  Enable the OAuth2 implicit grant for your application
 
 By default, applications provisioned in Azure AD are not enabled to use the OAuth2 implicit grant. In order to run this sample, you need to explicitly opt in.
 
@@ -101,56 +89,20 @@ By default, applications provisioned in Azure AD are not enabled to use the OAut
 2. Using the Manage Manifest button in the drawer, download the manifest file for the application and save it to disk.
 3. Open the manifest file with a text editor. Search for the `oauth2AllowImplicitFlow` property. You will find that it is set to `false`; change it to `true` and save the file.
 4. Using the Manage Manifest button, upload the updated manifest file. Save the configuration of the app.
+ 
+### Create an Azure KeyVault repository
+[Follow the instructions for provisioning an Azure KeyVault](https://azure.microsoft.com/en-us/documentation/articles/key-vault-get-started/). For this step you will need Azure PowerShell version 0.8.13 or later.
 
+While executing those instructions, you can reuse one of the applications you registered earlier or create a new one. You can also skip the steps on setting up a hardware security model. 
 
-### Create a KeyVault repository
-For this step you will need Azure PowerShell version 0.8.13 or later.
-You can also read the following tutorials to get familiar with Azure Resource Manager in Windows PowerShell:
+Just be certain that during the setup you save the **Client Id** of the registered Azure AD Application that contains the key you configured for KeyVault. You'll also need to save the associated **key value** (as once its created it can never be seen again).For SCAMP, we'll refer to this value as the **AuthClientSecret**. 
 
-- [How to install and configure Azure PowerShell](powershell-install-configure.md)
-- [Using Windows PowerShell with Resource Manager](powershell-azure-resource-manager.md)
+The other deviation is that for SCAMP to interact with the KeyVault, you'll need to replace the permissions you'll need to grant the application will need to be a bit different then those provided in the write-up. 
 
-Start an Azure PowerShell session and sign in to your Azure account with the following command:  
+	set-azurekeyvaultaccesspolicy -vaultname '{vault name here}' -serviceprincipalname '{client Id here}' -permissionstokeys all -permissionstosecrets all
 
-    Add-AzureAccount
+**Note:** The permissions granted here should be considered temporary at this time. These will be more finely tuned before we finalize our release. 
 
-In the pop-up browser window, enter your Azure account user name and password. Windows PowerShell will get all the subscriptions that are associated with this account and by default, uses the first one.
-
-If you have multiple subscriptions and want to specify a specific one to use for Azure Key Vault, type the following to see the subscriptions for your account:
-
-    Get-AzureSubscription
-
-Then, to specify the subscription to use, type:
-
-    Select-AzureSubscription -SubscriptionName <subscription name>
-
-If you haven't already done so, [download the scripts](https://gallery.technet.microsoft.com/scriptcenter/Azure-Key-Vault-Powershell-1349b091) and unblock the "Azure Key Vault Powershell scripts.zip" file by right-clicking it, **Properties**, **Unblock**. Then extract the zip file to a local folder on your computer.
-
-Before you load the script module into your Azure PowerShell session, set the execution policy:
-
-			Set-ExecutionPolicy RemoteSigned -Scope Process
-
-Then load the script module into your Azure PowerShell session. For example, if you extracted the scripts to a folder named C:\KeyVaultScripts, type:
-
-			import-module C:\KeyVaultScripts\KeyVaultManager
-
-The Key Vault cmdlets and scripts require Azure Resource Manager, so type the following to switch to Azure Resource Manager mode:
-
-	Switch-AzureMode AzureResourceManager
-
-	New-AzureKeyVault -VaultName 'ScampKeyVault' -ResourceGroupName 'ScampResourceGroup' -Location 'North Europe'
-
-- **VaultName** will be the **KeyVault:Url** that you will use later in the launchSettings.json file.
-- ResourceGroupName is the Resource Group Name in Azure.
-- Location parameter, use the command [Get-AzureLocation](https://msdn.microsoft.com/library/azure/dn654582.aspx). If you need more information, type: `Get-Help Get-AzureLocation`
-
-Applications that use a key vault must authenticate and has permission granted.
-
-1. Sign in to the Azure Management Portal.
-2. On the left, click **Active Directory**, and then select the directory you have used previously.
-3. On the Quick Start page, click Applications then your app and finally click **CONFIGURE**.
-4. Scroll to the **keys** section, select the duration, and then click **SAVE**. The page refreshes and now shows a key value. This value will be **KeyVault:AuthClientSecret** in the config.
-5. Copy the client ID value from this page. This value will be  **KeyVault:AuthClientId** in the config.
 
 ##Running SCAMP for the first time##
 
