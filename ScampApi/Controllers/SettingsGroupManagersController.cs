@@ -109,7 +109,6 @@ namespace ScampApi.Controllers.Controllers
             if (tmpUser.budget == null)
                 tmpUser.budget = new ScampUserBudget();
             tmpUser.budget.Amount = groupManagerSummary.unitsBudgeted;
-            tmpUser.budget.EndDate = groupManagerSummary.endDate.Date.AddMinutes(1);
 
             // save changes
             if (doingAdd) // create user 
