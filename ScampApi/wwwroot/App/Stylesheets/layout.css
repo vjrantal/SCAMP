@@ -91,11 +91,6 @@ body{
   transform: scaleX(1);
 }
 
-.page-content{
-  height: 100%; 
-  color: #fff;
-}
-
 .content-row{
       margin-top: 74px;
 }

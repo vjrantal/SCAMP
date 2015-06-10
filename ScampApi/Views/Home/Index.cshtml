@@ -16,21 +16,11 @@
     <div ng-include="'/App/Views/Header.html'">
         <!--header-->
     </div>
-    <main id="main" class="site-main" role="main">
-        <section class="section" id="home">
-            <div class="container">
-                <div class="row content-row">
-                    <div>
-                        <div ng-view id="dashboard" class="page-content">
-                            <!--page content-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+    <div ng-view class="page-content">
+      <!--page content-->
+    </div>
     <div ng-include="'/App/Views/Footer.html'">
-        <!--header-->
+        <!--footer-->
     </div>
 </div>
 @section scripts{

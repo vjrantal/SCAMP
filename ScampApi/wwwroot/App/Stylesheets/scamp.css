@@ -40,29 +40,18 @@
   margin-bottom: 20px;
 }
 
-.row > div{
-    margin-bottom:5px!important;
-}
-
 #content-header{
     color: #333!important;
     border-bottom: 1px solid #337ab7;
     padding-bottom: 7px;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #content-header h3{
   padding-top: 0px;
     font-size: 18px;
   margin-top: 0px;
-}
-
-#dashboard_tabs {
-    -webkit-border-radius: 8px 0 0 4px;
-    -moz-border-radius: 8px 0 0 4px;
-    padding: 6px;
-    border-radius: 8px 8px 8px 8px;
-    background-color: #fff !important;
 }
 
 #ow-marketplace {

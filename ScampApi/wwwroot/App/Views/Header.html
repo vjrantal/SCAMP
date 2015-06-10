@@ -1,80 +1,81 @@
-﻿<nav class="navbar navbar-default navbar-fixed-top navbar-inner">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle SCAMP navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse" ng-show="isLoggedOn">
-            <ul class="nav navbar-nav navbar-left">
-                <li class="active"><a href="#/dashboard"><i class="fa fa-dashboard"></i>&nbsp;Dashboard</a></li>
-                <li class="menuUnderline"><a href="#/group-manager"><i class="fa fa-users"></i>&nbsp;Group Manager</a></li>
-                <li class="menuUnderline" ng-show="userProfile.isSystemAdmin"><a href="#/settings"><i class="fa fa-gears"></i>&nbsp;System Settings</a></li>
-            </ul>
-            <a class="navbar-brand" href="/">
-                <img src="/App/Images/scamp_logo.png" alt="SCAMP" class="logo">
-            </a>
-            <ul class="nav navbar-nav navbar-right" ng-show="isLoggedOn">
-                <li class="nav-icon-btn nav-icon-btn-danger dropdown notifications">
-                    <a class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="label">5</span>
-                        <i class="nav-icon fa fa-bell fa-2x"></i>
-                        <span class="small-screen-text">Notifications</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-header alerts" role="menu">
-                        <li class="alert-header">
-                            <p class="small" style="color:#fff;font-size: 12px;">
-                                <i style="color:#4B874A" class="nav-icon fa fa-skyatlas fa-1x">
-                                    <span class="alert-header-text">Resource Notifications</span>
-                                </i>
-                            </p>
-                        </li>
-                        <li class="alert-list-item">
-                            <a class="alert-row-a">.
-                                <span class="pull-left alert-row">
-                                    <span class="line">
-                                        <span class="alert-list-item-header">Resource 1</span>
-                                        <span class="alert-list-item-time">8:01 AM</span><br>
-                                        <span class="alert-list-item-description">Started Succesfully</span>
-                                    </span>
-                                </span>
-                                <span class="pull-right alert-row-icon">
-                                    <i class="nav-icon fa fa-check-circle-o fa-1x" style="color:#188754"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li class="alert-list-item">
-                            <a class="alert-row-a">
-                                .
-                                <span class="pull-left alert-row">
-                                    <span class="line">
-                                        <span class="alert-list-item-header">NodeJS Web App</span>
-                                        <span class="alert-list-item-time">10:01 AM</span><br>
-                                        <span class="alert-list-item-description">Failed Unexpectedly</span>
-                                    </span>
-                                </span>
-                                <span class="pull-right alert-row-icon">
-                                    <i class="nav-icon glyphicon glyphicon-exclamation-sign fa-1x" style="color:red"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <span class="fa-stack fa-lg" style="color:#fff;">
-                        <img src="/app/images/default_profile_2_0.jpg" class="img-rounded user-avatar-sm" />
-                    </span>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" style="padding-left: 2px;" data-toggle="dropdown" role="button" aria-expanded="false">{{userProfile.name}}<b class="caret"></b></a>
-                    <ul class="dropdown-menu dropdown-menu-header" role="menu">
-                        <li><a href="" ng-click="logout()">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+﻿<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle SCAMP navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
     </div>
+    <div id="navbar" class="collapse navbar-collapse" ng-show="isLoggedOn">
+      <ul class="nav navbar-nav navbar-left">
+        <li class="active"><a href="#/dashboard"><i class="fa fa-dashboard"></i>&nbsp;Dashboard</a></li>
+        <li class="menuUnderline"><a href="#/group-manager"><i class="fa fa-users"></i>&nbsp;Group Manager</a></li>
+        <li class="menuUnderline" ng-show="userProfile.isSystemAdmin"><a href="#/settings"><i class="fa fa-gears"></i>&nbsp;System Settings</a></li>
+      </ul>
+      <a class="navbar-brand" href="/">
+        <img src="/App/Images/scamp_logo.png" alt="SCAMP" class="logo">
+      </a>
+      <ul class="nav navbar-nav navbar-right" ng-show="isLoggedOn">
+        <li class="nav-icon-btn nav-icon-btn-danger dropdown notifications">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <span class="label">5</span>
+            <i class="nav-icon fa fa-bell fa-2x"></i>
+            <span class="small-screen-text">Notifications</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-header alerts" role="menu">
+            <li class="alert-header">
+              <p class="small" style="color:#fff;font-size: 12px;">
+                <i style="color:#4B874A" class="nav-icon fa fa-skyatlas fa-1x">
+                  <span class="alert-header-text">Resource Notifications</span>
+                </i>
+              </p>
+            </li>
+            <li class="alert-list-item">
+              <a class="alert-row-a">
+                .
+                <span class="pull-left alert-row">
+                  <span class="line">
+                    <span class="alert-list-item-header">Resource 1</span>
+                    <span class="alert-list-item-time">8:01 AM</span><br>
+                    <span class="alert-list-item-description">Started Succesfully</span>
+                  </span>
+                </span>
+                <span class="pull-right alert-row-icon">
+                  <i class="nav-icon fa fa-check-circle-o fa-1x" style="color:#188754"></i>
+                </span>
+              </a>
+            </li>
+            <li class="alert-list-item">
+              <a class="alert-row-a">
+                .
+                <span class="pull-left alert-row">
+                  <span class="line">
+                    <span class="alert-list-item-header">NodeJS Web App</span>
+                    <span class="alert-list-item-time">10:01 AM</span><br>
+                    <span class="alert-list-item-description">Failed Unexpectedly</span>
+                  </span>
+                </span>
+                <span class="pull-right alert-row-icon">
+                  <i class="nav-icon glyphicon glyphicon-exclamation-sign fa-1x" style="color:red"></i>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <span class="fa-stack fa-lg" style="color:#fff;">
+            <img src="/app/images/default_profile_2_0.jpg" class="img-rounded user-avatar-sm" />
+          </span>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" style="padding-left: 2px;" data-toggle="dropdown" role="button" aria-expanded="false">{{userProfile.name}}<b class="caret"></b></a>
+          <ul class="dropdown-menu dropdown-menu-header" role="menu">
+            <li><a href="" ng-click="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>
