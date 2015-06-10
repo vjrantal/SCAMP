@@ -1,0 +1,43 @@
+.panel-tabbed .nav-tabs {
+  border-bottom: none;
+  padding-top: 2px;
+}
+.panel-tabbed .nav-tabs {
+  border-left: 1px solid #ddd;
+}
+.panel-tabbed .nav-tabs>li {
+  float: none;
+  margin-bottom: 2px;
+}
+.panel-tabbed .nav-tabs>li {
+  margin-left: -1px;
+}
+.panel-tabbed .nav-tabs>li.active>a,
+.panel-tabbed .nav-tabs>li.active>a:hover,
+.panel-tabbed .nav-tabs>li.active>a:focus {
+  border-bottom: 1px solid #ddd;
+  border-left-color: transparent;
+}
+.panel-tabbed .nav-tabs>li>a {
+  border-radius: 0 4px 4px 0;
+  margin-right: 0;
+}
+
+.panel-tabbed {
+  margin-top: 10px;
+}
+.panel-tabbed .panel-title {
+  display: inline-block;
+}
+
+.panel-tabbed .panel {
+  min-height: 300px;
+}
+.panel-tabbed .panel-content {
+  padding-right: 0px;
+}
+.panel-tabbed .panel-tabs {
+  padding-left: 0px;
+  margin-top: 60px;
+  margin-left: -1px;
+}

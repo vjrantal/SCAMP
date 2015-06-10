@@ -6,7 +6,7 @@ angular.module('scamp')
         // gets a list of resources for the selected user
         getResourceList: function (userId, groupId) {
             console.log("retrieving resource list for user " + userId + " Group " + groupId);
-            var url = '/api/groups/' + groupId + '/users/' + userId + '/resources/';
+            var url = '/api/groups/' + groupId + '/users/' + userId + '/resources';
 
             return scamp.utils.restAjaxPromise($http, $q, 'GET', url);
         },
