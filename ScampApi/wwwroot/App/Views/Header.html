@@ -10,9 +10,16 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse" ng-show="isLoggedOn">
       <ul class="nav navbar-nav navbar-left">
-        <li class="active"><a href="#/dashboard"><i class="fa fa-dashboard"></i>&nbsp;Dashboard</a></li>
-        <li class="menuUnderline"><a href="#/group-manager"><i class="fa fa-users"></i>&nbsp;Group Manager</a></li>
-        <li class="menuUnderline" ng-show="userProfile.isSystemAdmin"><a href="#/settings"><i class="fa fa-gears"></i>&nbsp;System Settings</a></li>
+        <li ng-class="isActive('/dashboard') ? 'active' : 'menu-underline'">
+          <a href="#/dashboard"><i class="fa fa-dashboard"></i>Dashboard</a>
+        </li>
+        <li ng-class="isActive('/group-manager') ? 'active' : 'menu-underline'">
+          <a href="#/group-manager"><i class="fa fa-users"></i>Group Manager</a>
+        </li>
+        <li ng-class="isActive('/settings') ? 'active' : 'menu-underline'"
+            ng-show="userProfile.isSystemAdmin">
+          <a href="#/settings"><i class="fa fa-gears"></i>System Settings</a>
+        </li>
       </ul>
       <a class="navbar-brand" href="/">
         <img src="/App/Images/scamp_logo.png" alt="SCAMP" class="logo">

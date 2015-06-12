@@ -4,8 +4,8 @@ angular.module('scamp')
     var apiPath = '/api/groups/';
 
     return {
-        getItems: function () {
-            return $http.get(apiPath);
+        getItem: function (id) {
+            return scamp.utils.restAjaxPromise($http, $q, 'GET', apiPath + id);
         },
         getUsers: function (id) {
             return scamp.utils.restAjaxPromise($http, $q, 'GET', apiPath + id + '/users');

@@ -15,14 +15,13 @@
 }
 
 .dashboard .group-item-icon {
-  width: 30px;
+  width: 25px;
   display: inline-block;
   position: absolute;
   margin-top: 10px;
 }
 .dashboard .group-item-status {
-  padding-left: 30px;
-  padding-right: 10px;
+  padding-left: 25px;
 }
 
 .dashboard .top-header {

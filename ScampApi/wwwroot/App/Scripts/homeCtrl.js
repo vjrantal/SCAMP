@@ -9,7 +9,6 @@ angular.module('scamp')
         adalService.logOut();
     };
 
-    //TODO: need to wire up the menu
     $scope.isActive = function (viewLocation) {        
         return viewLocation === $location.path();
     };
