@@ -16,15 +16,15 @@ using ProvisioningLibrary;
 namespace ScampApi.Controllers.Controllers
 {
     //[Authorize]
-    [Route("api/user/{userId}/budget")]
-    public class UserBudgetController : Controller
+    [Route("api/users/{userId}/budget")]
+    public class UsersBudgetController : Controller
     {
         private readonly ISecurityHelper _securityHelper;
         private readonly IResourceRepository _resourceRepository;
         private readonly IUserRepository _userRepository;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public UserBudgetController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
+        public UsersBudgetController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
             _resourceRepository = resourceRepository;
             _userRepository = userRepository;

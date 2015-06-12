@@ -1,9 +1,8 @@
 'use strict';
 angular.module('scamp')
 .factory('homeSvc', ['$http', function ($http) {
-    // https://localhost:44300/api/currentUser
 
-    var apiPath = '/api/user';
+    var apiPath = '/api/users';
 
     return {        
         getUserProfile: function () {

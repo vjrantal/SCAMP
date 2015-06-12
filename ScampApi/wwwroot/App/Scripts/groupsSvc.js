@@ -1,7 +1,7 @@
 ﻿'use strict';
 angular.module('scamp')
 .factory('groupsSvc', ['$http', '$q', function ($http, $q) {
-    var apiPath = '/api/group/';
+    var apiPath = '/api/groups/';
 
     return {
         getItems: function () {

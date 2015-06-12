@@ -13,7 +13,7 @@ angular.module('scamp')
         minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
         scopeValueBindedPropertyOnSelection: 'id',
         remote: {
-            url: '/api/user/FindbyUPN/%QUERY',
+            url: '/api/users/FindbyUPN/%QUERY',
             queryStr: '%QUERY',
             displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
         }
@@ -42,7 +42,7 @@ angular.module('scamp')
         minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
         scopeValueBindedPropertyOnSelection: 'id',
         remote: {
-            url: '/api/user/FindbyUPN/%QUERY',
+            url: '/api/users/FindbyUPN/%QUERY',
             queryStr: '%QUERY',
             displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
         }

@@ -17,9 +17,7 @@ angular.module('scamp')
         isNew:false
     };
 
-    $scope.getRdp = function (resource){		
-                // url: GET - "api/groups/{groupId}/resources/{resourceId}/rdp"		
-        		
+    $scope.getRdp = function (resource){		        		
                 var groupId = resource.resourceGroup.id,		
                     resourceId = resource.id,		
                     contentType = "application/rdp; charset=utf-8",		
