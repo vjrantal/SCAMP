@@ -12,15 +12,15 @@ using Microsoft.AspNet.Authorization;
 namespace ScampApi.Controllers
 {
     //[Authorize]
-    [Route("api/group/{groupId}")]
-    public class GroupUsersController : Controller
+    [Route("api/groups/{groupId}/users")]
+    public class GroupsUsersController : Controller
     {
         private readonly IGroupRepository _groupRepository;
         private readonly IUserRepository _userRepository;
         private readonly ISecurityHelper _securityHelper;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public GroupUsersController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
+        public GroupsUsersController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
             _groupRepository = groupRepository;
             _userRepository = userRepository;
@@ -33,7 +33,7 @@ namespace ScampApi.Controllers
         /// </summary>
         /// <param name="groupId">Id of group to get list of users for</param>
         /// <returns></returns>
-        [HttpGet("users")]
+        [HttpGet]
         public async Task<IActionResult> Get(string groupId)
         {
             //TODO: add in group admin/manager authorization check
@@ -77,7 +77,7 @@ namespace ScampApi.Controllers
         /// </summary>
         /// <param name="groupId">Id of group to get list of users for</param>
         /// <returns></returns>
-        [HttpPut("user/{userId}")]
+        [HttpPut("{userId}")]
         public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
         {
             //TODO: add in group admin/manager authorization check
@@ -120,7 +120,7 @@ namespace ScampApi.Controllers
             return new ObjectResult(null) { StatusCode = 200 };
         }
 
-        [HttpGet("user/{userId}/resources")]
+        [HttpGet("{userId}/resources")]
         public async Task<IActionResult> Get(string groupId, string userId)
         {
             //TODO: add in group admin/manager authorization check

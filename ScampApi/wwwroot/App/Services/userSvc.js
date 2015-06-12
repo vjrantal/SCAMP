@@ -6,14 +6,14 @@ angular.module('scamp')
         // gets a list of resources for the selected user
         getResourceList: function (userId, groupId) {
             console.log("retrieving resource list for user " + userId + " Group " + groupId);
-            var url = '/api/group/' + groupId + '/user/' + userId + '/resources/';
+            var url = '/api/groups/' + groupId + '/users/' + userId + '/resources/';
 
             return scamp.utils.restAjaxPromise($http, $q, 'GET', url);
         },
 
         getGroupList: function(userId, view){
             console.log("retrieving group list for user " + userId + " view: " + view);
-            var restCall = '/api/groups/' + view + '/' + userId;
+            var restCall = '/api/users/' + userId + '/groups/' + view;
 
             return scamp.utils.restAjaxPromise($http, $q, 'GET', restCall);
         }

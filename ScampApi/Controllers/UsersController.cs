@@ -17,8 +17,8 @@ using Microsoft.AspNet.Authorization;
 namespace ScampApi.Controllers.Controllers
 {
     //[Authorize]
-    [Route("api/user")]
-    public class UserController : Controller
+    [Route("api/users")]
+    public class UsersController : Controller
     {
         private readonly ISecurityHelper _securityHelper;
         private readonly IResourceRepository _resourceRepository;
@@ -26,7 +26,7 @@ namespace ScampApi.Controllers.Controllers
         private readonly IGraphAPIProvider _graphAPIProvider;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public UserController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController, IGraphAPIProvider graphAPIProvider)
+        public UsersController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController, IGraphAPIProvider graphAPIProvider)
         {
             _resourceRepository = resourceRepository;
             _userRepository = userRepository;
@@ -155,7 +155,7 @@ namespace ScampApi.Controllers.Controllers
             return new ObjectResult(foundusers) { StatusCode = 200 };
         }
 
-		private UserSummary map(ScampUser docDbUSer)
+        private UserSummary map(ScampUser docDbUSer)
 		{
 			return new UserSummary
 			{
