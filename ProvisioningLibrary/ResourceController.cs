@@ -60,12 +60,6 @@ namespace ProvisioningLibrary
             return LocationNames.NorthEurope;
         }
 
-        //public string GetStorageAccountName()
-        //{
-        //    //TODO Find better algorythm
-        //    var r = new Random();
-        //    return "Scamp" + r.Next(1000,1000) ;
-        //}
         public async Task<bool> UpdateResource(ScampResource resource)
         {
             await _resourceRepository.UpdateResource(resource);

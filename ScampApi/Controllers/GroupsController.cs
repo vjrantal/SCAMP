@@ -47,6 +47,11 @@ namespace ScampApi.Controllers
             return groups.Select(MapToSummary);
         }
 
+        /// <summary>
+        /// retrieves full details on a single group
+        /// </summary>
+        /// <param name="groupId">Id of the group to be retrieved</param>
+        /// <returns></returns>
         [HttpGet("{groupId}", Name = "Groups.GetSingle")]
         public async Task<IActionResult> Get(string groupId)
         {
@@ -63,21 +68,31 @@ namespace ScampApi.Controllers
             return new ObjectResult(Map(group)) { StatusCode = 200 };
         }
 
+        // creates a new group
         [HttpPost]
-        public async Task<GroupSummary> Post([FromBody]Group userInputGroup)
+        public async Task<IActionResult> Post([FromBody]Group userInputGroup)
         {
-            //Create a group
-            if (!await CurrentUserCanCreateGroup()) return null;
+            // requestor is a group administration and can create groups
+            if (!(await _securityHelper.IsGroupAdmin()))
+                return new HttpStatusCodeResult(403); // Forbidden;
+
+            // get current user
+            var currentUser = await _securityHelper.GetCurrentUser();
+
             //Cleaning the object
             var group = new ScampResourceGroup()
             {
                 Name = R.Regex.Replace(userInputGroup.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
-                Id = Guid.NewGuid().ToString()
-
-
+                Id = Guid.NewGuid().ToString(),
+                Budget = new ScampGroupBudget()
+                {
+                    OwnerId = currentUser.Id,
+                    unitsBudgeted = userInputGroup.unitsBudgeted,
+                    DefaultUserAllocation = userInputGroup.defaultUserBudget,
+                    EndDate = userInputGroup.expirtyDate
+                }
             };
-            var admin = await _securityHelper.GetUserReference();
-            group.Admins.Add(admin);
+
             await _groupRepository.CreateGroup(group);
             var resp = new GroupSummary()
             {
@@ -85,14 +100,13 @@ namespace ScampApi.Controllers
                 Name = group.Name
             };
 
-            return resp;
-
+            return new ObjectResult(resp) { StatusCode = 200 };
         }
 
         [HttpPut("{groupId}")]
         public async Task<Group> Put(string groupId, [FromBody]Group value)
         {
-            if (await _securityHelper.IsGroupAdmin(groupId) || await _securityHelper.IsSysAdmin())
+            if (await _securityHelper.IsGroupManager(groupId))
             {
                 //// we may need this
                 //value.Admins.GroupBy(x => x.UserId).Select(y => y.First());	// remove duplicates
@@ -100,12 +114,7 @@ namespace ScampApi.Controllers
 
                 await _groupRepository.UpdateGroup(groupId, new ScampResourceGroup
                 {
-                    Admins = value.Admins.ConvertAll((a => new ScampUserReference()
-                    {
-                        Id = a.Id,
-                        Name = a.Name
-                    })),
-                    Members = value.Members.ConvertAll((a => new ScampUserReference()
+                    Members = value.Members.ConvertAll((a => new ScampUserGroupMbrship()
                     {
                         Id = a.Id,
                         Name = a.Name
@@ -120,27 +129,11 @@ namespace ScampApi.Controllers
             return null;
         }
 
-        [HttpDelete("{groupId}")]
-        public void Delete(int groupId)
-        {
-            // TODO implement deleting a group
-            throw new NotImplementedException();
-        }
-
-        private async Task<bool> CurrentUserCanCreateGroup()
-        {
-            if (await _securityHelper.IsSysAdmin()) return true;
-
-            //TODO Who else can create a group? Do we need a flag on profile?
-            return true;
-        }
-
         private async Task<bool> CurrentUserCanViewGroup(ScampResourceGroupWithResources group)
         {
             var currentUser = await _securityHelper.GetCurrentUser();
             return currentUser.IsSystemAdmin                       // sys admin
-                || group.Admins.Any(u => u.Id == currentUser.Id)   // group admin
-                || group.Members.Any(u => u.Id == currentUser.Id); // group member
+                || group.Members.Any(u => u.Id == currentUser.Id && u.isManager); // group member
         }
 
         #region Mapping Functions
@@ -161,15 +154,18 @@ namespace ScampApi.Controllers
                 Name = docDbGroup.Name,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
                 Members = docDbGroup.Members?.Select(MapToSummary).ToList(),
-                Admins = docDbGroup.Admins?.Select(MapToSummary).ToList()
+                unitsBudgeted = docDbGroup.Budget.unitsBudgeted,
+                defaultUserBudget = docDbGroup.Budget.DefaultUserAllocation,
+                expirtyDate = docDbGroup.Budget.EndDate
             };
         }
-        private UserSummary MapToSummary(ScampUserReference docDbUser)
+        private UserSummary MapToSummary(ScampUserGroupMbrship docDbUser)
         {
             return new UserSummary
             {
                 Id = docDbUser.Id,
                 Name = docDbUser.Name,
+                isManager = docDbUser.isManager
             };
         }
 

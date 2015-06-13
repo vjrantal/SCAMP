@@ -43,10 +43,9 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return;
 
-            //TODO: likely need to do more here
             var savedUser = await docdb.Client.ReplaceDocumentAsync(user.SelfLink, user);
 
-            // exception handling, etc... 
+            //TODO: exception handling, etc... 
         }
     }
 }

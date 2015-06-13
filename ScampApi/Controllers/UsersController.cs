@@ -16,7 +16,7 @@ using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/users")]
     public class UsersController : Controller
     {

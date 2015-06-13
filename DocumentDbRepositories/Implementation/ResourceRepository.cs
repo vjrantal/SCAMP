@@ -22,7 +22,6 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return null;
 
-			//TODO Check
 			var query = from r in docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
 							where r.Id == resourceId && r.Type == "resource"
 							select r;
@@ -107,24 +106,11 @@ namespace DocumentDbRepositories.Implementation
             return match != null;
 		}
 
-		public Task AddResource(string groupID)
-		{
-            //TODO: stuff
-            throw new NotImplementedException();
-		}
-
-		public void AddOwner(string groupID)
-		{
-			//TODO: stuff
-			throw new NotImplementedException();
-		}
-
 		public async Task UpdateResource(ScampResource resource)
 		{
             if (!(await docdb.IsInitialized))
                 return;
 
-            //TODO Check
             var query = from u in docdb.Client.CreateDocumentQuery(docdb.Collection.SelfLink)
                          where u.Id == resource.Id
                          select u;

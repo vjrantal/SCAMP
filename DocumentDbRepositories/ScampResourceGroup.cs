@@ -10,17 +10,14 @@ namespace DocumentDbRepositories
     {
         public ScampResourceGroup()
         {
-            Admins = new List<ScampUserReference>();
-            Members = new List<ScampUserReference>();
+            Members = new List<ScampUserGroupMbrship>();
         }
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-        [JsonProperty(PropertyName = "admins")]
-		public List<ScampUserReference> Admins { get; set; }
         [JsonProperty(PropertyName = "members")]
-		public List<ScampUserReference> Members { get; set; }
+		public List<ScampUserGroupMbrship> Members { get; set; }
         [JsonProperty(PropertyName = "budget")]
         public ScampGroupBudget Budget { get; set; }
 
@@ -38,10 +35,10 @@ namespace DocumentDbRepositories
         public string Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-        [JsonProperty(PropertyName = "admins")]
-        public List<ScampUserReference> Admins { get; set; }
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
         [JsonProperty(PropertyName = "members")]
-        public List<ScampUserReference> Members { get; set; }
+        public List<ScampUserGroupMbrship> Members { get; set; }
         [JsonProperty(PropertyName = "budget")]
         public ScampGroupBudget Budget { get; set; }
 

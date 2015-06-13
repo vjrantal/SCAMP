@@ -11,7 +11,7 @@ using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/groups/{groupId}/users")]
     public class GroupsUsersController : Controller
     {
@@ -51,7 +51,7 @@ namespace ScampApi.Controllers
             // build return view
             List<UserGroupSummary> rtnView = new List<UserGroupSummary>();
 
-            foreach (ScampUserReference userRef in group.Members)
+            foreach (ScampUserGroupMbrship userRef in group.Members)
             {
                 // get user budget for this group
                 var groupBudget = await _volatileStorageController.GetUserBudgetState(userRef.Id, group.Id);
@@ -93,7 +93,7 @@ namespace ScampApi.Controllers
             }
 
             // make sure user isn't already in group
-            IEnumerable<ScampUserReference> userList = from ur in rscGroup.Members
+            IEnumerable<ScampUserGroupMbrship> userList = from ur in rscGroup.Members
                 where ur.Id == userId
                 select ur;
             if (userList.Count() > 0) // user is already in the list
@@ -120,6 +120,12 @@ namespace ScampApi.Controllers
             return new ObjectResult(null) { StatusCode = 200 };
         }
 
+        /// <summary>
+        /// get the list of resources for the specified user and group
+        /// </summary>
+        /// <param name="groupId">group to check</param>
+        /// <param name="userId">user to check</param>
+        /// <returns>list of resources as a collection of ScampResourceSummary objects </returns>
         [HttpGet("{userId}/resources")]
         public async Task<IActionResult> Get(string groupId, string userId)
         {
@@ -133,9 +139,9 @@ namespace ScampApi.Controllers
             if (tmpUser == null) // group not found, return appropriately
                 return HttpNotFound();
 
-            ScampUserGroupMbrship tmpGroup = tmpUser.GroupMembership.First(g => g.Id == groupId);
+            ScampUserGroupMbrship tmpGroup = tmpUser.GroupMembership.FirstOrDefault(g => g.Id == groupId);
             if (tmpGroup == null) // user not found in group, return appropriately
-                return HttpNotFound();
+                return new HttpStatusCodeResult(204); // nothing found
 
             // build return view
             List<ScampResourceSummary> rtnView = new List<ScampResourceSummary>();

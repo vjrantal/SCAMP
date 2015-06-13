@@ -16,7 +16,7 @@ using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/users/{userId}/groups")]
     public class UsersGroupsController : Controller
     {
@@ -40,12 +40,12 @@ namespace ScampApi.Controllers.Controllers
         [HttpGet("{view}")]
         public async Task<IActionResult> Get(string userId, string view)
         {
-            //TODO: authorization check
-
             // get requested user document
             ScampUser userDoc = await _securityHelper.GetUserById(userId);
             if (userDoc == null)
                 return HttpNotFound();
+
+            //TODO: authorization check
 
             // build return view
             if (view == "admin") // do admin view

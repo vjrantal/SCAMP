@@ -41,44 +41,17 @@ namespace ScampApi.Controllers
             _volatileStorageController = volatileStorageController;
         }
 
-        //[HttpGet]
-        //public async Task< IEnumerable<ScampResourceSummary>> GetAll(string groupId)
-                //{
-        //    //LINKED TO UI
-        //    var res =await  _resourceRepository.GetResourcesByGroup(await _securityHelper.GetUserReference(), groupId);
-
-        //    var ressummary = res.Select(Mapper.Map<ScampResourceSummary>).ToList();
-        //    var rnd = new Random();
-        //    ressummary.ForEach(summary =>
-        //    {
-        //        //summary.Links.Add(new Link
-        //        //{
-        //        //    Rel = "resource",
-        //        //    Href = _linkHelper.GroupResource(summary.ResourceGroup.Id, summary.Id)
-        //        //});
-        //        summary.Remaining = rnd.Next(0, 100);
-        //    });
- 
-        //    return ressummary;
-
-        //}
-
         // allows you to take the specified action (start, stop) on a specified resource
         [HttpGet("{resourceId}/rdp")]
-        public async Task<string> GetRdp(string groupId, string resourceId)
+        public async Task<IActionResult> GetRdp(string groupId, string resourceId)
         {
             ScampResource res = await _resourceRepository.GetResource(resourceId);
             if (res == null)
-            {
-                //TODO: throw "not found" exception
-            }
+                return new HttpStatusCodeResult(404); // not found
 
             // can user preform this action
-            var checkPermission = await CanManageResource(res, ResourceAction.Undefined);
-            if (!checkPermission)
-            {
-                //TODO return error
-            }
+            if (!(await CanManageResource(res, ResourceAction.Undefined)))
+                return new HttpStatusCodeResult(403); // request denied, invalid permission
 
             ScampSubscription sub = await _settingsRepository.GetSubscription(res.SubscriptionId);
             var provisioningController = new ProvisioningController(sub.AzureManagementThumbnail, sub.AzureSubscriptionID);
@@ -90,19 +63,17 @@ namespace ScampApi.Controllers
             byte[] bytes = await provisioningController.GetRdpAsync(res.Name, res.CloudServiceName);
             var encoding = new System.Text.UTF8Encoding();
             var sRes = encoding.GetString(bytes);
-            return sRes;
+            return new ObjectResult(sRes) { StatusCode = 200 };
         }
 
 
         // allows you to take the specified action (start, stop) on a specified resource
         [HttpPost("{resourceId}/{actionname}/{duration:int?}")]
-        public async Task Post(string groupId, string resourceId, string actionname, uint? duration = null)
+        public async Task<IActionResult> Post(string groupId, string resourceId, string actionname, uint? duration = null)
         {
             ScampResource res = await _resourceRepository.GetResource(resourceId);
             if (res == null)
-            {
-                //TODO: throw "not found" exception
-            }
+                return new HttpStatusCodeResult(404); // not found
 
             ResourceAction action = WebJobController.GetAction(actionname);
             ResourceState newState = ResourceState.Unknown;
@@ -121,6 +92,8 @@ namespace ScampApi.Controllers
                 await _volatileStorageController.UpdateResourceState(resourceId, newState);
                 _webJobController.SubmitActionInQueue(resourceId, action, duration);
             }
+
+            return new HttpStatusCodeResult(204);
         }
 
         [HttpPost]
@@ -188,11 +161,11 @@ namespace ScampApi.Controllers
             if (action != ResourceAction.Create && owner != null)
                 return true;
 
-            // Resource's Group Admins can do anything to the resources in groups
+            // Resource's Group Managers can do anything to the resources in groups
             // they administer
             var rscGroup = currentUser.GroupMembership.Find(grp => grp.Id == resource.ResourceGroup.Id);
-            // if current user is an admin of the group that owns the resource, allow action
-            if (rscGroup != null && rscGroup.isAdmin)
+            // if current user is a manager of the group that owns the resource, allow action
+            if (rscGroup != null && rscGroup.isManager)
                 return true;
 
             // if no positive results, default to false and deny action

@@ -2,10 +2,11 @@
 using Microsoft.AspNet.Mvc;
 using ScampApi.Infrastructure;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Authorization;
 
 namespace ScampApi.Controllers.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/settings")]
     public class Settings : Controller
     {

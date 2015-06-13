@@ -129,29 +129,17 @@ namespace DocumentDbRepositories.Implementation
 
         }
 
-        public Task AddResource(string groupID)
-        {
-            //TODO: stuff
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateGroup(string groupID, ScampResourceGroup group)
         {
 
             if (!(await docdb.IsInitialized))
                 return;
 
-            // TODO: Security
             var query = docdb.Client.CreateDocumentQuery(docdb.Collection.SelfLink)
                 .Where(d => d.Id == groupID);
             var document = await query.AsDocumentQuery().FirstOrDefaultAsync();
 			await docdb.Client.ReplaceDocumentAsync(document.SelfLink, group);
         }
 
-        public Task AddAdmin(string groupID)
-        {
-            //TODO: stuff
-            throw new NotImplementedException();
-        }
 	}
 }
