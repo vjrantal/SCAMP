@@ -3,13 +3,27 @@ angular.module('scamp')
 .controller('groupManagerCtrl', ['$scope', 'userSvc', 'groupsSvc', function ($scope, userSvc, groupsSvc) {
     $scope.viewLoading = true;
 
+    // A variable to store group information locally
+    $scope.groups = [];
+    var removeLocalGroup = function (groupId) {
+        $scope.groups = $scope.groups.filter(function (value) {
+            return value.id !== groupId;
+        });
+    };
+    var updateLocalGroup = function (group) {
+        for (var i = 0; i < $scope.groups.length; i++) {
+            if ($scope.groups[i].id === group.id) {
+                $scope.groups[i] = group;
+            }
+        }
+    };
+
     userSvc.getGroupList($scope.userProfile.id, 'admin')
-    .then(function (data) {
-        $scope.groups = data;
-        $scope.selectedGroup = data[0];
+    .then(function (response) {
+        // TODO: Handle case where user doesn't belong to any groups
+        $scope.groups = response;
+        $scope.selectedGroup = response[0];
         loadGroupDetails($scope.selectedGroup);
-    })
-    .catch(function () {
     })
     .finally(function () {
         $scope.viewLoading = false;
@@ -17,11 +31,9 @@ angular.module('scamp')
 
     var loadGroupDetails = function (group) {
         $scope.groupDetailsLoading = true;
-        groupsSvc.getItem(group.id)
-        .then(function (data) {
-            $scope.selectedGroup = data;
-        })
-        .catch(function () {
+        groupsSvc.getGroup(group.id)
+        .then(function (response) {
+            $scope.selectedGroup = response;
         })
         .finally(function () {
             $scope.groupDetailsLoading = false;
@@ -45,5 +57,54 @@ angular.module('scamp')
         $event.stopPropagation();
 
         $scope.groupExpiryDateOpened = true;
+    };
+
+    $scope.groupSummaryFormSubmitted = function () {
+        $scope.groupDetailsLoading = true;
+        if ($scope.selectedGroup.unsaved) {
+            groupsSvc.addGroup($scope.selectedGroup)
+            .then(function (response) {
+                $scope.groups.push(response);
+                $scope.selectedGroup = response;
+            })
+            .finally(function () {
+                $scope.groupDetailsLoading = false;
+            });
+        } else {
+            groupsSvc.updateGroup($scope.selectedGroup)
+            .then(function (response) {
+                updateLocalGroup(response);
+                $scope.selectedGroup = response;
+            })
+            .finally(function () {
+                $scope.groupDetailsLoading = false;
+            });
+        }
+    };
+
+    $scope.addGroup = function () {
+        var group = {
+            'id': 'the-temporary-id-of-unsaved-group',
+            'unsaved': true
+        };
+        $scope.selectedGroup = group;
+    };
+
+    $scope.removeGroup = function () {
+        if ($scope.selectedGroup.unsaved) {
+            removeLocalGroup('the-temporary-id-of-unsaved-group');
+            $scope.selectedGroup = $scope.groups[0];
+        } else {
+            $scope.groupDetailsLoading = true;
+            groupsSvc.removeGroup($scope.selectedGroup)
+            .then(function () {
+                removeLocalGroup($scope.selectedGroup.id);
+                $scope.selectedGroup = $scope.groups[0];
+                loadGroupDetails($scope.selectedGroup);
+            })
+            .finally(function () {
+                $scope.groupDetailsLoading = false;
+            });
+        }
     };
 }]);

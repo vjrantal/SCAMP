@@ -77,7 +77,7 @@ angular.module('scamp')
 	    if (!groupId)
 	        throw new Error("Mandatory paramter groupId needs to be specified");
 
-	    groupsSvc.getUsers(groupId).then(
+	    groupsSvc.getGroupUsers(groupId).then(
             function (data) {
                 if (data && data.length > 0) {
                     $scope.groupUsers = data.map(function (item) {

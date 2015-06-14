@@ -3,7 +3,8 @@
   <i class="fa fa-spinner fa-pulse fa-2x" ng-show="viewLoading"></i>
 </div>
 <div ng-show="!viewLoading">
-  <button type="button" class="btn btn-default btn-md pull-right">
+  <button type="button" class="btn btn-default btn-md pull-right"
+    ng-click="addGroup()">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     Add Group
   </button>
@@ -15,7 +16,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
 
-          <span class="dropdown">
+          <span class="dropdown" ng-show="!selectedGroup.unsaved">
             <button class="btn btn-default dropdown-toggle" type="button" id="group-selector-button" data-toggle="dropdown" aria-expanded="true">
               {{ selectedGroup.name }}
               <span class="caret"></span>
@@ -27,12 +28,18 @@
             </ul>
           </span>
 
-          <button type="button" class="btn btn-default btn-md" ng-show="!groupDetailsLoading">
+          <span class="form-inline" ng-show="selectedGroup.unsaved">
+            <input type="text" class="form-control"
+              ng-readonly="true" value="Unsaved Group">
+          </span>
+
+          <button type="button" class="btn btn-default btn-md" ng-show="!groupDetailsLoading"
+            ng-click="removeGroup()">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
           <i class="fa fa-spinner fa-pulse" ng-show="groupDetailsLoading"></i>
 
-          <button type="submit" class="btn btn-primary pull-right">
+          <button type="submit" form="group-summary-form" class="btn btn-primary pull-right">
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
             Save
           </button>
@@ -41,7 +48,8 @@
         <div class="panel-body" ng-show="!groupDetailsLoading">
           <div class="tab-content">
             <div class="tab-pane fade in active" id="summary-tab">
-              <form class="form-horizontal">
+              <form id="group-summary-form" class="form-horizontal"
+                ng-submit="groupSummaryFormSubmitted()">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
