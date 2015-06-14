@@ -3,7 +3,11 @@ angular.module('scamp')
 .controller('groupManagerCtrl', ['$scope', 'userSvc', 'groupsSvc', function ($scope, userSvc, groupsSvc) {
     $scope.viewLoading = true;
 
-    // A variable to store group information locally
+    // A variable to store group information locally.
+    // TODO: Currently $scope.selectedGroup and $scope.groups
+    // are referencing to different objects, which is not conventient
+    // when dealing with the local groups. The selected group should
+    // point to a group object within the list of groups.
     $scope.groups = [];
     var removeLocalGroup = function (groupId) {
         $scope.groups = $scope.groups.filter(function (value) {
@@ -14,20 +18,25 @@ angular.module('scamp')
         for (var i = 0; i < $scope.groups.length; i++) {
             if ($scope.groups[i].id === group.id) {
                 $scope.groups[i] = group;
+                return;
             }
         }
     };
 
-    userSvc.getGroupList($scope.userProfile.id, 'admin')
-    .then(function (response) {
-        // TODO: Handle case where user doesn't belong to any groups
-        $scope.groups = response;
-        $scope.selectedGroup = response[0];
-        loadGroupDetails($scope.selectedGroup);
-    })
-    .finally(function () {
-        $scope.viewLoading = false;
-    });
+    var removeLocalGroupUser = function (userId) {
+        $scope.selectedGroup.users = $scope.selectedGroup.users.filter(function (value) {
+            return value.id !== userId;
+        });
+    }
+    var updateLocalGroupUser = function (user) {
+        var users = $scope.selectedGroup.users;
+        for (var j = 0; j < users.length; j++) {
+            if (users[j].id = user.id) {
+                users[j] = user;
+                return;
+            }
+        }
+    };
 
     var loadGroupDetails = function (group) {
         $scope.groupDetailsLoading = true;
@@ -43,9 +52,7 @@ angular.module('scamp')
     $scope.groupSelected = function ($event, group) {
         $scope.selectedGroup = group;
         $scope.groupDetailsLoading = true;
-        setTimeout(function () {
-          loadGroupDetails(group);
-        }, 1000);
+        loadGroupDetails(group);
     };
 
     $scope.onlyNumbersPattern = /^\d+$/;
@@ -107,4 +114,79 @@ angular.module('scamp')
             });
         }
     };
+
+    $scope.userFilter = {};
+    $scope.userFilter.keyword = '';
+    $scope.userFilter.filter = function () {
+        var filterExpression = new RegExp($scope.userFilter.keyword, 'i');
+        $('.filtered-data tr')
+        .hide()
+        .filter(function () {
+            return filterExpression.test($(this).text());
+        })
+        .show();
+    };
+    $scope.userFilter.clear = function () {
+        $scope.userFilter.keyword = '';
+        $('.filtered-data tr').show();
+    };
+
+    // Setup the typeahead logic for adding new users
+    // to the group.
+    $scope.addUser = {};
+    $scope.addUser.start = function () {
+        $scope.addUser.started = true;
+    };
+    new Typeahead($scope,
+        {
+            componentId: 'add-user-typeahead',
+            minLength: 3,
+            remote: {
+                url: '/api/users/FindbyUPN/%QUERY',
+                queryStr: '%QUERY',
+                displayProperty: 'name'
+            }
+        },
+        function (event, value) {
+            $scope.addUser.loading = true;
+            groupsSvc.addUser($scope.selectedGroup, value)
+            .then(function () {
+                $scope.selectedGroup.users.unshift(value);
+            })
+            .finally(function () {
+                $scope.addUser.started = false;
+                $scope.addUser.loading = false;
+                $('#add-user-typeahead .typeahead').typeahead('val', '');
+            });
+        }
+    );
+
+    $scope.removeUser = function (user) {
+        user.removing = true;
+        groupsSvc.removeUser($scope.selectedGroup, user)
+        .then(function () {
+            removeLocalGroupUser(user.id);
+        })
+        .finally(function() {
+            user.removing = false;
+        });
+    };
+
+    var getGroups = function () {
+        userSvc.getGroupList($scope.userProfile.id, 'admin')
+        .then(function (response) {
+            // TODO: Handle case where user doesn't belong to any groups
+            $scope.groups = response;
+            $scope.selectedGroup = response[0];
+            loadGroupDetails($scope.selectedGroup);
+        })
+        .finally(function () {
+            $scope.viewLoading = false;
+        });
+    };
+    if ($scope.userProfile) {
+        getGroups();
+    } else {
+        $scope.$on('userProfileFetched', getGroups);
+    }
 }]);
