@@ -135,10 +135,10 @@ namespace ScampTypes.ViewModels
     public string Description { get; set; }
     public List<ScampResourceSummary> Resources{ get; set; }
     public List<GroupTemplateSummary> Templates { get; set; }
-    public List<UserSummary> Members { get; set; }
+    public List<UserSummary> Users { get; set; }
     public double unitsBudgeted { get; set; }
     public double defaultUserBudget { get; set; }
-    public DateTime expirtyDate { get; set; }
+    public DateTime expiryDate { get; set; }
 
     }
 

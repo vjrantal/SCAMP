@@ -60,44 +60,18 @@ namespace ScampApi.Controllers.Controllers
         }
 
         /// <summary>
-        /// Gets usage data on a specific user
+        /// does a 'starts with' search against Azure AD User Principal Names
+        ///  returning the first item that matches
         /// </summary>
-        /// <param name="userId">Id of user being requested</param>
-        /// <param name="view">type of view of the data to be returned</param>
-        /// <returns>populated view object</returns>
-        [HttpGet("{userId}/usage/{view}")]
-        public async Task<IActionResult> Get(string userId, string view)
+        /// <param name="searchparm"></param>
+        /// <returns>returns the user's Id and Name if found, otherwise returns null</returns>
+        [HttpGet("FindbyUPN/{searchparm}")]
+        public async Task<IActionResult> findUserbyUPN(string searchparm)
         {
-            //TODO: authorization check
+            //TODO: implement search
+            List<UserSummary> foundusers = await _graphAPIProvider.FindUser(searchparm);
 
-            // get requested user document
-            ScampUser userDoc = await _userRepository.GetUserbyId(userId);
-            if (userDoc == null)
-                return HttpNotFound();
-
-            // get user usage across all resources
-            List<UserBudgetState> usrBudgets = await _volatileStorageController.GetUserBudgetStates(userId);
-
-            if (view == "summary")
-            {
-                UserUsageSummary tmpUserSummary = new UserUsageSummary()
-                {
-                    totGroups = userDoc.GroupMembership.Count()
-                };
-
-                // summarize resource usage
-                foreach(var rscBudget in usrBudgets)
-                {
-                    tmpUserSummary.unitsBudgeted += rscBudget.UnitsBudgetted;
-                    tmpUserSummary.totUnitsUsed += rscBudget.UnitsUsed;
-                }
-                
-                return new ObjectResult(tmpUserSummary) { StatusCode = 200 };
-            }
-            else
-            {
-                return new ObjectResult(string.Format("view '{0}' not supported", view)) { StatusCode = 400 };
-            }
+            return new ObjectResult(foundusers) { StatusCode = 200 };
         }
 
         // get a list of the user's resources
@@ -138,21 +112,6 @@ namespace ScampApi.Controllers.Controllers
             }
 
             return new ObjectResult(resourceList) { StatusCode = 200 };
-        }
-
-        /// <summary>
-        /// does a 'starts with' search against Azure AD User Principal Names
-        ///  returning the first item that matches
-        /// </summary>
-        /// <param name="searchparm"></param>
-        /// <returns>returns the user's Id and Name if found, otherwise returns null</returns>
-        [HttpGet("FindbyUPN/{searchparm}")]
-        public async Task<IActionResult> findUserbyUPN(string searchparm)
-        {
-            //TODO: implement search
-            List<UserSummary> foundusers = await _graphAPIProvider.FindUser(searchparm);
-
-            return new ObjectResult(foundusers) { StatusCode = 200 };
         }
 
         private UserSummary map(ScampUser docDbUSer)

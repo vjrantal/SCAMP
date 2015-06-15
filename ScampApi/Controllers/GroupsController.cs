@@ -89,7 +89,7 @@ namespace ScampApi.Controllers
                     OwnerId = currentUser.Id,
                     unitsBudgeted = userInputGroup.unitsBudgeted,
                     DefaultUserAllocation = userInputGroup.defaultUserBudget,
-                    EndDate = userInputGroup.expirtyDate
+                    EndDate = userInputGroup.expiryDate
                 }
             };
 
@@ -114,7 +114,7 @@ namespace ScampApi.Controllers
 
                 await _groupRepository.UpdateGroup(groupId, new ScampResourceGroup
                 {
-                    Members = value.Members.ConvertAll((a => new ScampUserGroupMbrship()
+                    Members = value.Users.ConvertAll((a => new ScampUserGroupMbrship()
                     {
                         Id = a.Id,
                         Name = a.Name
@@ -153,10 +153,10 @@ namespace ScampApi.Controllers
                 Id = docDbGroup.Id,
                 Name = docDbGroup.Name,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
-                Members = docDbGroup.Members?.Select(MapToSummary).ToList(),
+                Users = docDbGroup.Members?.Select(MapToSummary).ToList(),
                 unitsBudgeted = docDbGroup.Budget.unitsBudgeted,
                 defaultUserBudget = docDbGroup.Budget.DefaultUserAllocation,
-                expirtyDate = docDbGroup.Budget.EndDate
+                expiryDate = docDbGroup.Budget.EndDate
             };
         }
         private UserSummary MapToSummary(ScampUserGroupMbrship docDbUser)
