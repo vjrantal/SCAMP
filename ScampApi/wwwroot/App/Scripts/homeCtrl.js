@@ -14,10 +14,6 @@ angular.module('scamp')
     };
 
     var fetchUserProfile = function () {
-      // Switch to dashboard already before fetching the user profile
-      // to avoid the view flickering before the fetch completes.
-      $location.path("/dashboard");
-
       console.log("getting user profile data");
 
       // fetch user profile data from API
@@ -39,12 +35,21 @@ angular.module('scamp')
 
     var checkUserLogin = function () {
       if ($scope.isLoggedOn) {
-        fetchUserProfile();
+          if ($location.$$path == '/Home') {
+              $location.path("/dashboard");
+          }
+          fetchUserProfile();
       }
       else {
         $scope.$on('adal:loginSuccess', function () {
-          $scope.isLoggedOn = adalService.userInfo.isAuthenticated;
-          fetchUserProfile();
+            if ($location.$$path == '/Home') {
+                // After successfull login, redirect to the dashboard view.
+                // Switch to dashboard already before fetching the user profile
+                // to avoid the view flickering before the fetch completes.
+                $location.path("/dashboard");
+            }
+            $scope.isLoggedOn = adalService.userInfo.isAuthenticated;
+            fetchUserProfile();
         });
       }
     };
