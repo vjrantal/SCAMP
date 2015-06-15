@@ -42,13 +42,6 @@ body{
   line-height: 1.5;
 } 
 
-.navbar-default {
-  border-top-left-radius: 10px!important;
-  border-bottom-left-radius: 10px!important;
-  border-top-right-radius: 10px!important;
-  border-bottom-right-radius: 10px!important;
-}
-
  .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > span > a {
 	color: rgb(85, 85, 85);
 	background-color: #2e2f33!important;
@@ -97,10 +90,6 @@ body{
 
 .content-row{
       margin-top: 74px;
-}
-
-body {
-    background-color: #2e2f33 !important;
 }
 
 .dropdown-menu-header, .open>a{
@@ -177,6 +166,6 @@ footer a:hover {
             color: #999;
 }
 
-.navbar-default {
-    border-color: #45525A!important;
+#scamp-ng-app .navbar {
+  margin-bottom: 10px;
 }
