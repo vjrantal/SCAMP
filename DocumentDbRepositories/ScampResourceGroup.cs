@@ -16,6 +16,8 @@ namespace DocumentDbRepositories
         public string Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
         [JsonProperty(PropertyName = "members")]
 		public List<ScampUserGroupMbrship> Members { get; set; }
         [JsonProperty(PropertyName = "budget")]

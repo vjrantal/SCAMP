@@ -114,7 +114,11 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return;
 
-            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newGroup);
+            StoredProcedure sproc = docdb.Client.CreateStoredProcedureQuery(docdb.Collection.SelfLink)
+                .Where(s => s.Id == "CreateGroup").AsEnumerable().FirstOrDefault();
+
+            await docdb.Client.ExecuteStoredProcedureAsync<dynamic>(sproc.SelfLink, newGroup);
+
         }
 
         public async Task AddUserToGroup(string groupId, string userId)

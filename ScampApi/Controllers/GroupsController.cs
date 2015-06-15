@@ -68,6 +68,11 @@ namespace ScampApi.Controllers
             return new ObjectResult(Map(group)) { StatusCode = 200 };
         }
 
+        /// <summary>
+        /// create a new group
+        /// </summary>
+        /// <param name="userInputGroup">group object to be created</param>
+        /// <returns></returns>
         // creates a new group
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Group userInputGroup)
@@ -76,14 +81,17 @@ namespace ScampApi.Controllers
             if (!(await _securityHelper.IsGroupAdmin()))
                 return new HttpStatusCodeResult(403); // Forbidden;
 
+            //TODO: group parameter validation 
+
             // get current user
             var currentUser = await _securityHelper.GetCurrentUser();
-
-            //Cleaning the object
+            
+            // build the resource group object
             var group = new ScampResourceGroup()
             {
-                Name = R.Regex.Replace(userInputGroup.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
                 Id = Guid.NewGuid().ToString(),
+                Name = R.Regex.Replace(userInputGroup.Name.ToLowerInvariant(), "[^a-zA-Z0-9]", ""),
+                Description = userInputGroup.Description,
                 Budget = new ScampGroupBudget()
                 {
                     OwnerId = currentUser.Id,
