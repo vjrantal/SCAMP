@@ -22,6 +22,8 @@ namespace ScampTypes.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public bool isAdmin { get; set; }
+        public UserBudgetSummary budget { get; set; }
     }
 
     public class UserUsageSummary
@@ -130,10 +132,14 @@ namespace ScampTypes.ViewModels
     {
     public string Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public List<ScampResourceSummary> Resources{ get; set; }
     public List<GroupTemplateSummary> Templates { get; set; }
-    public List<UserSummary> Admins { get; set; }
-    public List<UserSummary> Members { get; set; }
+    public List<UserSummary> Users { get; set; }
+    public double unitsBudgeted { get; set; }
+    public double defaultUserBudget { get; set; }
+    public DateTime expiryDate { get; set; }
+
     }
 
     public sealed class GroupSummary

@@ -18,6 +18,7 @@ namespace ScampApi.Infrastructure
         private readonly HttpContext Context;
         private readonly IUserRepository _userRepository;
         private readonly IGroupRepository _groupRepository;
+        private ScampUser cachedCurrentUser;
 
         public SecurityHelper(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository, IGroupRepository groupRepository)
         {
@@ -34,26 +35,29 @@ namespace ScampApi.Infrastructure
         // retrieves the current user
         public async Task<ScampUser> GetCurrentUser()
         {
-
+            // get current user's Id from security context
             var userId = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier")).Value;
-            //TODO check if user is in cache
-            ScampUser tmpUser = await GetUserById(userId);
-            // TODO put the user object into cache
-            return tmpUser;
+
+            // if user object isn't already in object, save to reduced DB hits
+            if (cachedCurrentUser == null || cachedCurrentUser.Id != userId)
+                cachedCurrentUser = await GetUserById(userId);
+            
+            // return object to call
+            return cachedCurrentUser;
         }
 
-        //public string GetIPIDByContext()
-        //{
-        //    // get Tenant and Object ID claims
-        //    string tenantID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("tenantid")).Value;
-        //    string objectID = Context.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier")).Value;
-        //    // create SCAMP UserID
-        //    string IPID = string.Format("{0}-{1}", tenantID, objectID);
-        //    return IPID;
-        //}
-
+        /// <summary>
+        /// gets a specific user by their Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<ScampUser> GetUserById(string userId)
         {
+            // if user object is already in object, and matched requested value, return it
+            if (cachedCurrentUser != null && cachedCurrentUser.Id == userId)
+                return cachedCurrentUser;
+
+            // user wasn't already cached, to get it
             ScampUser tmpUser = await _userRepository.GetUserbyId(userId);
             if (tmpUser == null) // insert if user doesn't exist
             {
@@ -75,12 +79,45 @@ namespace ScampApi.Infrastructure
 
             return tmpUser;
         }
+
+        /// <summary>
+        /// checks to see if the user is a group manager
+        /// </summary>
+        /// <param name="groupId">Id of group to be checked</param>
+        /// <returns>true is the user is</returns>
+        public async Task<bool> IsGroupManager(string groupId)
+        {
+            var user = await GetCurrentUser();
+            var grp = await _groupRepository.GetGroup(groupId);
+            // user is a manager of this group if they are in the group membership list and are flagged "isManager"
+            var checkMgr = grp.Members.ToList().Any(q => q.Id == user.Id && q.isAdmin);
+            return checkMgr;
+        }
+
+        /// <summary>
+        /// checks to see if the user is a group admin of a specific group
+        /// </summary>
+        /// <param name="groupId">Id of group to be checked</param>
+        /// <returns>true is the user is</returns>
         public async Task<bool> IsGroupAdmin(string groupId)
         {
             var user = await GetCurrentUser();
             var grp = await _groupRepository.GetGroup(groupId);
-            var checkAdmin = grp.Admins.ToList().Any(q => q.Id == user.Id);
-            return checkAdmin;
+            // user is a manager of this group if they are in the group membership list and are flagged "isManager"
+            var checkMgr = (grp.Budget.OwnerId == user.Id);
+            return checkMgr;
+        }
+
+        /// <summary>
+        /// checks to see if the user is a group admin
+        /// </summary>
+        /// <returns>true is the user is</returns>
+        public async Task<bool> IsGroupAdmin()
+        {
+            var user = await GetCurrentUser();
+            // user is a group admin if they have a budget
+            var checkMgr = user.budget != null; 
+            return checkMgr;
         }
 
         public async Task<bool> IsSysAdmin()

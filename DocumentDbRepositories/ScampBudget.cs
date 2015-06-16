@@ -12,8 +12,8 @@ namespace DocumentDbRepositories
     [Serializable]
     public class ScampUserBudget
     {
-        [JsonProperty(PropertyName = "amount")]
-        public double Amount { get; set; }
+        [JsonProperty(PropertyName = "unitsBudgeted")]
+        public double unitsBudgeted { get; set; }
         [JsonProperty(PropertyName = "allocated")]
         public double Allocated { get; set; }
         [JsonProperty(PropertyName = "enddate")]

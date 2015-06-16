@@ -19,7 +19,6 @@ namespace KeyVaultRepositories.Implementation
         }
         public async Task<string> GetSecret(string resourceId, string key)
         {
-            //TODO Add some caching
             var secretKey = SecretKey(resourceId, key);
             var client = _keyVaultClient.GetClient();
             var secret = await client.GetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey);

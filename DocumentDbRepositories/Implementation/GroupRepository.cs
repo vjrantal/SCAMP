@@ -114,7 +114,19 @@ namespace DocumentDbRepositories.Implementation
             if (!(await docdb.IsInitialized))
                 return;
 
-            await docdb.Client.CreateDocumentAsync(docdb.Collection.SelfLink, newGroup);
+            try
+            {
+                StoredProcedure sproc = docdb.Client.CreateStoredProcedureQuery(docdb.Collection.SelfLink)
+                    .Where(s => s.Id == "CreateGroup").AsEnumerable().FirstOrDefault();
+
+                await docdb.Client.ExecuteStoredProcedureAsync<dynamic>(sproc.SelfLink, newGroup);
+            }
+            catch (Exception ex)
+            {
+                //TODO: log issue
+                throw;
+            }
+
         }
 
         public async Task AddUserToGroup(string groupId, string userId)
@@ -129,29 +141,17 @@ namespace DocumentDbRepositories.Implementation
 
         }
 
-        public Task AddResource(string groupID)
-        {
-            //TODO: stuff
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateGroup(string groupID, ScampResourceGroup group)
         {
 
             if (!(await docdb.IsInitialized))
                 return;
 
-            // TODO: Security
             var query = docdb.Client.CreateDocumentQuery(docdb.Collection.SelfLink)
                 .Where(d => d.Id == groupID);
             var document = await query.AsDocumentQuery().FirstOrDefaultAsync();
 			await docdb.Client.ReplaceDocumentAsync(document.SelfLink, group);
         }
 
-        public Task AddAdmin(string groupID)
-        {
-            //TODO: stuff
-            throw new NotImplementedException();
-        }
 	}
 }

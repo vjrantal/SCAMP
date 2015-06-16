@@ -11,7 +11,7 @@ using KeyVaultRepositories.Implementation;
 
 namespace ScampApi.Controllers.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/settings/subscriptions")]
     public class SettingsSubscriptionsController : Controller
     {

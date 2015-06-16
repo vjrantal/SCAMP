@@ -17,15 +17,15 @@ using Microsoft.AspNet.Authorization;
 namespace ScampApi.Controllers.Controllers
 {
     [Authorize]
-    [Route("api/users/{userId}/budget")]
-    public class UsersBudgetController : Controller
+    [Route("api/users/{userId}/usage")]
+    public class UsersUsageController: Controller
     {
         private readonly ISecurityHelper _securityHelper;
         private readonly IResourceRepository _resourceRepository;
         private readonly IUserRepository _userRepository;
         private static IVolatileStorageController _volatileStorageController = null;
 
-        public UsersBudgetController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
+        public UsersUsageController(ISecurityHelper securityHelper, IResourceRepository resourceRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
         {
             _resourceRepository = resourceRepository;
             _userRepository = userRepository;
@@ -33,8 +33,9 @@ namespace ScampApi.Controllers.Controllers
             _volatileStorageController = volatileStorageController;
         }
 
+
         /// <summary>
-        /// Gets group budget data for a specific user
+        /// Gets usage data on a specific user
         /// </summary>
         /// <param name="userId">Id of user being requested</param>
         /// <param name="view">type of view of the data to be returned</param>
@@ -42,39 +43,37 @@ namespace ScampApi.Controllers.Controllers
         [HttpGet("{view}")]
         public async Task<IActionResult> Get(string userId, string view)
         {
-           //TODO: authorization check
+            //TODO: authorization check
 
             // get requested user document
             ScampUser userDoc = await _userRepository.GetUserbyId(userId);
             if (userDoc == null)
                 return HttpNotFound();
 
+            // get user usage across all resources
+            List<UserBudgetState> usrBudgets = await _volatileStorageController.GetUserBudgetStates(userId);
+
             if (view == "summary")
             {
-                UserBudgetSummary tmpBudgetSummary = new UserBudgetSummary();
-
-                foreach(var group in userDoc.GroupMembership)
+                UserUsageSummary tmpUserSummary = new UserUsageSummary()
                 {
-                    if (group.isAdmin)
-                    {
-                        // get this group's current budget
-                        var groupBudget = await _volatileStorageController.GetGroupBudgetState(group.Id);
-
-                        tmpBudgetSummary.totGroups++;
-                        tmpBudgetSummary.unitsBudgeted += groupBudget.UnitsBudgetted;
-                        tmpBudgetSummary.totUnitsUsed += groupBudget.UnitsUsed;
-                        tmpBudgetSummary.totUnitsAllocated += groupBudget.UnitsAllocated;
-                    }
-                    
+                    totGroups = userDoc.GroupMembership.Count()
                 };
-                
-                // return view                
-                return new ObjectResult(tmpBudgetSummary) { StatusCode = 200 };
+
+                // summarize resource usage
+                foreach (var rscBudget in usrBudgets)
+                {
+                    tmpUserSummary.unitsBudgeted += rscBudget.UnitsBudgetted;
+                    tmpUserSummary.totUnitsUsed += rscBudget.UnitsUsed;
+                }
+
+                return new ObjectResult(tmpUserSummary) { StatusCode = 200 };
             }
             else
             {
                 return new ObjectResult(string.Format("view '{0}' not supported", view)) { StatusCode = 400 };
             }
-        }        
-	}
+        }
+
+    }
 }

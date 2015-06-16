@@ -74,7 +74,7 @@ namespace DocumentDbRepositories
         public string Id { get; set; }
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
-        [JsonProperty(PropertyName = "admins")]
+        [JsonProperty(PropertyName = "resources")]
         public List<ScampResourceReference> Resources { get; set; }
 
         public static implicit operator ScampUserReference(ScampUser user)

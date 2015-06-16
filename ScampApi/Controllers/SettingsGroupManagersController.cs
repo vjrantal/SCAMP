@@ -67,7 +67,7 @@ namespace ScampApi.Controllers.Controllers
                 {
                     Id = usr.Id,
                     Name = usr.Name,
-                    unitsBudgeted = usr.budget.Amount,
+                    unitsBudgeted = usr.budget.unitsBudgeted,
                     endDate = usr.budget.EndDate,
                     totUnitsUsed = totUsed,
                     totUnitsAllocated = usr.budget.Allocated,
@@ -108,7 +108,7 @@ namespace ScampApi.Controllers.Controllers
             // set budget info
             if (tmpUser.budget == null)
                 tmpUser.budget = new ScampUserBudget();
-            tmpUser.budget.Amount = groupManagerSummary.unitsBudgeted;
+            tmpUser.budget.unitsBudgeted = groupManagerSummary.unitsBudgeted;
             tmpUser.budget.EndDate = groupManagerSummary.endDate.Date.AddMinutes(1);
 
             // save changes
