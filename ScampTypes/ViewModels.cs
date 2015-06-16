@@ -40,9 +40,9 @@ namespace ScampTypes.ViewModels
 
     public sealed class GroupManagerSummary : UserSummary
     {
-        public double unitsBudgeted { get; set; }
-        public double totUnitsUsed { get; set; }
-        public double totUnitsAllocated { get; set; }
+        public long unitsBudgeted { get; set; }
+        public long totUnitsUsed { get; set; }
+        public long totUnitsAllocated { get; set; }
         public int totGroups { get; set; }
         public DateTime endDate { get; set; }
     }
@@ -136,8 +136,8 @@ namespace ScampTypes.ViewModels
     public List<ScampResourceSummary> Resources{ get; set; }
     public List<GroupTemplateSummary> Templates { get; set; }
     public List<UserSummary> Users { get; set; }
-    public double unitsBudgeted { get; set; }
-    public double defaultUserBudget { get; set; }
+    public long unitsBudgeted { get; set; }
+    public long defaultUserBudget { get; set; }
     public DateTime expiryDate { get; set; }
 
     }

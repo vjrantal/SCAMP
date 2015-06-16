@@ -95,6 +95,7 @@ namespace ScampApi.Controllers
                 Budget = new ScampGroupBudget()
                 {
                     OwnerId = currentUser.Id,
+                    
                     unitsBudgeted = userInputGroup.unitsBudgeted,
                     DefaultUserAllocation = userInputGroup.defaultUserBudget,
                     EndDate = userInputGroup.expiryDate
@@ -107,6 +108,29 @@ namespace ScampApi.Controllers
                 Id = group.Id,
                 Name = group.Name
             };
+
+            // after we know the user docs have completed successfully, add the volatile storage records
+            Task[] tasks = new Task[2]; // collection to hold the parallel tasks
+            
+            // create group volatile storage entries
+            var newGrpBudget = new GroupBudgetState(group.Id)
+            {
+                UnitsBudgetted = userInputGroup.unitsBudgeted,
+                UnitsAllocated = userInputGroup.defaultUserBudget,
+                UnitsUsed = 0
+            };
+            tasks[0] = _volatileStorageController.AddGroupBudgetState(newGrpBudget);
+
+            // create volatile storage budget entry for user/group
+            var newUsrBudget = new UserBudgetState(currentUser.Id, group.Id)
+            {
+                UnitsBudgetted = group.Budget.DefaultUserAllocation,
+                UnitsUsed = 0
+            };
+            tasks[1] = _volatileStorageController.AddUserBudgetState(newUsrBudget);
+
+            // wait for both operations to complete
+            Task.WaitAll(tasks);
 
             return new ObjectResult(resp) { StatusCode = 200 };
         }
