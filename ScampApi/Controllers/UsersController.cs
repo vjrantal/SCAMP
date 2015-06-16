@@ -35,30 +35,6 @@ namespace ScampApi.Controllers.Controllers
             _graphAPIProvider = graphAPIProvider;
         }
 
-        // retrieves the current user
-        // GET: api/user
-        [HttpGet(Name = "User.CurrentUser")]
-        public async Task<User> Get()
-        {
-            ScampUser tmpUser = null;
-
-            // fetch user
-            tmpUser = await _securityHelper.GetCurrentUser();
-
-            //TODO: we're going to need this for authorizing requests, so we should probably cache it
-            //return object for user...
-
-            var user = new User()
-            {
-                Id = tmpUser.Id,
-                Name = tmpUser.Name,
-                Email = tmpUser.Email,
-                IsSystemAdmin = tmpUser.IsSystemAdmin
-            };
-
-            return user;
-        }
-
         /// <summary>
         /// Gets usage data on a specific user
         /// </summary>
