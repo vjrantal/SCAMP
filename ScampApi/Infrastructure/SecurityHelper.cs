@@ -81,11 +81,11 @@ namespace ScampApi.Infrastructure
         }
 
         /// <summary>
-        /// checks to see if the user is a group manager
+        /// checks to see if the user is a group admin
         /// </summary>
         /// <param name="groupId">Id of group to be checked</param>
         /// <returns>true is the user is</returns>
-        public async Task<bool> IsGroupManager(string groupId)
+        public async Task<bool> IsGroupAdmin(string groupId)
         {
             var user = await GetCurrentUser();
             var grp = await _groupRepository.GetGroup(groupId);
@@ -95,11 +95,11 @@ namespace ScampApi.Infrastructure
         }
 
         /// <summary>
-        /// checks to see if the user is a group admin of a specific group
+        /// checks to see if the user is a group manager of a specific group
         /// </summary>
         /// <param name="groupId">Id of group to be checked</param>
         /// <returns>true is the user is</returns>
-        public async Task<bool> IsGroupAdmin(string groupId)
+        public async Task<bool> IsGroupManager(string groupId)
         {
             var user = await GetCurrentUser();
             var grp = await _groupRepository.GetGroup(groupId);
@@ -109,10 +109,10 @@ namespace ScampApi.Infrastructure
         }
 
         /// <summary>
-        /// checks to see if the user is a group admin
+        /// checks to see if the user is a group manager
         /// </summary>
         /// <returns>true is the user is</returns>
-        public async Task<bool> IsGroupAdmin()
+        public async Task<bool> IsGroupManager()
         {
             var user = await GetCurrentUser();
             // user is a group admin if they have a budget

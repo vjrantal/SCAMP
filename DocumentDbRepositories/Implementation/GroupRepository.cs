@@ -30,40 +30,15 @@ namespace DocumentDbRepositories.Implementation
             return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
 
-        public async Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID)
+        public async Task<List<ScampResourceGroup>> GetGroupsByBudgetOwner(string userId)
         {
             if (!(await docdb.IsInitialized))
                 return null;
 
-            var groupQuery = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroupWithResources>(docdb.Collection.SelfLink)
-                             where g.Id == groupID && g.Type == "group"
-                             select g;
-            var groupTask = groupQuery.AsDocumentQuery().FirstOrDefaultAsync();
-
-            var resourcesQuery = from r in docdb.Client.CreateDocumentQuery<ScampResource>(docdb.Collection.SelfLink)
-                                 where r.Type == "resource" && r.ResourceGroup.Id == groupID
-                                 select r;
-            var resourcesTask = resourcesQuery.AsDocumentQuery().ToListAsync();
-
-            await Task.WhenAll(groupTask, resourcesTask);
-
-            var group = groupTask.Result;
-            if (group == null)
-                return null;
-
-            //group.Resources = resourcesTask.Result;
-            return group;
-        }
-
-        public async Task<List<ScampResourceGroupWithResources>> GetGroupsByBudgetOwner(string userId)
-        {
-            if (!(await docdb.IsInitialized))
-                return null;
-
-            var groupQuery = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroupWithResources>(docdb.Collection.SelfLink)
+            var groupQuery = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
                              where g.Budget.OwnerId == userId && g.Type == "group"
                              select g;
-            List<ScampResourceGroupWithResources> groupList = await groupQuery.AsDocumentQuery().ToListAsync();
+            List<ScampResourceGroup> groupList = await groupQuery.AsDocumentQuery().ToListAsync();
 
             return groupList;
         }

@@ -11,7 +11,7 @@ namespace ScampApi.Infrastructure
         Task<ScampUserReference> GetUserReference();
         Task<bool> IsGroupManager(string groupId);
         Task<bool> IsGroupAdmin(string groupId);
-        Task<bool> IsGroupAdmin();
+        Task<bool> IsGroupManager();
         Task<bool> IsSysAdmin();
     }
 }
