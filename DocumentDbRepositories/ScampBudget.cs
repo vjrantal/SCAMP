@@ -13,9 +13,9 @@ namespace DocumentDbRepositories
     public class ScampUserBudget
     {
         [JsonProperty(PropertyName = "unitsBudgeted")]
-        public double unitsBudgeted { get; set; }
+        public long unitsBudgeted { get; set; }
         [JsonProperty(PropertyName = "allocated")]
-        public double Allocated { get; set; }
+        public long Allocated { get; set; }
         [JsonProperty(PropertyName = "enddate")]
         public DateTime EndDate { get; set; }
     }
@@ -27,6 +27,6 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "defaultUserAllocation")]
-        public double DefaultUserAllocation { get; set; } 
+        public long DefaultUserAllocation { get; set; } 
     }
 }

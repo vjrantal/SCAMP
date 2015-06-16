@@ -23,6 +23,7 @@ function (groupDoc) {
 
     // add user to group
     function CreateGroup(groupDoc, userDoc) {
+
         // define user for group list
         var groupFrag = {
             "id": userDoc.id,
@@ -34,6 +35,9 @@ function (groupDoc) {
             groupDoc.members = {};
         // add the user to the group collection
         groupDoc.members.push(groupFrag);
+
+        // add user's default allocation to the group's allocated amount
+        groupDoc.budget.allocated += groupDoc.budget.defaultUserAllocation
 
         // increment user's allocated budget amount by group budget amount
         userDoc.budget.allocated += groupDoc.budget.unitsBudgeted;
