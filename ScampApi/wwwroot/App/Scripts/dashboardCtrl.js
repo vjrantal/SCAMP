@@ -39,32 +39,32 @@ angular.module('scamp')
 	    $scope.dashboardStatus = 'loading';
 
 	    userSvc.getGroupList(userGUID, $scope.dashboardView)
-      .then(function (data) {
-        if (data && data.length > 0) {
-          $scope.groups = data.map(function (item) {
-            return scampDashboard.computeUsagePercentages(item);
+          .then(function (data) {
+            if (data && data.length > 0) {
+              $scope.groups = data.map(function (item) {
+                return scampDashboard.computeUsagePercentages(item);
+              });
+              $scope.selectedGroupId = data[0].id;
+              $scope.selectedGroupName = data[0].name;
+              var summaryPanelType = 'usage';
+
+              if ($scope.dashboardView == 'admin') {
+                $scope.loadUsers($scope.selectedGroupId);
+                summaryPanelType = 'budget';
+              } else
+                $scope.loadResources($scope.selectedGroupId, userGUID);
+
+              $scope.updateSummaryPanel(userGUID, summaryPanelType);
+              $scope.dashboardStatus = 'loaded';
+            } else {
+              throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
+            }
+          })
+          .catch(function (statusCode) {
+            // resource REST call failed
+            console.error(statusCode);
+            $scope.dashboardStatus = 'loaded';
           });
-          $scope.selectedGroupId = data[0].id;
-          $scope.selectedGroupName = data[0].name;
-          var summaryPanelType = 'usage';
-
-          if ($scope.dashboardView == 'admin') {
-            $scope.loadUsers($scope.selectedGroupId);
-            summaryPanelType = 'budget';
-          } else
-            $scope.loadResources($scope.selectedGroupId, userGUID);
-
-          $scope.updateSummaryPanel(userGUID, summaryPanelType);
-          $scope.dashboardStatus = 'loaded';
-        } else {
-          throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
-        }
-      })
-      .catch(function (statusCode) {
-        // resource REST call failed
-        console.error(statusCode);
-        $scope.dashboardStatus = 'loaded';
-      });
 	  };
 	  if ($scope.userProfile) {
 	    populateDashboard();
