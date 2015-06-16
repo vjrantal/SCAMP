@@ -38,7 +38,7 @@ namespace ScampTypes.ViewModels
         public double totUnitsAllocated { get; set; }
     }
 
-    public sealed class GroupManagerSummary : UserSummary
+    public sealed class GroupAdminSummary : UserSummary
     {
         public double unitsBudgeted { get; set; }
         public double totUnitsUsed { get; set; }

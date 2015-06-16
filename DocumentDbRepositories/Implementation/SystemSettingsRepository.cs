@@ -30,7 +30,7 @@ namespace DocumentDbRepositories.Implementation
         }
 
         // get a list of system administrators
-        public async Task<List<ScampUser>> GetGroupManagers()
+        public async Task<List<ScampUser>> GetGroupAdmins()
         {
             if (!(await docdb.IsInitialized))
                 return null;

@@ -38,7 +38,7 @@ namespace DocumentDbRepositories
     public interface ISystemSettingsRepository
     {
         Task<List<ScampUser>> GetSystemAdministrators();
-        Task<List<ScampUser>> GetGroupManagers();
+        Task<List<ScampUser>> GetGroupAdmins();
         Task<ScampSubscription> GetSubscription(string subscriptionId);
         Task<List<ScampSubscription>> GetSubscriptions();
         Task UpsertSubscription(ScampSubscription updatedSubscription);

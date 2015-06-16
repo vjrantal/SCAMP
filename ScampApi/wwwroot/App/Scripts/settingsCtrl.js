@@ -77,9 +77,9 @@ angular.module('scamp')
     };
     
     // get the list of current system administrators
-    $scope.getGroupManagers = function () {
-        console.log("calling: settingsCtrl.getGroupManagers");
-        systemSettingsSvc.getGroupManagers().then(
+    $scope.getGroupAdmins = function () {
+        console.log("calling: settingsCtrl.getGroupAdmins");
+        systemSettingsSvc.getGroupAdmins().then(
             // get succeeded
             function (data) {
                 $scope.mgrList = data;
@@ -142,14 +142,14 @@ angular.module('scamp')
     };
 
     // launch the Manager modal pop-up and set up for add/edit
-    $scope.confirmManagerUpdate = function (manager, $event) {
-        console.log("calling settingsCtrl.confirmManagerUpdate");
+    $scope.confirmAdminUpdate = function (admin, $event) {
+        console.log("callinng settingsCtrl.confirmAdminUpdate");
 
-        $scope.managerActionLabel = (manager == null ? "Add" : "Update");
-        if (manager == null)
-            manager = {}; // create empty object
+        $scope.managerActionLabel = (admin == null ? "Add" : "Update");
+        if (admin == null)
+            admin = {}; // create empty object
 
-        $scope.selectedGroupManager = manager;
+        $scope.selectedGroupManager = admin;
 
         $event.preventDefault();
     };
@@ -179,33 +179,33 @@ angular.module('scamp')
     };
 
     // close execute subscription modal pop-up action and close window
-    $scope.managerSave = function (groupManager, $event) {
+    $scope.adminSave = function (groupAdmin, $event) {
         console.log("calling settingsCtrl.subscriptionSave");
 
         //TODO: validate parameters
         // https://github.com/SimpleCloudManagerProject/SCAMP/issues/196
 
         // if we were doing an add, update object with selected user
-        if (groupManager.id == null) {
-            groupManager.id = $scope.selectedManagerUser.id;
-            groupManager.name = $scope.selectedManagerUser.name
+        if (groupAdmin.id == null) {
+            groupAdmin.id = $scope.selectedManagerUser.id;
+            groupAdmin.name = $scope.selectedManagerUser.name
         }
 
         // do insert/update
-        systemSettingsSvc.updateManager(groupManager).then(
+        systemSettingsSvc.updateAdmin(groupAdmin).then(
             // get succeeded
             function (data) {
-                console.log("group manager saved.")
+                console.log("group Admin saved.")
                 // reload list of system admins
-                $scope.getGroupManagers();
+                $scope.getGroupAdmins();
             },
             // get failed
             function (status) {
-                window.alert("group manager Add/Update failed");
+                window.alert("group admin Add/Update failed");
             }
         );
 
-        $('#updateManagerModal').modal('hide');
+        $('#updateGroupAdminModal').modal('hide');
     };
 
     // revoke system administrator permissions for the selected user
@@ -232,17 +232,17 @@ angular.module('scamp')
     };
 
     // revoke group manager permissions for the selected user
-    $scope.confirmDeleteManager = function (groupManager) {
-        console.log("calling settingsCtrl.confirmDeleteManager");
+    $scope.confirmDeleteAdmin= function (groupAdmin) {
+        console.log("calling settingsCtrl.confirmDeleteAdmin");
 
-        var wndRsp = window.confirm("Are you sure you want to remove '" + groupManager.name + "' as a group manager? All SCAMP managed resources associated with their groups will be permanently destroyed.")
+        var wndRsp = window.confirm("Are you sure you want to remove '" + groupAdmin.name + "' as a group admin? All SCAMP managed resources associated with their groups will be permanently destroyed.")
         if (wndRsp == true) {
-            systemSettingsSvc.deleteGroupManager(groupManager.id).then(
+            systemSettingsSvc.deleteGroupAdmin(groupAdmin.id).then(
                 // get succeeded
                 function (data) {
-                    window.alert("Group Manager resource deletion has been requested.")
+                    window.alert("Group Admin resource deletion has been requested.")
                     // reload list of group managers
-                    $scope.getGroupManagers();
+                    $scope.getGroupAdmins();
                 },
                 // get failed
                 function (status) {
