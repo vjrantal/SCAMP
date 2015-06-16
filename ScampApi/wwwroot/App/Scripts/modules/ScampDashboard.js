@@ -85,7 +85,7 @@
     }
 
     this.computeUsagePercentages = function (group) {
-        if (scope.dashboardView == 'admin') {
+        if (scope.state.view == 'admin') {
             group.usageLabel = (group.totUnitsBudgeted > 0) ? Math.round((group.totUnitsUsed / group.totUnitsBudgeted) * 100) : 0;
             group.availLabel = (group.totUnitsBudgeted > 0) ? Math.round(((group.totUnitsAllocated - group.totUnitsUsed) / group.totUnitsBudgeted) * 100) : 0;
             group.unallocatedLabel = 100 - (group.usageLabel + group.availLabel);
