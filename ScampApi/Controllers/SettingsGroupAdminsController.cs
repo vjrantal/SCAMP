@@ -11,8 +11,8 @@ using ProvisioningLibrary;
 namespace ScampApi.Controllers.Controllers
 {
     [Authorize]
-    [Route("api/settings/groupmanagers")]
-    public class SettingsGroupManagersController : Controller
+    [Route("api/settings/groupadmins")]
+    public class SettingsGroupAdminsController : Controller
     {
         private readonly ISystemSettingsRepository _settingsRepository;
         private readonly IUserRepository _userRepository;
@@ -20,7 +20,7 @@ namespace ScampApi.Controllers.Controllers
         private ISecurityHelper _securityHelper;
         private static IVolatileStorageController _volatileStorageController;
 
-        public SettingsGroupManagersController(ISystemSettingsRepository settingsRepository, IUserRepository userRepository, ISecurityHelper securityHelper, IGroupRepository groupRepository, IVolatileStorageController volatileStorageController)
+        public SettingsGroupAdminsController(ISystemSettingsRepository settingsRepository, IUserRepository userRepository, ISecurityHelper securityHelper, IGroupRepository groupRepository, IVolatileStorageController volatileStorageController)
         {
             _settingsRepository = settingsRepository;
             _userRepository = userRepository;
@@ -40,10 +40,10 @@ namespace ScampApi.Controllers.Controllers
             if (!await _securityHelper.IsSysAdmin())
                 return new HttpStatusCodeResult(403); // Forbidden
 
-            List<GroupManagerSummary> rtnView = new List<GroupManagerSummary>();
+            List<GroupAdminSummary> rtnView = new List<GroupAdminSummary>();
 
             // get group managers
-            List<ScampUser> mgrList = await _settingsRepository.GetGroupManagers();
+            List<ScampUser> mgrList = await _settingsRepository.GetGroupAdmins();
 
             // build the return set
             foreach(ScampUser usr in mgrList)
@@ -63,7 +63,7 @@ namespace ScampApi.Controllers.Controllers
                 }
 
                 // build summary view object
-                GroupManagerSummary newManager = new GroupManagerSummary()
+                GroupAdminSummary newAdmin = new GroupAdminSummary()
                 {
                     Id = usr.Id,
                     Name = usr.Name,
@@ -73,7 +73,7 @@ namespace ScampApi.Controllers.Controllers
                     totUnitsAllocated = usr.budget.Allocated,
                     totGroups = groupList.Count 
                 };
-                rtnView.Add(newManager);  // add it to the collection
+                rtnView.Add(newAdmin);  // add it to the collection
             }
 
             // return list
@@ -81,8 +81,9 @@ namespace ScampApi.Controllers.Controllers
         }
 
         // grant a user system administrator permission
+        // [marckup] can't find anyone that calls this
         [HttpPost]
-        public async Task<IActionResult> grantGroupManager([FromBody] GroupManagerSummary groupManagerSummary)
+        public async Task<IActionResult> grantGroupManager([FromBody] GroupAdminSummary groupManagerSummary)
         {
             // ensure requestor has system admin permissions
             if (!await _securityHelper.IsSysAdmin())

@@ -3,7 +3,7 @@ angular.module('scamp')
 .factory('systemSettingsSvc', ['$http', '$q', function ($http, $q) {
     var apiPath = '/api/settings/';
     var apiPathSysAdmins = apiPath + 'sysadmins/';
-    var apiPathgrpManagers = apiPath + 'groupmanagers/';
+    var apiPathgrpAdmins = apiPath + 'groupadmins/';
     var apiPathSubscriptions = apiPath + 'subscriptions/';
 
     return {
@@ -22,11 +22,11 @@ angular.module('scamp')
             return deferred.promise;
         },
 
-        getGroupManagers: function () {
-            console.log("calling: systemSettingsSvc.getGroupManagers");
+        getGroupAdmins: function () {
+            console.log("calling: systemSettingsSvc.getGroupAdmins");
             var deferred = $q.defer();
 
-            $http({ method: 'GET', url: apiPathgrpManagers }).
+            $http({ method: 'GET', url: apiPathgrpAdmins }).
                 success(function (data, status, headers, config) {
                     deferred.resolve(data);
                 }).
@@ -73,12 +73,12 @@ angular.module('scamp')
         },
 
         // grant user's SCAMP system admin permissions
-        updateManager: function (groupmanager) {
-            console.log("addin/updating group manager permissions on id:" + groupmanager.id);
+        updateAdmin: function (groupAdmin) {
+            console.log("addin/updating group admin permissions on id:" + groupAdmin.id);
 
             var deferred = $q.defer();
 
-            $http.post(apiPathgrpManagers, groupmanager).
+            $http.post(apiPathgrpAdmins, groupAdmin).
             success(function (data, status, headers, config) {
                 deferred.resolve(data);
             }).
@@ -141,13 +141,13 @@ angular.module('scamp')
         },
 
         // request deletion of group manager permissions
-        deleteGroupManager: function (userId) {
-            console.log("calling: systemSettingsSvc.deleteGroupManager");
+        deleteGroupAdmin: function (userId) {
+            console.log("calling: systemSettingsSvc.deleteGroupAdmin");
             console.log(userId);
 
             var deferred = $q.defer();
 
-            $http.delete(apiPathgrpManagers + userId).
+            $http.delete(apiPathgrpAdmins + userId).
             success(function (data, status, headers, config) {
                 deferred.resolve(data);
             }).
