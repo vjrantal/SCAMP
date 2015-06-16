@@ -34,11 +34,11 @@
 <div id="content-header" ng-if="userProfile.isSystemAdmin">
     <h2>Dashboard Insights</h2>
     &nbsp;&nbsp;&nbsp;Select a view:
-    <span class="btn-group" data-toggle="buttons">
-        <label class="btn btn-primary btn-xs" ng-class="(dashboardView=='admin' ? 'active' : '')" radio-button ng-model="dashboardView" value="admin">
+    <span class="btn-group">
+        <label class="btn btn-primary btn-xs" btn-radio="'admin'" ng-model="state.view" ng-change="populate()">
             Admin
         </label>
-        <label class="btn btn-primary btn-xs" ng-class="(dashboardView=='user' ? 'active' : '')" radio-button ng-model="dashboardView" value="user">
+        <label class="btn btn-primary btn-xs" btn-radio="'user'" ng-model="state.view" ng-change="populate()">
             Student
         </label>
     </span>
@@ -60,7 +60,7 @@
                                   </div>
                                   <div class="group-item-status">
                                       <div>{{group.name}}</div>
-                                      <div class="progress" ng-show="dashboardView=='admin'">
+                                      <div class="progress" ng-show="state.view=='admin'">
                                           <div class="progress-bar progress-bar-info" role="progressbar" style="width:{{group.usageLabel}}%">
                                               {{group.usageLabel}}%
                                           </div>
@@ -71,7 +71,7 @@
                                               {{group.unallocatedLabel}}% Unallocated
                                           </div>
                                       </div>
-                                      <div class="progress"  ng-show="dashboardView=='user'">
+                                      <div class="progress"  ng-show="state.view=='user'">
                                           <div class="progress-bar" role="progressbar" aria-valuenow="{{group.usageLabel}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{group.usageLabel}}%;">
                                               {{group.usageLabel}}%
                                           </div>
@@ -88,10 +88,10 @@
                         </div>
                         <div class="row">
                           <div class="col-md-12">
-                            <div ng-show="dashboardView=='user'" style="display: inline;">
+                            <div ng-show="state.view=='user'" style="display: inline;">
                               Your Resource usage:
                             </div>
-                            <div class="btn-group action-cell" ng-show="dashboardView=='admin'" style="display: inline;">
+                            <div class="btn-group action-cell" ng-show="state.view=='admin'" style="display: inline;">
                               <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                                 <span class="" style="color:#fff;">
                                   <img src="/app/images/default_profile_2_0.jpg" class="img-rounded user-avatar-sm" style="width: 25px;height: 25px;">
