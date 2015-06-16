@@ -35,7 +35,9 @@ function (groupDoc) {
         // add the user to the group collection
         groupDoc.members.push(groupFrag);
 
-        //TODO: decrement user's quota by amount allocated to group
+        // increment user's allocated budget amount by group budget amount
+        userDoc.budget.allocated += groupDoc.budget.unitsBudgeted;
+
         // define group for group list
         var userFrag = {
             "id": groupDoc.id,
