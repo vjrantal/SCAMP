@@ -3,7 +3,8 @@
   <i class="fa fa-spinner fa-pulse fa-2x" ng-show="viewLoading"></i>
 </div>
 <div ng-show="!viewLoading">
-  <button type="button" class="btn btn-default btn-md pull-right">
+  <button type="button" class="btn btn-default btn-md pull-right"
+    ng-click="addGroup()">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     Add Group
   </button>
@@ -15,7 +16,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
 
-          <span class="dropdown">
+          <span class="dropdown" ng-show="!selectedGroup.unsaved">
             <button class="btn btn-default dropdown-toggle" type="button" id="group-selector-button" data-toggle="dropdown" aria-expanded="true">
               {{ selectedGroup.name }}
               <span class="caret"></span>
@@ -27,21 +28,36 @@
             </ul>
           </span>
 
-          <button type="button" class="btn btn-default btn-md" ng-show="!groupDetailsLoading">
+          <span class="form-inline" ng-show="selectedGroup.unsaved">
+            <input type="text" class="form-control"
+              ng-readonly="true" value="Unsaved Group">
+          </span>
+
+          <button type="button" class="btn btn-default btn-md" ng-show="!groupDetailsLoading"
+            ng-click="removeGroup()">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
           <i class="fa fa-spinner fa-pulse" ng-show="groupDetailsLoading"></i>
-
-          <button type="submit" class="btn btn-primary pull-right">
-            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-            Save
-          </button>
 
         </div>
         <div class="panel-body" ng-show="!groupDetailsLoading">
           <div class="tab-content">
             <div class="tab-pane fade in active" id="summary-tab">
-              <form class="form-horizontal">
+              <form id="group-summary-form" class="form-horizontal"
+                ng-submit="groupSummaryFormSubmitted()">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <div class="col-sm-2 col-sm-offset-10">
+                        <button type="submit" form="group-summary-form"
+                          class="form-control btn btn-primary pull-right">
+                          <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
@@ -113,7 +129,36 @@
               </form>
             </div>
             <div class="tab-pane fade" id="users-tab">
-              <table class="table table-bordered">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Filter users..."
+                      ng-model="userFilter.keyword"
+                      ng-change="userFilter.filter()">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button"
+                        ng-click="userFilter.clear()">
+                        Clear
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-sm-offset-2 col-sm-6">
+                  <button type="button" class="btn btn-default btn-md pull-right"
+                    ng-click="addUser.start()"
+                    ng-show="!addUser.started && !addUser.loading">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    Add User
+                  </button>
+                  <div id="add-user-typeahead" class="pull-right"
+                    ng-show="addUser.started && !addUser.loading">
+                    <input type="text" class="typeahead"
+                      placeholder="Search user...">
+                  </div>
+                  <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.loading"></i>
+                </div>
+              </div>
+              <table class="table table-striped">
                 <thead>
                   <tr>
                     <th>
@@ -130,22 +175,27 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="filtered-data">
                   <tr ng-repeat="user in selectedGroup.users">
                     <td>
-                      <input type="text" class="form-control"
-                        ng-readonly="true" ng-model="user.name">
-                    </td>
-                    <td class="centered-table-data">
-                      <input type="checkbox" ng-checked="user.manager">
+                      <div class="form-control">{{ user.name }}</div>
                     </td>
                     <td>
-                      <input type="number" class="form-control">
+                      <input type="checkbox" ng-checked="user.isManager"
+                      ng-disabled="true">
                     </td>
                     <td>
-                      <button type="button" class="btn btn-default btn-md">
+                      <input type="number" class="form-control"
+                        ng-model="user.unitsBudgeted"
+                        ng-disabled="true">
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-default btn-md"
+                        ng-click="removeUser(user)"
+                        ng-show="!user.removing">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                       </button>
+                      <i class="fa fa-spinner fa-pulse fa-2x" ng-show="user.removing"></i>
                     </td>
                   </tr>
                 </tbody>

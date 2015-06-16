@@ -1,26 +1,33 @@
 ﻿'use strict';
 angular.module('scamp')
 .factory('groupsSvc', ['$http', '$q', function ($http, $q) {
-    var apiPath = '/api/groups/';
-
+    var apiPath = '/api/groups';
+    var makeRequest = function (method, url, data) {
+        return scamp.utils.restAjaxPromise($http, $q, method, url, data);
+    };
     return {
-        getItem: function (id) {
-            return scamp.utils.restAjaxPromise($http, $q, 'GET', apiPath + id);
+        getGroup: function (groupId) {
+            return makeRequest('GET', apiPath + '/' + groupId);
         },
-        getUsers: function (id) {
-            return scamp.utils.restAjaxPromise($http, $q, 'GET', apiPath + id + '/users');
+        addGroup: function (group) {
+            return makeRequest('POST', apiPath, group);
         },
-        postItem: function (item) {
-            return $http.post(apiPath, item);
+        updateGroup: function (group) {
+            return makeRequest('PUT', apiPath + '/' + group.id, group);
         },
-        putItem: function (id, item) {
-            return $http.put(apiPath + id, item);
+        removeGroup: function (group) {
+            return makeRequest('DELETE', apiPath + '/' + group.id);
         },
-        deleteItem: function (id) {
-            return $http({
-                method: 'DELETE',
-                url: apiPath + id
-            });
+        getUsers: function (groupId) {
+            return makeRequest('GET', apiPath + '/' + groupId + '/users');
+        },
+        addUser: function (group, user) {
+            var url = apiPath + '/' + group.id + '/users';
+            return makeRequest('POST', url, user);
+        },
+        removeUser: function (group, user) {
+            var url = apiPath + '/' + group.id + '/users/' + user.id;
+            return makeRequest('DELETE', url);
         }
     };
 }]);
