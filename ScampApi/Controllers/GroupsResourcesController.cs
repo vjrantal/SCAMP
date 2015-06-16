@@ -164,8 +164,8 @@ namespace ScampApi.Controllers
             // Resource's Group Managers can do anything to the resources in groups
             // they administer
             var rscGroup = currentUser.GroupMembership.Find(grp => grp.Id == resource.ResourceGroup.Id);
-            // if current user is a manager of the group that owns the resource, allow action
-            if (rscGroup != null && rscGroup.isManager)
+            // if current user is an admin of the group that owns the resource, allow action
+            if (rscGroup != null && rscGroup.isAdmin)
                 return true;
 
             // if no positive results, default to false and deny action

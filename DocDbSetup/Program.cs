@@ -58,6 +58,9 @@ namespace DocDbSetup
 
                 client.CreateStoredProcedureAsync(collection.SelfLink, storedProc, null).Wait();
             }
+
+            Console.WriteLine("Stored Procedure Setup completed. Press any key to continue.");
+            Console.ReadKey();
         }
 
         static void TryDeleteStoredProcedure(string collectionLink, string storedProc)

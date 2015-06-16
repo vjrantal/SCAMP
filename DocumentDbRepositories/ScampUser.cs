@@ -49,8 +49,8 @@ namespace DocumentDbRepositories
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "isManager")]
-        public bool isManager { get; set; }
+        [JsonProperty(PropertyName = "isAdmin")]
+        public bool isAdmin { get; set; }
 
         [JsonProperty(PropertyName = "resources")]
         public List<ScampUserGroupResources> Resources { get; set; }

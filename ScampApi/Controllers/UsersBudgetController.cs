@@ -55,7 +55,7 @@ namespace ScampApi.Controllers.Controllers
 
                 foreach(var group in userDoc.GroupMembership)
                 {
-                    if (group.isManager)
+                    if (group.isAdmin)
                     {
                         // get this group's current budget
                         var groupBudget = await _volatileStorageController.GetGroupBudgetState(group.Id);

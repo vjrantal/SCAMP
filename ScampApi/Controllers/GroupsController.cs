@@ -85,7 +85,7 @@ namespace ScampApi.Controllers
 
             // get current user
             var currentUser = await _securityHelper.GetCurrentUser();
-            
+
             // build the resource group object
             var group = new ScampResourceGroup()
             {
@@ -141,7 +141,7 @@ namespace ScampApi.Controllers
         {
             var currentUser = await _securityHelper.GetCurrentUser();
             return currentUser.IsSystemAdmin                       // sys admin
-                || group.Members.Any(u => u.Id == currentUser.Id && u.isManager); // group member
+                || group.Members.Any(u => u.Id == currentUser.Id && u.isAdmin); // group member
         }
 
         #region Mapping Functions
@@ -173,7 +173,7 @@ namespace ScampApi.Controllers
             {
                 Id = docDbUser.Id,
                 Name = docDbUser.Name,
-                isManager = docDbUser.isManager
+                isAdmin = docDbUser.isAdmin
             };
         }
 

@@ -22,7 +22,7 @@ namespace ScampTypes.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool isManager { get; set; }
+        public bool isAdmin { get; set; }
         public UserBudgetSummary budget { get; set; }
     }
 
