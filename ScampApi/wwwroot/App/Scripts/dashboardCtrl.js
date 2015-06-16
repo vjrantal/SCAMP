@@ -116,9 +116,7 @@ angular.module('scamp')
 	    scampDashboard.setCurrentUser(userId);
 	    userSvc.getResourceList(userId, groupId).then(
             function (data) {
-                if (data && data.length > 0) {
-                    scampDashboard.render(data);
-                }
+                scampDashboard.render(data);
             },
             // resource REST call failed
             function (statusCode) {
