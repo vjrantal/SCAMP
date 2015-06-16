@@ -24,20 +24,22 @@ angular.module('scamp')
 	    2: "Web App"
 	};
 
+	$scope.state = {};
+
 	$scope.populate = function () {
 	  var populateDashboard = function () {
 	    scampDashboard.initialize();
 	    var userGUID = $scope.userProfile.id;
 
 	    //Default the view to admin view as long as the user has administrative priviledges or keep the view as it is if it's set to admin
-	    if (!$scope.dashboardView && $scope.userProfile.isSystemAdmin || ($scope.dashboardView && $scope.dashboardView == 'admin'))
-	      $scope.dashboardView = 'admin';
+	    if (!$scope.state.view && $scope.userProfile.isSystemAdmin || ($scope.state.view && $scope.state.view == 'admin'))
+	      $scope.state.view = 'admin';
 	    else
-	      $scope.dashboardView = 'user';
+	      $scope.state.view = 'user';
 
 	    $scope.dashboardStatus = 'loading';
 
-	    userSvc.getGroupList(userGUID, $scope.dashboardView)
+	    userSvc.getGroupList(userGUID, $scope.state.view)
           .then(function (data) {
             if (data && data.length > 0) {
               $scope.groups = data.map(function (item) {
@@ -47,7 +49,7 @@ angular.module('scamp')
               $scope.selectedGroupName = data[0].name;
               var summaryPanelType = 'usage';
 
-              if ($scope.dashboardView == 'admin') {
+              if ($scope.state.view == 'admin') {
                 $scope.loadUsers($scope.selectedGroupId);
                 summaryPanelType = 'budget';
               } else
@@ -56,7 +58,7 @@ angular.module('scamp')
               $scope.updateSummaryPanel(userGUID, summaryPanelType);
               $scope.dashboardStatus = 'loaded';
             } else {
-              throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.dashboardView + " view");
+              throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.state.view + " view");
             }
           })
           .catch(function (statusCode) {
@@ -258,24 +260,7 @@ angular.module('scamp')
 	    $('#resourceSendActionModal').modal('hide');
 	};
 
-}])
-.directive("radioButton", function () {//This is a workaround due to a Bootstrap 3 bug with Angular which doesnt support radio buttons. 
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function (scope, element, attrs, ctrl) {
-            element.bind('click', function () {
-                if (!element.hasClass('active')) {
-                    scope.$apply(function () {
-                        scope.dashboardView = attrs.value;
-                        scope.populate();
-                    });
-                }
-              }
-            );
-        }
-    }
-});
+}]);
 
 angular.module('scamp')
 .controller('GroupUsersModalCtrl', function ($scope, $modalInstance, groupSvc, group, users, currentUser) {
