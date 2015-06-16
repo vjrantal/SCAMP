@@ -61,18 +61,18 @@
                                   <div class="group-item-status">
                                       <div>{{group.name}}</div>
                                       <div class="progress" ng-show="state.view=='admin'">
-                                          <div class="progress-bar progress-bar-info" role="progressbar" style="width:{{group.usageLabel}}%">
+                                          <div class="progress-bar progress-bar-info" role="progressbar" ng-style="{width:group.usageLabel+'%'}">
                                               {{group.usageLabel}}%
                                           </div>
-                                          <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{group.availLabel}}%">
+                                          <div class="progress-bar progress-bar-success" role="progressbar" ng-style="{width:group.availLabel+'%'}">
                                               {{group.availLabel}}%
                                           </div>
-                                          <div class="progress-bar progress-bar-warning" role="progressbar" style="width:{{group.unallocatedLabel}}%">
+                                          <div class="progress-bar progress-bar-warning" role="progressbar" ng-style="{width:group.unallocatedLabel+'%'}">
                                               {{group.unallocatedLabel}}% Unallocated
                                           </div>
                                       </div>
                                       <div class="progress"  ng-show="state.view=='user'">
-                                          <div class="progress-bar" role="progressbar" aria-valuenow="{{group.usageLabel}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{group.usageLabel}}%;">
+                                          <div class="progress-bar" role="progressbar" aria-valuenow="{{group.usageLabel}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'min-width': '2em', width: group.usageLabel+'%'}">
                                               {{group.usageLabel}}%
                                           </div>
                                       </div>
@@ -107,7 +107,7 @@
                                   <a ng-click="loadResources(selectedGroupId, user.id)" data-value="{{user.id}}" style="cursor:pointer">
                                     {{user.name}}
                                     <div class="progress">
-                                      <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{user.userUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{user.userUsage}}%;">
+                                      <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{user.userUsage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{width:user.userUsage+'%'}">
                                         {{user.userUsage}}% Used
                                       </div>
                                     </div>
@@ -116,7 +116,7 @@
                               </ul>
                             </div>
                             <div class="progress" style="margin-top: -13px;margin-left: 210px;padding-left: 0px;/* margin-bottom: 50px!important; */">
-                              <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{selectedUsersUsage}}%;">
+                              <div class="progress-bar progress-bar-success ng-binding" role="progressbar" aria-valuenow="{{selectedUsersUsage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{width:selectedUsersUsage+'%'}">
                                 {{selectedUsersUsage}}% Used
                               </div>
                             </div>
