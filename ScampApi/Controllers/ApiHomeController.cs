@@ -23,8 +23,7 @@ namespace ScampApi.Controllers.Controllers
             return new
             {
                 groupsUrl = _linkHelper.Groups(),
-                currentUserUrl = _linkHelper.CurrentUser(),
-                usersUrl = _linkHelper.Users()
+                currentUserUrl = _linkHelper.CurrentUser()
             };
         }
     }
