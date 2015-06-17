@@ -42,7 +42,7 @@ namespace ScampApi.Controllers
             //}
 
             // get group details
-            var group = await _groupRepository.GetGroupWithResources(groupId);
+            var group = await _groupRepository.GetGroup(groupId);
             if (group == null)
             {
                 return HttpNotFound();

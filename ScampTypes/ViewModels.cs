@@ -82,15 +82,15 @@ namespace ScampTypes.ViewModels
 
     public class ScampAdminGroupReference : ScampResourceGroupReference
     {
-        public double totUnitsUsed { get; set; }
-        public double totUnitsAllocated { get; set; }
-        public double totUnitsBudgeted { get; set; }
+        public long totUnitsUsed { get; set; }
+        public long totUnitsAllocated { get; set; }
+        public long totUnitsBudgeted { get; set; }
     }
 
     public class ScampUserGroupReference : ScampResourceGroupReference
     {
-        public double totUnitsUsedByUser { get; set; }
-        public double totUnitsRemainingForUser { get; set; }
+        public long totUnitsUsedByUser { get; set; }
+        public long totUnitsRemainingForUser { get; set; }
     }
 
     public sealed class ScampResourceSummary

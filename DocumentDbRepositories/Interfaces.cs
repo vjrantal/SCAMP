@@ -14,8 +14,7 @@ namespace DocumentDbRepositories
     public interface IGroupRepository
     {
         Task<ScampResourceGroup> GetGroup(string groupID);
-        Task<ScampResourceGroupWithResources> GetGroupWithResources(string groupID);
-        Task<List<ScampResourceGroupWithResources>> GetGroupsByBudgetOwner(string userId);
+        Task<List<ScampResourceGroup>> GetGroupsByBudgetOwner(string userId);
         Task<IEnumerable<ScampResourceGroup>> GetGroups();
         Task<IEnumerable<ScampResourceGroup>> GetGroupsByUser(ScampUserReference user);
         Task CreateGroup(ScampResourceGroup newGroup);
