@@ -103,11 +103,6 @@ namespace ScampApi.Controllers
             };
 
             await _groupRepository.CreateGroup(group);
-            var resp = new GroupSummary()
-            {
-                Id = group.Id,
-                Name = group.Name
-            };
 
             // after we know the user docs have completed successfully, add the volatile storage records
             Task[] tasks = new Task[2]; // collection to hold the parallel tasks
@@ -132,7 +127,7 @@ namespace ScampApi.Controllers
             // wait for both operations to complete
             Task.WaitAll(tasks);
 
-            return new ObjectResult(resp) { StatusCode = 200 };
+            return new ObjectResult(Map(group)) { StatusCode = 200 };
         }
 
         [HttpPut("{groupId}")]

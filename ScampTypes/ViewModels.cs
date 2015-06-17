@@ -4,12 +4,6 @@ using System.Collections.Generic;
 
 namespace ScampTypes.ViewModels
 {
-    public sealed class Link
-    {
-    public string Rel { get; set; }
-    public string Href { get; set; }
-    }
-
     public sealed class UserGroupSummary
     {
         public string Id { get; set; }
@@ -125,7 +119,6 @@ namespace ScampTypes.ViewModels
     public string Id { get; set; }
     public string Name { get; set; }
     public string TemplateId { get; set; }
-    public List<Link> Links { get; set; }
     }
 
     public sealed class Group
@@ -146,7 +139,6 @@ namespace ScampTypes.ViewModels
     {
     public string Id { get; set; }
     public string Name { get; set; }
-    public List<Link> Links { get; set; }
     }
 
     public sealed class ScampSettings
