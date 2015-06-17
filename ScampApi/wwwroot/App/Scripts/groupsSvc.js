@@ -28,6 +28,10 @@ angular.module('scamp')
         removeUser: function (group, user) {
             var url = apiPath + '/' + group.id + '/users/' + user.id;
             return makeRequest('DELETE', url);
+        },
+        updateUser: function (group, user) {
+            var url = apiPath + '/' + group.id + '/users/' + user.id;
+            return makeRequest('PUT', url, user);
         }
     };
 }]);

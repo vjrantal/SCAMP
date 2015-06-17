@@ -28,15 +28,6 @@ angular.module('scamp')
             return value.id !== userId;
         });
     }
-    var updateLocalGroupUser = function (user) {
-        var users = $scope.selectedGroup.users;
-        for (var j = 0; j < users.length; j++) {
-            if (users[j].id = user.id) {
-                users[j] = user;
-                return;
-            }
-        }
-    };
 
     var loadGroupDetails = function (group) {
         $scope.groupDetailsLoading = true;
@@ -68,11 +59,12 @@ angular.module('scamp')
 
     $scope.groupSummaryFormSubmitted = function () {
         $scope.groupDetailsLoading = true;
-        if ($scope.selectedGroup.unsaved) {
+        if ($scope.selectedGroupUnsaved) {
             groupsSvc.addGroup($scope.selectedGroup)
             .then(function (response) {
                 $scope.groups.push(response);
                 $scope.selectedGroup = response;
+                $scope.selectedGroupUnsaved = false;
             })
             .finally(function () {
                 $scope.groupDetailsLoading = false;
@@ -90,16 +82,13 @@ angular.module('scamp')
     };
 
     $scope.addGroup = function () {
-        var group = {
-            'id': 'the-temporary-id-of-unsaved-group',
-            'unsaved': true
-        };
-        $scope.selectedGroup = group;
+        $scope.selectedGroupUnsaved = true;
+        $scope.selectedGroup = { 'id': 'temporary-id-of-unsaved-group' };
     };
 
     $scope.removeGroup = function () {
-        if ($scope.selectedGroup.unsaved) {
-            removeLocalGroup('the-temporary-id-of-unsaved-group');
+        if ($scope.selectedGroupUnsaved) {
+            removeLocalGroup('temporary-id-of-unsaved-group');
             $scope.selectedGroup = $scope.groups[0];
         } else {
             $scope.groupDetailsLoading = true;
@@ -162,13 +151,25 @@ angular.module('scamp')
     );
 
     $scope.removeUser = function (user) {
-        user.removing = true;
+        user.loading = true;
         groupsSvc.removeUser($scope.selectedGroup, user)
         .then(function () {
             removeLocalGroupUser(user.id);
         })
         .finally(function() {
-            user.removing = false;
+            user.loading = false;
+        });
+    };
+    $scope.updateUser = function (user) {
+        user.loading = true;
+        groupsSvc.updateUser($scope.selectedGroup, user)
+        .then(function (response) {
+            // Here we are not updating the local user object
+            // because after a successful update, the data
+            // in the server should match to what was sent.
+        })
+        .finally(function() {
+            user.loading = false;
         });
     };
 
