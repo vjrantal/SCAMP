@@ -16,6 +16,11 @@ angular.module('scamp')
             var restCall = '/api/users/' + userId + '/groups/' + view;
 
             return scamp.utils.restAjaxPromise($http, $q, 'GET', restCall);
+        },
+
+        searchUsers: function (keyword) {
+            var url = '/api/users/FindbyUPN/' + keyword;
+            return scamp.utils.restAjaxPromise($http, $q, 'GET', url);
         }
-  };
+    };
 }]);
