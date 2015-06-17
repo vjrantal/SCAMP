@@ -16,7 +16,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
 
-          <span class="dropdown" ng-show="!selectedGroup.unsaved">
+          <span class="dropdown" ng-show="!selectedGroupUnsaved">
             <button class="btn btn-default dropdown-toggle" type="button" id="group-selector-button" data-toggle="dropdown" aria-expanded="true">
               {{ selectedGroup.name }}
               <span class="caret"></span>
@@ -28,7 +28,7 @@
             </ul>
           </span>
 
-          <span class="form-inline" ng-show="selectedGroup.unsaved">
+          <span class="form-inline" ng-show="selectedGroupUnsaved">
             <input type="text" class="form-control"
               ng-readonly="true" value="Unsaved Group">
           </span>
@@ -171,7 +171,7 @@
                       Budget
                     </th>
                     <th>
-                      Remove
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -181,21 +181,24 @@
                       <div class="form-control">{{ user.name }}</div>
                     </td>
                     <td>
-                      <input type="checkbox" ng-checked="user.isManager"
-                      ng-disabled="true">
+                      <input type="checkbox" ng-checked="user.isManager">
                     </td>
                     <td>
                       <input type="number" class="form-control"
-                        ng-model="user.unitsBudgeted"
-                        ng-disabled="true">
+                        ng-model="user.unitsBudgeted">
                     </td>
                     <td>
                       <button type="button" class="btn btn-default btn-md"
+                        ng-click="updateUser(user)"
+                        ng-show="!user.loading">
+                        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                      </button>
+                      <button type="button" class="btn btn-default btn-md"
                         ng-click="removeUser(user)"
-                        ng-show="!user.removing">
+                        ng-show="!user.loading">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                       </button>
-                      <i class="fa fa-spinner fa-pulse fa-2x" ng-show="user.removing"></i>
+                      <i class="fa fa-spinner fa-pulse fa-2x" ng-show="user.loading"></i>
                     </td>
                   </tr>
                 </tbody>
