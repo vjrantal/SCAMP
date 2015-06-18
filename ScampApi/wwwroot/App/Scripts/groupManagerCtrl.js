@@ -9,6 +9,7 @@ angular.module('scamp')
     // when dealing with the local groups. The selected group should
     // point to a group object within the list of groups.
     $scope.groups = [];
+    $scope.selectedGroup = null;
     var removeLocalGroup = function (groupId) {
         $scope.groups = $scope.groups.filter(function (value) {
             return value.id !== groupId;
@@ -62,7 +63,7 @@ angular.module('scamp')
         if ($scope.selectedGroupUnsaved) {
             groupsSvc.addGroup($scope.selectedGroup)
             .then(function (response) {
-                $scope.groups.push(response);
+                $scope.groups.unshift(response);
                 $scope.selectedGroup = response;
                 $scope.selectedGroupUnsaved = false;
             })
@@ -88,15 +89,23 @@ angular.module('scamp')
 
     $scope.removeGroup = function () {
         if ($scope.selectedGroupUnsaved) {
-            removeLocalGroup('temporary-id-of-unsaved-group');
-            $scope.selectedGroup = $scope.groups[0];
+            if ($scope.groups.length > 0) {
+                $scope.selectedGroup = $scope.groups[0];
+            } else {
+                $scope.selectedGroup = null;
+            }
+            $scope.selectedGroupUnsaved = false;
         } else {
             $scope.groupDetailsLoading = true;
             groupsSvc.removeGroup($scope.selectedGroup)
             .then(function () {
                 removeLocalGroup($scope.selectedGroup.id);
-                $scope.selectedGroup = $scope.groups[0];
-                loadGroupDetails($scope.selectedGroup);
+                if ($scope.groups.length > 0) {
+                    $scope.selectedGroup = $scope.groups[0];
+                    loadGroupDetails($scope.selectedGroup);
+                } else {
+                    $scope.selectedGroup = null;
+                }
             })
             .finally(function () {
                 $scope.groupDetailsLoading = false;
@@ -168,10 +177,11 @@ angular.module('scamp')
     var getGroups = function () {
         userSvc.getGroupList($scope.userProfile.id, 'admin')
         .then(function (response) {
-            // TODO: Handle case where user doesn't belong to any groups
-            $scope.groups = response;
-            $scope.selectedGroup = response[0];
-            loadGroupDetails($scope.selectedGroup);
+            if (response.constructor === Array && response.length > 0) {
+                $scope.groups = response;
+                $scope.selectedGroup = response[0];
+                loadGroupDetails($scope.selectedGroup);
+            }
         })
         .finally(function () {
             $scope.viewLoading = false;
