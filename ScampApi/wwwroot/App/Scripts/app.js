@@ -1,5 +1,5 @@
 ﻿'use strict';
-angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap', 'ui.bootstrap.datepicker'])
+angular.module('scamp', ['ngRoute', 'AdalAngular', 'ui.bootstrap', 'ui.bootstrap.datepicker', 'ui.bootstrap.typeahead'])
 .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$locationProvider', function ($routeProvider, $httpProvider, adalProvider, $locationProvider) {
 
     $routeProvider.when("/Home", {

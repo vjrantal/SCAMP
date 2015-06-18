@@ -143,17 +143,22 @@
                     </span>
                   </div>
                 </div>
-                <div class="col-sm-offset-2 col-sm-6">
-                  <button type="button" class="btn btn-default btn-md pull-right"
-                    ng-click="addUser.start()"
-                    ng-show="!addUser.started && !addUser.loading">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    Add User
-                  </button>
-                  <div id="add-user-typeahead" class="pull-right"
-                    ng-show="addUser.started && !addUser.loading">
-                    <input type="text" class="typeahead"
-                      placeholder="Search user...">
+                <div class="col-sm-offset-3 col-sm-1">
+                  <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.searchingUsers"></i>
+                </div>
+                <div class="col-sm-4">
+                  <div class="input-group" ng-show="!addUser.loading">
+                    <input type="text" ng-model="addUser.selectedUserName"
+                      placeholder="Add users..." typeahead="foundUser.name for foundUser in addUser.searchUsers($viewValue)"
+                      typeahead-loading="addUser.searchingUsers" typeahead-editable="false"
+                      typeahead-on-select="addUser.userSelected($item, $model, $label)"
+                      class="form-control">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button"
+                        ng-click="addUser.add()">
+                        Add
+                      </button>
+                    </span>
                   </div>
                   <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.loading"></i>
                 </div>

@@ -120,35 +120,27 @@ angular.module('scamp')
         $('.filtered-data tr').show();
     };
 
-    // Setup the typeahead logic for adding new users
-    // to the group.
     $scope.addUser = {};
-    $scope.addUser.start = function () {
-        $scope.addUser.started = true;
+    $scope.addUser.searchUsers = function (keyword) {
+        return userSvc.searchUsers(keyword)
+        .then(function (response) {
+            return response;
+        });
     };
-    new Typeahead($scope,
-        {
-            componentId: 'add-user-typeahead',
-            minLength: 3,
-            remote: {
-                url: '/api/users/FindbyUPN/%QUERY',
-                queryStr: '%QUERY',
-                displayProperty: 'name'
-            }
-        },
-        function (event, value) {
-            $scope.addUser.loading = true;
-            groupsSvc.addUser($scope.selectedGroup, value)
-            .then(function () {
-                $scope.selectedGroup.users.unshift(value);
-            })
-            .finally(function () {
-                $scope.addUser.started = false;
-                $scope.addUser.loading = false;
-                $('#add-user-typeahead .typeahead').typeahead('val', '');
-            });
-        }
-    );
+    $scope.addUser.userSelected = function ($item, $model, $label) {
+        $scope.addUser.selectedUser = $item;
+    };
+    $scope.addUser.add = function () {
+        $scope.addUser.loading = true;
+        groupsSvc.addUser($scope.selectedGroup, $scope.addUser.selectedUser)
+        .then(function (response) {
+            $scope.selectedGroup.users.unshift(response);
+        })
+        .finally(function () {
+            $scope.addUser.selectedUserName = '';
+            $scope.addUser.loading = false;
+        });
+    };
 
     $scope.removeUser = function (user) {
         user.loading = true;
