@@ -3,226 +3,229 @@
   <i class="fa fa-spinner fa-pulse fa-2x" ng-show="viewLoading"></i>
 </div>
 <div ng-show="!viewLoading">
-  <button type="button" class="btn btn-default btn-md pull-right"
+  <button type="button" class="btn btn-default btn-md"
+    ng-class="{ 'pull-right' : groups.length > 0 }"
+    ng-show="!selectedGroupUnsaved"
     ng-click="addGroup()">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     Add Group
   </button>
 
-  <h3>My Groups</h3>
+  <div ng-show="groups.length > 0 || selectedGroupUnsaved">
+    <h3>My Groups</h3>
+    <div class="row panel-tabbed">
+      <div class="col-xs-9 panel-content">
+        <div class="panel panel-default">
+          <div class="panel-heading">
 
-  <div class="row panel-tabbed" ng-show="selectedGroup">
-    <div class="col-xs-9 panel-content">
-      <div class="panel panel-default">
-        <div class="panel-heading">
+            <span class="dropdown" ng-show="!selectedGroupUnsaved">
+              <button class="btn btn-default dropdown-toggle" type="button" id="group-selector-button" data-toggle="dropdown" aria-expanded="true">
+                {{ selectedGroup.name }}
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="group in groups" role="presentation">
+                  <a role="menuitem" ng-click="groupSelected($event, group)" href="">{{ group.name }}</a>
+                </li>
+              </ul>
+            </span>
 
-          <span class="dropdown" ng-show="!selectedGroupUnsaved">
-            <button class="btn btn-default dropdown-toggle" type="button" id="group-selector-button" data-toggle="dropdown" aria-expanded="true">
-              {{ selectedGroup.name }}
-              <span class="caret"></span>
+            <span class="form-inline" ng-show="selectedGroupUnsaved">
+              <input type="text" class="form-control"
+                ng-readonly="true" value="Unsaved Group">
+            </span>
+
+            <button type="button" class="btn btn-default btn-md" ng-show="!groupDetailsLoading"
+              ng-click="removeGroup()">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </button>
-            <ul class="dropdown-menu" role="menu">
-              <li ng-repeat="group in groups" role="presentation">
-                <a role="menuitem" ng-click="groupSelected($event, group)" href="">{{ group.name }}</a>
-              </li>
-            </ul>
-          </span>
+            <i class="fa fa-spinner fa-pulse" ng-show="groupDetailsLoading"></i>
 
-          <span class="form-inline" ng-show="selectedGroupUnsaved">
-            <input type="text" class="form-control"
-              ng-readonly="true" value="Unsaved Group">
-          </span>
-
-          <button type="button" class="btn btn-default btn-md" ng-show="!groupDetailsLoading"
-            ng-click="removeGroup()">
-            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-          </button>
-          <i class="fa fa-spinner fa-pulse" ng-show="groupDetailsLoading"></i>
-
-        </div>
-        <div class="panel-body" ng-show="!groupDetailsLoading">
-          <div class="tab-content">
-            <div class="tab-pane fade in active" id="summary-tab">
-              <form id="group-summary-form" class="form-horizontal"
-                ng-submit="groupSummaryFormSubmitted()">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <div class="col-sm-2 col-sm-offset-10">
-                        <button type="submit" form="group-summary-form"
-                          class="form-control btn btn-primary pull-right">
-                          <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                          Save
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="name" class="col-sm-3 control-label">
-                        Name
-                      </label>
-                      <div class="col-sm-9">
-                        <input id="name" type="text" class="form-control"
-                          ng-model="selectedGroup.name" ng-required="true">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="description" class="col-sm-3 control-label">
-                        Description
-                      </label>
-                      <div class="col-sm-9">
-                        <textarea id="description" type="text" class="form-control"
-                          ng-model="selectedGroup.description">
-                        </textarea>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="expiration-date" class="col-sm-4 control-label">
-                        Expiration Date
-                      </label>
-                      <div class="col-sm-8">
-                        <p class="input-group">
-                          <input id="expiration-date" type="text" class="form-control" ng-model="selectedGroup.expiryDate"
-                            datepicker-popup="shortDate" ng-required="true"
-                            is-open="groupExpiryDateOpened" min-date="groupExpiryMinDate" />
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="groupExpiryDateOpen($event)">
-                              <i class="glyphicon glyphicon-calendar"></i>
-                            </button>
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="group-budget" class="col-sm-4 control-label">
-                        Group Budget
-                      </label>
-                      <div class="col-sm-8">
-                        <div class="input-group">
-                          <input id="group-budget" ng-model="selectedGroup.unitsBudgeted"
-                            ng-required="true" ng-pattern="onlyNumbersPattern"
-                            type="number" class="form-control">
-                          <span class="input-group-addon">Units</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="default-user-budget" class="col-sm-4 control-label">
-                        Default Per User Budget
-                      </label>
-                      <div class="col-sm-8">
-                        <div class="input-group">
-                          <input id="default-user-budget" ng-model="selectedGroup.defaultUserBudget"
-                            ng-required="true" ng-pattern="onlyNumbersPattern"
-                            type="number" class="form-control">
-                          <span class="input-group-addon">Units</span>
+          </div>
+          <div class="panel-body" ng-show="!groupDetailsLoading">
+            <div class="tab-content">
+              <div class="tab-pane fade in active" id="summary-tab">
+                <form id="group-summary-form" class="form-horizontal"
+                  ng-submit="groupSummaryFormSubmitted()">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <div class="col-sm-2 col-sm-offset-10">
+                          <button type="submit" form="group-summary-form"
+                            class="form-control btn btn-primary pull-right">
+                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                            Save
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
-            <div class="tab-pane fade" id="users-tab">
-              <div class="row">
-                <div class="col-sm-4">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Filter users..."
-                      ng-model="userFilter.keyword"
-                      ng-change="userFilter.filter()">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button"
-                        ng-click="userFilter.clear()">
-                        Clear
-                      </button>
-                    </span>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">
+                          Name
+                        </label>
+                        <div class="col-sm-9">
+                          <input id="name" type="text" class="form-control"
+                            ng-model="selectedGroup.name" ng-required="true">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="description" class="col-sm-3 control-label">
+                          Description
+                        </label>
+                        <div class="col-sm-9">
+                          <textarea id="description" type="text" class="form-control"
+                            ng-model="selectedGroup.description">
+                          </textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="expiration-date" class="col-sm-4 control-label">
+                          Expiration Date
+                        </label>
+                        <div class="col-sm-8">
+                          <p class="input-group">
+                            <input id="expiration-date" type="text" class="form-control" ng-model="selectedGroup.expiryDate"
+                              datepicker-popup="shortDate" ng-required="true"
+                              is-open="groupExpiryDateOpened" min-date="groupExpiryMinDate" />
+                            <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" ng-click="groupExpiryDateOpen($event)">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                              </button>
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="group-budget" class="col-sm-4 control-label">
+                          Group Budget
+                        </label>
+                        <div class="col-sm-8">
+                          <div class="input-group">
+                            <input id="group-budget" ng-model="selectedGroup.unitsBudgeted"
+                              ng-required="true" ng-pattern="onlyNumbersPattern"
+                              type="number" class="form-control">
+                            <span class="input-group-addon">Units</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="default-user-budget" class="col-sm-4 control-label">
+                          Default Per User Budget
+                        </label>
+                        <div class="col-sm-8">
+                          <div class="input-group">
+                            <input id="default-user-budget" ng-model="selectedGroup.defaultUserBudget"
+                              ng-required="true" ng-pattern="onlyNumbersPattern"
+                              type="number" class="form-control">
+                            <span class="input-group-addon">Units</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div class="col-sm-offset-3 col-sm-1">
-                  <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.searchingUsers"></i>
-                </div>
-                <div class="col-sm-4">
-                  <div class="input-group" ng-show="!addUser.loading">
-                    <input type="text" ng-model="addUser.selectedUserName"
-                      placeholder="Add users..." typeahead="foundUser.name for foundUser in addUser.searchUsers($viewValue)"
-                      typeahead-loading="addUser.searchingUsers" typeahead-editable="false"
-                      typeahead-on-select="addUser.userSelected($item, $model, $label)"
-                      typeahead-min-length="3"
-                      class="form-control">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button"
-                        ng-click="addUser.add()">
-                        Add
-                      </button>
-                    </span>
-                  </div>
-                  <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.loading"></i>
-                </div>
+                </form>
               </div>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>
-                      Name
-                    </th>
-                    <th>
-                      Manager
-                    </th>
-                    <th>
-                      Budget
-                    </th>
-                    <th>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="filtered-data">
-                  <tr ng-repeat="user in selectedGroup.users">
-                    <td>
-                      <div class="form-control">{{ user.name }}</div>
-                    </td>
-                    <td>
-                      <input type="checkbox" ng-model="user.isAdmin">
-                    </td>
-                    <td>
-                      <input type="number" class="form-control"
-                        ng-model="user.unitsBudgeted">
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-default btn-md"
-                        ng-click="updateUser(user)"
-                        ng-show="!user.loading">
-                        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                      </button>
-                      <button type="button" class="btn btn-default btn-md"
-                        ng-click="removeUser(user)"
-                        ng-show="!user.loading">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                      </button>
-                      <i class="fa fa-spinner fa-pulse fa-2x" ng-show="user.loading"></i>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="tab-pane fade" id="templates-tab">
-              TBD
+              <div class="tab-pane fade" id="users-tab">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Filter users..."
+                        ng-model="userFilter.keyword"
+                        ng-change="userFilter.filter()">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"
+                          ng-click="userFilter.clear()">
+                          Clear
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-sm-offset-3 col-sm-1">
+                    <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.searchingUsers"></i>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="input-group" ng-show="!addUser.loading">
+                      <input type="text" ng-model="addUser.selectedUserName"
+                        placeholder="Add users..." typeahead="foundUser.name for foundUser in addUser.searchUsers($viewValue)"
+                        typeahead-loading="addUser.searchingUsers" typeahead-editable="false"
+                        typeahead-on-select="addUser.userSelected($item, $model, $label)"
+                        typeahead-min-length="3"
+                        class="form-control">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"
+                          ng-click="addUser.add()">
+                          Add
+                        </button>
+                      </span>
+                    </div>
+                    <i class="fa fa-spinner fa-pulse fa-2x pull-right" ng-show="addUser.loading"></i>
+                  </div>
+                </div>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        Name
+                      </th>
+                      <th>
+                        Manager
+                      </th>
+                      <th>
+                        Budget
+                      </th>
+                      <th>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="filtered-data">
+                    <tr ng-repeat="user in selectedGroup.users">
+                      <td>
+                        <div class="form-control">{{ user.name }}</div>
+                      </td>
+                      <td>
+                        <input type="checkbox" ng-checked="user.isManager">
+                      </td>
+                      <td>
+                        <input type="number" class="form-control"
+                          ng-model="user.unitsBudgeted">
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-default btn-md"
+                          ng-click="updateUser(user)"
+                          ng-show="!user.loading">
+                          <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-md"
+                          ng-click="removeUser(user)"
+                          ng-show="!user.loading">
+                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </button>
+                        <i class="fa fa-spinner fa-pulse fa-2x" ng-show="user.loading"></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="templates-tab">
+                TBD
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-xs-3 panel-tabs">
-        <ul class="nav nav-tabs" data-tabs="tabs">
-          <li class="active"><a data-target="#summary-tab" data-toggle="tab">Summary</a></li>
-          <li><a data-target="#users-tab" data-toggle="tab">Users</a></li>
-          <li><a data-target="#templates-tab" data-toggle="tab">Templates</a></li>
-        </ul>
+      <div class="col-xs-3 panel-tabs">
+          <ul class="nav nav-tabs" data-tabs="tabs">
+            <li class="active"><a data-target="#summary-tab" data-toggle="tab">Summary</a></li>
+            <li><a data-target="#users-tab" data-toggle="tab">Users</a></li>
+            <li><a data-target="#templates-tab" data-toggle="tab">Templates</a></li>
+          </ul>
+      </div>
     </div>
   </div>
 </div>
