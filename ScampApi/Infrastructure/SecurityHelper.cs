@@ -95,7 +95,7 @@ namespace ScampApi.Infrastructure
         }
 
         /// <summary>
-        /// checks to see if the user is a group admin of a specific group
+        /// checks to see if the user is a group admin  of a specific group (aka the owner)
         /// </summary>
         /// <param name="groupId">Id of group to be checked</param>
         /// <returns>true is the user is</returns>
@@ -109,7 +109,7 @@ namespace ScampApi.Infrastructure
         }
 
         /// <summary>
-        /// checks to see if the user is a group admin
+        /// checks to see if the user is a group manager
         /// </summary>
         /// <returns>true is the user is</returns>
         public async Task<bool> IsGroupAdmin()
