@@ -40,9 +40,32 @@
   <div class="col-md-10">
     <div class="panel panel-default" ng-show="settingsView == 'sysAdmins'">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;System Administrators</h3>
-        <div id="addSysAdmin">
-          Add New Admin: <input class="typeahead" type="text" placeholder="Search for SCAMP users">
+        <div class="row form-horizontal">
+          <div class="col-md-3">
+            <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;System Administrators</h3>
+          </div>
+          <label for="add-system-admin-input" class="col-md-2 control-label">
+            Add New Admin
+          </label>
+          <div class="col-md-4">
+            <div class="input-group">
+              <input id="add-system-admin-input" type="text" ng-model="addSystemAdmin.selectedUserName"
+                placeholder="Search for users..." typeahead="foundUser.name for foundUser in addSystemAdmin.searchUsers($viewValue)"
+                typeahead-loading="addSystemAdmin.searchingUsers" typeahead-editable="false"
+                typeahead-on-select="addSystemAdmin.userSelected($item, $model, $label)"
+                typeahead-min-length="3"
+                class="form-control">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button"
+                  ng-click="addSystemAdmin.add()">
+                  Add
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <i class="fa fa-spinner fa-pulse fa-2x" ng-show="addSystemAdmin.searchingUsers"></i>
+          </div>
         </div>
       </div>
       <div class="panel-body row">
@@ -68,7 +91,7 @@
     <div class="panel panel-default" ng-show="settingsView == 'grpAdmins'">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Group Admins</h3>
-        <span class="pull-right"><a ng-click="confirmManagerUpdate(null, $event)" data-toggle="modal" data-target="#updateGroupAdminModal"><i class="fa fa-plus-square-o fa-lg" /> Add Admin</a></span>
+        <span class="pull-right"><a ng-click="confirmAdminUpdate(null, $event)" data-toggle="modal" data-target="#updateGroupAdminModal"><i class="fa fa-plus-square-o fa-lg" /> Add Admin</a></span>
       </div>
       <div class="panel-body row">
         <div class="col-md-8 dashboard-grid-column" ng-init="getGroupAdmins()">
@@ -134,41 +157,52 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis maximus facilisis. Aliquam sit amet odio at purus semper hendrerit et nec leo. Etiam non fringilla dolor. Ut imperdiet turpis non consectetur tincidunt. Nam imperdiet lectus eleifend lacus semper laoreet eu vel urna. Morbi placerat, mauris id lobortis convallis, lectus tellus viverra mi, ut dictum ligula ipsum sed ipsum. Vivamus et felis lectus.
-                <table>
-                    <tbody>
-                        <tr>
-                            <td align="right">Group Admin:</td>
-                            <td>
-                                <div id="addGrpManager" ng-show="selectedGroupManager.id == null">
-                                    <input class="typeahead" type="text" placeholder="Search for SCAMP users">
-                                </div>
-                                <div ng-show="selectedGroupManager.id != null">{{selectedGroupManager.name}}</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">Allocated Budget:</td>
-                            <td>
-                              <input type="text" class="form-control" ng-model="selectedGroupManager.unitsBudgeted" ng-required="true" ng-trim="true" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">Budget Expiry Date:</td>
-                            <td>
-                              <p class="input-group">
-                                <input type="text" class="form-control" ng-model="selectedGroupManager.endDate" datepicker-popup="shortDate" ng-required="true"
-                                       is-open="budgetExpiryDateOpened" min-date="budgetExpiryMinDate" />
-                                <span class="input-group-btn">
-                                  <button type="button" class="btn btn-default" ng-click="budgetExpiryDateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                                </span>
-                              </p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis maximus facilisis. Aliquam sit amet odio at purus semper hendrerit et nec leo. Etiam non fringilla dolor. Ut imperdiet turpis non consectetur tincidunt. Nam imperdiet lectus eleifend lacus semper laoreet eu vel urna. Morbi placerat, mauris id lobortis convallis, lectus tellus viverra mi, ut dictum ligula ipsum sed ipsum. Vivamus et felis lectus.
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">
+                    Group Admin
+                  </label>
+                  <div class="col-sm-9">
+                    <input type="text" ng-model="addGroupAdmin.selectedUserName"
+                      ng-show="selectedGroupAdmin.id == null"
+                      placeholder="Search for users..." typeahead="foundUser.name for foundUser in addGroupAdmin.searchUsers($viewValue)"
+                      typeahead-loading="addGroupAdmin.searchingUsers" typeahead-editable="false"
+                      typeahead-on-select="addGroupAdmin.userSelected($item, $model, $label)"
+                      typeahead-min-length="3"
+                      class="form-control">
+                    <input type="text" class="form-control"
+                      disabled
+                      ng-value="selectedGroupAdmin.name"
+                      ng-show="selectedGroupAdmin.id != null">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">
+                    Allocated Budget
+                  </label>
+                  <div class="col-sm-9">
+                    <input type="number" class="form-control" ng-model="selectedGroupAdmin.unitsBudgeted" ng-required="true" ng-trim="true" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">
+                    Budget Expiry Date
+                  </label>
+                  <div class="col-sm-9">
+                    <p class="input-group">
+                      <input type="text" class="form-control" ng-model="selectedGroupAdmin.endDate" datepicker-popup="shortDate" ng-required="true"
+                             is-open="budgetExpiryDateOpened" min-date="budgetExpiryMinDate" />
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="budgetExpiryDateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="adminSave(selectedGroupManager, $event)">{{ managerActionLabel }} Admin</button>
+                <button type="button" class="btn btn-primary" ng-click="adminSave(selectedGroupAdmin, $event)">{{ adminActionLabel }} Admin</button>
             </div>
         </div>
     </div>
