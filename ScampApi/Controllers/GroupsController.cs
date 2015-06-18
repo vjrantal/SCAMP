@@ -78,7 +78,7 @@ namespace ScampApi.Controllers
         public async Task<IActionResult> Post([FromBody]Group userInputGroup)
         {
             // requestor is a group administration and can create groups
-            if (!(await _securityHelper.IsGroupManager()))
+            if (!(await _securityHelper.IsGroupAdmin()))
                 return new HttpStatusCodeResult(403); // Forbidden;
 
             //TODO: group parameter validation 
