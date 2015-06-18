@@ -22,14 +22,14 @@ namespace ScampTypes.ViewModels
 
     public class UserUsageSummary
     {
-        public double unitsBudgeted { get; set; }
-        public double totUnitsUsed { get; set; }
+        public long unitsBudgeted { get; set; }
+        public long totUnitsUsed { get; set; }
         public int totGroups { get; set; }
     }
 
     public sealed class UserBudgetSummary : UserUsageSummary
     {
-        public double totUnitsAllocated { get; set; }
+        public long totUnitsAllocated { get; set; }
     }
 
     public sealed class GroupAdminSummary : UserSummary

@@ -214,6 +214,14 @@ namespace ProvisioningLibrary
             return (UserBudgetState)retrievedResult.Result;
         }
 
+        public async Task UpdateUserBudgetAllocation(string userId, string groupId, long newBudgetAllocation)
+        {
+            var budget = await GetUserBudgetState(userId, groupId);
+            budget.UnitsBudgetted = newBudgetAllocation;
+            await AddUserBudgetState(budget);
+            return;
+        }
+
         public async Task AddUserBudgetState(UserBudgetState budget)
         {
             TableOperation operation = TableOperation.InsertOrReplace(budget);

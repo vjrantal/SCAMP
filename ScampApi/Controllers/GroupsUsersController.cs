@@ -73,11 +73,12 @@ namespace ScampApi.Controllers
         }
 
         /// <summary>
-        /// returns a view of a group's information
+        /// adds a user to a group
         /// </summary>
-        /// <param name="groupId">Id of group to get list of users for</param>
+        /// <param name="groupId">Id of group to add user to</param>
+        /// <param name="userId">Id of user</param>
         /// <returns></returns>
-        [HttpPut("{userId}")]
+        [HttpPost("{userId}")]
         public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
         {
             //TODO: add in group admin/manager authorization check
@@ -117,6 +118,46 @@ namespace ScampApi.Controllers
 
 
             // return list
+            return new ObjectResult(null) { StatusCode = 200 };
+        }
+
+        /// <summary>
+        /// updates a user within a group
+        /// </summary>
+        /// <param name="groupId">Id of group to within which to update user</param>
+        /// <param name="userId">Id of user</param>
+        /// <returns></returns>
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUserInGroup(string groupId, [FromBody] UserSummary newUserSummary)
+        {
+            //TODO: add in group admin/manager authorization check
+            //if (!await CurrentUserCanViewGroup(group))
+            //    return new HttpStatusCodeResult(403); // Forbidden
+            //}
+
+            // get group details
+            var rscGroup = await _groupRepository.GetGroup(groupId);
+            if (rscGroup == null)
+            {
+                return new ObjectResult("designated group does not exist") { StatusCode = 400 };
+            }
+
+            // make sure user is in group
+            IEnumerable<ScampUserGroupMbrship> userList = from ur in rscGroup.Members
+                where ur.Id == newUserSummary.Id
+                select ur;
+            if (userList.Count() == 0) // user is not in the list
+                return new ObjectResult("designated user is not in group") { StatusCode = 400 };
+
+            //TODO: Issue #152
+            // check to make sure enough remains in the group allocation to handle the new allocation
+
+            // update document
+            await _groupRepository.UpdateUserInGroup(groupId, newUserSummary.Id, newUserSummary.isAdmin);
+
+            // update volatile storage budget entry for user
+            await _volatileStorageController.UpdateUserBudgetAllocation(groupId, newUserSummary.Id, newUserSummary.budget.unitsBudgeted);
+
             return new ObjectResult(null) { StatusCode = 200 };
         }
 
