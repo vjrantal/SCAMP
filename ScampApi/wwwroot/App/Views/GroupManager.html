@@ -152,6 +152,7 @@
                       placeholder="Add users..." typeahead="foundUser.name for foundUser in addUser.searchUsers($viewValue)"
                       typeahead-loading="addUser.searchingUsers" typeahead-editable="false"
                       typeahead-on-select="addUser.userSelected($item, $model, $label)"
+                      typeahead-min-length="3"
                       class="form-control">
                     <span class="input-group-btn">
                       <button class="btn btn-default" type="button"

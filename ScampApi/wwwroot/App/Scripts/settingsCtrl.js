@@ -1,61 +1,47 @@
 'use strict';
 angular.module('scamp')
-.controller('settingsCtrl', ['$scope', '$location', 'systemSettingsSvc', 'adalAuthenticationService', function ($scope, $location, systemSettingsSvc, adalService) {
+.controller('settingsCtrl', ['$scope', 'systemSettingsSvc', 'userSvc', function ($scope, systemSettingsSvc, userSvc) {
     $scope.currentRouteName = 'Settings';
 
     var valueProperty = 'id'; //The property name for the unique id of the selected option from the RPC
 
     /// 
-    // set up the type ahead control for system admins
+    // Set up the type ahead controls.
     ///
-    var sysAdminLookupConfig = {
-        componentId: 'addSysAdmin',
-        minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
-        scopeValueBindedPropertyOnSelection: 'id',
-        remote: {
-            url: '/api/users/FindbyUPN/%QUERY',
-            queryStr: '%QUERY',
-            displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
-        }
+    var searchUsers = function (keyword) {
+        return userSvc.searchUsers(keyword)
+        .then(function (response) {
+            return response;
+        });
     };
-    // callback method for when a user is selected
-    var selectedSystemAdmin = function (e, datum) {
-        systemSettingsSvc.grantSysAdmin(datum).then(
-            // get succeeded
-            function (data) {                
+    $scope.addSystemAdmin = {
+        'searchUsers' : searchUsers,
+        'userSelected': function ($item, $model, $label) {
+            $scope.addSystemAdmin.selectedUser = $item;
+        },
+        'add': function () {
+            systemSettingsSvc.grantSysAdmin($scope.addSystemAdmin.selectedUser)
+            .then(function (response) {
                 $scope.getSystemAdmins(); // reload list of system admins
-            },
-            // get failed
-            function (status) {
-                window.alert("Add failed");
-            }
-        );
-    };
-    // connecting the config and callback with the control
-    var sysAdminTypeaheadControl = new Typeahead($scope, sysAdminLookupConfig, selectedSystemAdmin);
-
-    /// 
-    // set up the type ahead control for group managers
-    ///
-    var sysGroupLookupConfig = { // configuration for the lookup control
-        componentId: 'addGrpManager',
-        minLength: 3, //The minimum character length needed before suggestions start getting rendered. Defaults to 1
-        scopeValueBindedPropertyOnSelection: 'id',
-        remote: {
-            url: '/api/users/FindbyUPN/%QUERY',
-            queryStr: '%QUERY',
-            displayProperty: 'name' //This is the property referenced from the response to determine what display on the control
+            })
+            .catch(function (status) {
+                window.alert('Add failed');
+            })
+            .finally(function () {
+                $scope.addSystemAdmin.selectedUserName = '';
+            })
         }
     };
-    // lookup controls callback
-    var selectedGroupManager = function (e, datum) {
-        // check if user is already in list
+    $scope.addGroupAdmin = {
+        'searchUsers' : searchUsers,
+        'userSelected': function ($item, $model, $label) {
+            // check if user is already in list
 
-        // if not, set them as selected
-        $scope.selectedManagerUser = datum;
+            // if not, set them as selected
+            $scope.selectedGroupAdmin = $item;
+            $scope.addGroupAdmin.selectedUserName = '';
+        }
     };
-    // connecting the config and callback with the control
-    var sysGroupTypeaheadControl = new Typeahead($scope, sysGroupLookupConfig, selectedGroupManager);
 
     // set default setting "tab" view
     if (!$scope.settingsView)
@@ -141,15 +127,15 @@ angular.module('scamp')
         $event.preventDefault();
     };
 
-    // launch the Manager modal pop-up and set up for add/edit
+    // launch the group manager modal pop-up and set up for add/edit
     $scope.confirmAdminUpdate = function (admin, $event) {
         console.log("callinng settingsCtrl.confirmAdminUpdate");
 
-        $scope.managerActionLabel = (admin == null ? "Add" : "Update");
+        $scope.adminActionLabel = (admin == null ? "Add" : "Update");
         if (admin == null)
             admin = {}; // create empty object
 
-        $scope.selectedGroupManager = admin;
+        $scope.selectedGroupAdmin = admin;
 
         $event.preventDefault();
     };
@@ -187,8 +173,8 @@ angular.module('scamp')
 
         // if we were doing an add, update object with selected user
         if (groupAdmin.id == null) {
-            groupAdmin.id = $scope.selectedManagerUser.id;
-            groupAdmin.name = $scope.selectedManagerUser.name
+            groupAdmin.id = $scope.selectedGroupAdmin.id;
+            groupAdmin.name = $scope.selectedGroupAdmin.name
         }
 
         // do insert/update
