@@ -65,7 +65,15 @@ namespace ScampApi.Controllers
             {
                 return new HttpStatusCodeResult(403); // Forbidden
             }
-            return new ObjectResult(Map(group)) { StatusCode = 200 };
+
+            Group returnGroup = Map(group);
+            // Fetch the group-specific budget for users in this group
+            foreach (UserSummary user in returnGroup.Users)
+            {
+                UserBudgetState userBudget = await _volatileStorageController.GetUserBudgetState(user.Id, group.Id);
+                user.unitsBudgeted = userBudget.UnitsBudgetted;
+            }
+            return new ObjectResult(returnGroup) { StatusCode = 200 };
         }
 
         /// <summary>

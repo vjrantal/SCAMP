@@ -1,6 +1,5 @@
-﻿// Add User to Group Stored Proc
-//TODO: modify to allow for add/remove
-function (groupId, userId, isAdmin, budgetAllocation) {
+﻿// Update User in Group Stored Proc
+function (groupId, userId, isManager) {
     var context = getContext();
     var collection = context.getCollection();
     var response = context.getResponse();
@@ -27,25 +26,22 @@ function (groupId, userId, isAdmin, budgetAllocation) {
                     if (err2) throw new Error("Error" + err2.message);
                     if (documents2.length != 1) throw "Unable to find user " + userId;
                     userDoc = documents2[0];
-                    updateInGroup(groupDoc, userDoc);
+                    updateGroupAndUser(groupDoc, userDoc);
                     return;
                 });
             if (!accept2) throw "Unable to read user document, abort ";
         });
     if (!accept) throw "Unable to read group document, abort ";
 
-    // update user's entry in group
-    function updateInGroup(groupDoc, userDoc) {
-        var groupMemberIndex = groupDoc.members.findIndex(function(_user) {
-            return _user.id === userDoc.id;
-        });
-        groupDoc.members[groupMemberIndex].isAdmin = isAdmin;
-
-        var userGroupIndex = userDoc.members.findIndex(function(_group) {
-            return _group.id === groupDoc.id;
-        })
-        userDoc.groupmbrship[userGroupIndex].isAdmin = isAdmin;
-
+    // update user's entry in group and user
+    function updateGroupAndUser(groupDoc, userDoc) {
+        for (var i = 0; i < groupDoc.members.length; i++) {
+            if (groupDoc.members[i].id === userDoc.id) {
+                groupDoc.members[i].isManager = isManager;
+                break;
+            }
+        }
+        userDoc.isManager = isManager;
         // perform update
         var accept = collection.replaceDocument(groupDoc._self, groupDoc,
             function (err, docReplaced) {

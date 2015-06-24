@@ -79,9 +79,9 @@ namespace ScampApi.Controllers
         /// <param name="groupId">Id of group to add user to</param>
         /// <returns></returns>
         [HttpPost()]
-        public async Task<IActionResult> AddUserToGroup(string groupId, [FromBody] UserSummary newUserSummary)
+        public async Task<IActionResult> AddUserToGroup(string groupId, [FromBody] UserSummary newUser)
         {
-            string userId = newUserSummary.Id;
+            string userId = newUser.Id;
             //TODO: add in group admin/manager authorization check
             //if (!await CurrentUserCanViewGroup(group))
             //    return new HttpStatusCodeResult(403); // Forbidden
@@ -104,22 +104,25 @@ namespace ScampApi.Controllers
             //TODO: Issue #152
             // check to make sure enough remains in the group allocation to allow add of user
 
-            // create document updates
-            await _groupRepository.AddUserToGroup(groupId, userId);
-
             // create volatile storage budget entry for user
             var newBudget = new UserBudgetState(userId, groupId)
             {
+                //TODO: Take into account the budget potentially sent in POST body
                 UnitsBudgetted = rscGroup.Budget.DefaultUserAllocation,
                 UnitsUsed = 0
             };
             await _volatileStorageController.AddUserBudgetState(newBudget);
+            newUser.unitsBudgeted = newBudget.UnitsBudgetted;
+
+            // create document updates
+            await _groupRepository.AddUserToGroup(groupId, userId, false);
+
             //TODO: Issue #152
             // update group budget allocation to reflect addition of new user
 
 
             // return list
-            return new ObjectResult(newUserSummary) { StatusCode = 200 };
+            return new ObjectResult(newUser) { StatusCode = 200 };
         }
 
         /// <summary>
@@ -157,7 +160,7 @@ namespace ScampApi.Controllers
             await _groupRepository.UpdateUserInGroup(groupId, newUserSummary.Id, newUserSummary.isManager);
 
             // update volatile storage budget entry for user
-            await _volatileStorageController.UpdateUserBudgetAllocation(groupId, newUserSummary.Id, newUserSummary.budget.unitsBudgeted);
+            await _volatileStorageController.UpdateUserBudgetAllocation(newUserSummary.Id, groupId, newUserSummary.unitsBudgeted);
 
             return new ObjectResult(null) { StatusCode = 200 };
         }
