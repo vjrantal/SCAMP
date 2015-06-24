@@ -61,6 +61,7 @@ namespace ScampApi.Controllers
                 {
                     Id = userRef.Id,
                     Name = userRef.Name,
+                    isManager = userRef.isManager,
                     totUnitsUsed = groupBudget.UnitsUsed,
                     totUnitsRemaining = (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed)
                 };
@@ -153,7 +154,7 @@ namespace ScampApi.Controllers
             // check to make sure enough remains in the group allocation to handle the new allocation
 
             // update document
-            await _groupRepository.UpdateUserInGroup(groupId, newUserSummary.Id, newUserSummary.isAdmin);
+            await _groupRepository.UpdateUserInGroup(groupId, newUserSummary.Id, newUserSummary.isManager);
 
             // update volatile storage budget entry for user
             await _volatileStorageController.UpdateUserBudgetAllocation(groupId, newUserSummary.Id, newUserSummary.budget.unitsBudgeted);

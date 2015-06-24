@@ -8,6 +8,7 @@ namespace ScampTypes.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public bool isManager { get; set; }
         public double totUnitsUsed { get; set; }
         public double totUnitsRemaining { get; set; }
     }
@@ -16,7 +17,7 @@ namespace ScampTypes.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool isAdmin { get; set; }
+        public bool isManager { get; set; }
         public UserBudgetSummary budget { get; set; }
     }
 

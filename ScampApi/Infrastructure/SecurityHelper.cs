@@ -90,7 +90,7 @@ namespace ScampApi.Infrastructure
             var user = await GetCurrentUser();
             var grp = await _groupRepository.GetGroup(groupId);
             // user is a manager of this group if they are in the group membership list and are flagged "isManager"
-            var checkMgr = grp.Members.ToList().Any(q => q.Id == user.Id && q.isAdmin);
+            var checkMgr = grp.Members.ToList().Any(q => q.Id == user.Id && q.isManager);
             return checkMgr;
         }
 

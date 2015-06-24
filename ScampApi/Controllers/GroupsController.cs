@@ -170,7 +170,7 @@ namespace ScampApi.Controllers
         {
             var currentUser = await _securityHelper.GetCurrentUser();
             return currentUser.IsSystemAdmin                       // sys admin
-                || group.Members.Any(u => u.Id == currentUser.Id && u.isAdmin); // group member
+                || group.Members.Any(u => u.Id == currentUser.Id && u.isManager); // group member
         }
 
         #region Mapping Functions
@@ -203,7 +203,7 @@ namespace ScampApi.Controllers
             {
                 Id = docDbUser.Id,
                 Name = docDbUser.Name,
-                isAdmin = docDbUser.isAdmin
+                isManager = docDbUser.isManager
             };
         }
 
