@@ -77,11 +77,11 @@ namespace ScampApi.Controllers
         /// adds a user to a group
         /// </summary>
         /// <param name="groupId">Id of group to add user to</param>
-        /// <param name="userId">Id of user</param>
         /// <returns></returns>
-        [HttpPost("{userId}")]
-        public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
+        [HttpPost()]
+        public async Task<IActionResult> AddUserToGroup(string groupId, [FromBody] UserSummary newUserSummary)
         {
+            string userId = newUserSummary.Id;
             //TODO: add in group admin/manager authorization check
             //if (!await CurrentUserCanViewGroup(group))
             //    return new HttpStatusCodeResult(403); // Forbidden
@@ -119,7 +119,7 @@ namespace ScampApi.Controllers
 
 
             // return list
-            return new ObjectResult(null) { StatusCode = 200 };
+            return new ObjectResult(newUserSummary) { StatusCode = 200 };
         }
 
         /// <summary>
