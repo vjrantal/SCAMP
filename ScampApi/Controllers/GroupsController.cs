@@ -104,9 +104,9 @@ namespace ScampApi.Controllers
                 {
                     OwnerId = currentUser.Id,
                     
-                    unitsBudgeted = userInputGroup.unitsBudgeted,
-                    DefaultUserAllocation = userInputGroup.defaultUserBudget,
-                    EndDate = userInputGroup.expiryDate
+                    unitsBudgeted = userInputGroup.Budget.unitsBudgeted,
+                    DefaultUserAllocation = userInputGroup.Budget.defaultUserBudget,
+                    EndDate = userInputGroup.Budget.expiryDate
                 }
             };
 
@@ -118,8 +118,8 @@ namespace ScampApi.Controllers
             // create group volatile storage entries
             var newGrpBudget = new GroupBudgetState(group.Id)
             {
-                UnitsBudgetted = userInputGroup.unitsBudgeted,
-                UnitsAllocated = userInputGroup.defaultUserBudget,
+                UnitsBudgetted = userInputGroup.Budget.unitsBudgeted,
+                UnitsAllocated = userInputGroup.Budget.defaultUserBudget,
                 UnitsUsed = 0
             };
             tasks[0] = _volatileStorageController.AddGroupBudgetState(newGrpBudget);
@@ -139,22 +139,20 @@ namespace ScampApi.Controllers
         }
 
         [HttpPut("{groupId}")]
-        public async Task<Group> Put(string groupId, [FromBody]Group value)
+        public async Task<IActionResult> Put(string groupId, [FromBody]Group value)
         {
-            if (await _securityHelper.IsGroupManager(groupId))
+            ScampUser currentUser = await _securityHelper.GetCurrentUser();
+            ScampResourceGroup group = await _groupRepository.GetGroup(groupId);
+            // Only the group budget owner can edit the group information
+            if (group.Budget.OwnerId == currentUser.Id)
             {
-                //// we may need this
-                //value.Admins.GroupBy(x => x.UserId).Select(y => y.First());	// remove duplicates
-                //value.Members.GroupBy(x => x.UserId).Select(y => y.First());	// remove duplicates
-
-                var group = await _groupRepository.GetGroup(groupId);
-
                 await _groupRepository.UpdateGroup(groupId, new ScampResourceGroup
                 {
                     Members = value.Users.ConvertAll((a => new ScampUserGroupMbrship()
                     {
                         Id = a.Id,
-                        Name = a.Name
+                        Name = a.Name,
+                        isManager = a.isManager
                     })),
                     Id = value.Id,
                     Name = value.Name,
@@ -162,16 +160,18 @@ namespace ScampApi.Controllers
                     Budget = new ScampGroupBudget()
                     {
                         OwnerId = group.Budget.OwnerId,
-                        unitsBudgeted = value.unitsBudgeted,
-                        DefaultUserAllocation = value.defaultUserBudget,
-                        EndDate = value.expiryDate
+                        unitsBudgeted = value.Budget.unitsBudgeted,
+                        DefaultUserAllocation = value.Budget.defaultUserBudget,
+                        EndDate = value.Budget.expiryDate
                     }
                 });
 
-                return value;
-
+                return new ObjectResult(value) { StatusCode = 200 };
             }
-            return null;
+            else
+            {
+                return new HttpStatusCodeResult(403);
+            }
         }
 
         private async Task<bool> CurrentUserCanViewGroup(ScampResourceGroup group)
@@ -200,11 +200,21 @@ namespace ScampApi.Controllers
                 Description = docDbGroup.Description,
                 Templates = new List<GroupTemplateSummary>(), // TODO map these when the repo supports them
                 Users = docDbGroup.Members?.Select(MapToSummary).ToList(),
-                unitsBudgeted = docDbGroup.Budget.unitsBudgeted,
-                defaultUserBudget = docDbGroup.Budget.DefaultUserAllocation,
-                expiryDate = docDbGroup.Budget.EndDate
+                Budget = Map(docDbGroup.Budget)
             };
         }
+
+        private GroupBudget Map(ScampGroupBudget scampGroupBudget)
+        {
+            return new GroupBudget
+            {
+                ownerId = scampGroupBudget.OwnerId,
+                unitsBudgeted = scampGroupBudget.unitsBudgeted,
+                defaultUserBudget = scampGroupBudget.DefaultUserAllocation,
+                expiryDate = scampGroupBudget.EndDate
+            };
+        }
+
         private UserSummary MapToSummary(ScampUserGroupMbrship docDbUser)
         {
             return new UserSummary

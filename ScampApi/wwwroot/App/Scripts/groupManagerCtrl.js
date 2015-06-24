@@ -2,6 +2,9 @@
 angular.module('scamp')
 .controller('groupManagerCtrl', ['$scope', 'userSvc', 'groupsSvc', function ($scope, userSvc, groupsSvc) {
     $scope.viewLoading = true;
+    // Whether the summary section should be shown. This is toggled
+    // based on if the user is the owner of the selected group's budget.
+    $scope.showSummary = false;
 
     // A variable to store group information locally.
     // TODO: Currently $scope.selectedGroup and $scope.groups
@@ -35,6 +38,12 @@ angular.module('scamp')
         groupsSvc.getGroup(group.id)
         .then(function (response) {
             $scope.selectedGroup = response;
+            $scope.showSummary = ($scope.selectedGroup.budget.ownerId == $scope.userProfile.id);
+            if ($scope.showSummary) {
+                $('#summary-tab-link').tab('show');
+            } else {
+                $('#users-tab-link').tab('show');
+            }
         })
         .finally(function () {
             $scope.groupDetailsLoading = false;
@@ -85,12 +94,14 @@ angular.module('scamp')
     $scope.addGroup = function () {
         $scope.selectedGroupUnsaved = true;
         $scope.selectedGroup = { 'id': 'temporary-id-of-unsaved-group' };
+        $('#summary-tab-link').tab('show');
     };
 
     $scope.removeGroup = function () {
         if ($scope.selectedGroupUnsaved) {
             if ($scope.groups.length > 0) {
                 $scope.selectedGroup = $scope.groups[0];
+                loadGroupDetails($scope.groups[0]);
             } else {
                 $scope.selectedGroup = null;
             }

@@ -131,10 +131,15 @@ namespace ScampTypes.ViewModels
     public List<ScampResourceSummary> Resources{ get; set; }
     public List<GroupTemplateSummary> Templates { get; set; }
     public List<UserSummary> Users { get; set; }
+    public GroupBudget Budget { get; set; }
+  }
+
+    public sealed class GroupBudget
+    {
+    public string ownerId { get; set; }
     public long unitsBudgeted { get; set; }
     public long defaultUserBudget { get; set; }
     public DateTime expiryDate { get; set; }
-
     }
 
     public sealed class GroupSummary

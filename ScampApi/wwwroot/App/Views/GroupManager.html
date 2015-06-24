@@ -44,7 +44,7 @@
           </div>
           <div class="panel-body" ng-show="!groupDetailsLoading">
             <div class="tab-content">
-              <div class="tab-pane fade in active" id="summary-tab">
+              <div class="tab-pane fade" id="summary-tab">
                 <form id="group-summary-form" class="form-horizontal"
                   ng-submit="groupSummaryFormSubmitted()">
                   <div class="row">
@@ -89,7 +89,7 @@
                         </label>
                         <div class="col-sm-8">
                           <p class="input-group">
-                            <input id="expiration-date" type="text" class="form-control" ng-model="selectedGroup.expiryDate"
+                            <input id="expiration-date" type="text" class="form-control" ng-model="selectedGroup.budget.expiryDate"
                               datepicker-popup="shortDate" ng-required="true"
                               is-open="groupExpiryDateOpened" min-date="groupExpiryMinDate" />
                             <span class="input-group-btn">
@@ -106,7 +106,7 @@
                         </label>
                         <div class="col-sm-8">
                           <div class="input-group">
-                            <input id="group-budget" ng-model="selectedGroup.unitsBudgeted"
+                            <input id="group-budget" ng-model="selectedGroup.budget.unitsBudgeted"
                               ng-required="true" ng-pattern="onlyNumbersPattern"
                               type="number" class="form-control">
                             <span class="input-group-addon">Units</span>
@@ -119,7 +119,7 @@
                         </label>
                         <div class="col-sm-8">
                           <div class="input-group">
-                            <input id="default-user-budget" ng-model="selectedGroup.defaultUserBudget"
+                            <input id="default-user-budget" ng-model="selectedGroup.budget.defaultUserBudget"
                               ng-required="true" ng-pattern="onlyNumbersPattern"
                               type="number" class="form-control">
                             <span class="input-group-addon">Units</span>
@@ -219,11 +219,11 @@
           </div>
         </div>
       </div>
-      <div class="col-xs-3 panel-tabs">
+      <div class="col-xs-3 panel-tabs" ng-show="!selectedGroupUnsaved">
           <ul class="nav nav-tabs" data-tabs="tabs">
-            <li class="active"><a data-target="#summary-tab" data-toggle="tab">Summary</a></li>
-            <li><a data-target="#users-tab" data-toggle="tab">Users</a></li>
-            <li><a data-target="#templates-tab" data-toggle="tab">Templates</a></li>
+            <li ng-show="showSummary"><a id="summary-tab-link" data-target="#summary-tab" data-toggle="tab">Summary</a></li>
+            <li><a id="users-tab-link" data-target="#users-tab" data-toggle="tab">Users</a></li>
+            <li><a id="templates-tab-link" data-target="#templates-tab" data-toggle="tab">Templates</a></li>
           </ul>
       </div>
     </div>
