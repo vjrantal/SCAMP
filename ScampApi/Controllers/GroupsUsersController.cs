@@ -203,7 +203,25 @@ namespace ScampApi.Controllers
             }
 
             return new ObjectResult(rtnView) { StatusCode = 200 };
+        }
 
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> RemoveUserFromGroup(string groupId, string userId)
+        {
+            // only system admins can access this functionality
+            if (!await _securityHelper.IsGroupManager(groupId))
+                return new HttpStatusCodeResult(403); // Forbidden
+
+            // get list of user resources in this group
+
+            // remove the user from the group, flag resources for deletion
+
+            // send commands to clean up the resources (this will delete the resource entries and update the group usage)
+            //TODO: create the events and send to the queue
+
+            // remove the user's budget entry for the group from the volatile store
+
+
+            return new ObjectResult(null) { StatusCode = 200 };
         }
     }
-}

@@ -133,6 +133,30 @@ namespace DocumentDbRepositories.Implementation
             }
         }
 
+        /// <summary>
+        /// Get resources for group member
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<ScampUserGroupResources>> GetGroupMemberResources(string groupId, string userId)
+        {
+            if (!(await docdb.IsInitialized))
+                return;
+
+            try
+            {
+                // get specified user by ID
+                var query = from u in docdb.Client.CreateDocumentQuery<ScampUserGroupResources>(docdb.Collection.SelfLink)
+                            where (u => u.GroupMembership.Any(g => g.groupId == groupId))
+                            select u;
+                return await query.AsDocumentQuery().FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
         public async Task UpdateGroup(string groupID, ScampResourceGroup group)
         {
