@@ -35,13 +35,19 @@ function (groupId, userId, isManager) {
 
     // update user's entry in group and user
     function updateGroupAndUser(groupDoc, userDoc) {
-        for (var i = 0; i < groupDoc.members.length; i++) {
+        var i;
+        for (i = 0; i < groupDoc.members.length; i++) {
             if (groupDoc.members[i].id === userDoc.id) {
                 groupDoc.members[i].isManager = isManager;
                 break;
             }
         }
-        userDoc.isManager = isManager;
+        for (i = 0; i < userDoc.groupmbrship.length; i++) {
+            if (userDoc.groupmbrship[i].id === groupDoc.id) {
+                userDoc.groupmbrship[i].isManager = isManager;
+                break;
+            }
+        }
         // perform update
         var accept = collection.replaceDocument(groupDoc._self, groupDoc,
             function (err, docReplaced) {
