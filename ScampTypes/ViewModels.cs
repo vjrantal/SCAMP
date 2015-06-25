@@ -8,6 +8,7 @@ namespace ScampTypes.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public bool isManager { get; set; }
         public double totUnitsUsed { get; set; }
         public double totUnitsRemaining { get; set; }
     }
@@ -16,7 +17,8 @@ namespace ScampTypes.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool isAdmin { get; set; }
+        public bool isManager { get; set; }
+        public long unitsBudgeted { get; set; }
         public UserBudgetSummary budget { get; set; }
     }
 
@@ -129,10 +131,16 @@ namespace ScampTypes.ViewModels
     public List<ScampResourceSummary> Resources{ get; set; }
     public List<GroupTemplateSummary> Templates { get; set; }
     public List<UserSummary> Users { get; set; }
+    public GroupBudget Budget { get; set; }
+  }
+
+    public sealed class GroupBudget
+    {
+    public string ownerId { get; set; }
+    public string ownerName { get; set; }
     public long unitsBudgeted { get; set; }
     public long defaultUserBudget { get; set; }
     public DateTime expiryDate { get; set; }
-
     }
 
     public sealed class GroupSummary
