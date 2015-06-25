@@ -106,7 +106,9 @@ namespace ScampTypes.ViewModels
         public string Email { get; set; }
         public List<Group> Groups { get; set; }
         public ScampResourceSummary Resources { get; set; }
-        public bool IsSystemAdmin { get; set; }
+        public bool isSystemAdmin { get; set; }
+        public bool isGroupAdmin { get; set; }
+        public bool isGroupManager { get; set; }
     }
 
     public sealed class GroupTemplate
