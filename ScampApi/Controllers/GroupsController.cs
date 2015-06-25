@@ -103,7 +103,7 @@ namespace ScampApi.Controllers
                 Budget = new ScampGroupBudget()
                 {
                     OwnerId = currentUser.Id,
-                    
+                    OwnerName = currentUser.Name,
                     unitsBudgeted = userInputGroup.Budget.unitsBudgeted,
                     DefaultUserAllocation = userInputGroup.Budget.defaultUserBudget,
                     EndDate = userInputGroup.Budget.expiryDate
@@ -160,6 +160,7 @@ namespace ScampApi.Controllers
                     Budget = new ScampGroupBudget()
                     {
                         OwnerId = group.Budget.OwnerId,
+                        OwnerName = group.Budget.OwnerName,
                         unitsBudgeted = value.Budget.unitsBudgeted,
                         DefaultUserAllocation = value.Budget.defaultUserBudget,
                         EndDate = value.Budget.expiryDate
@@ -209,6 +210,7 @@ namespace ScampApi.Controllers
             return new GroupBudget
             {
                 ownerId = scampGroupBudget.OwnerId,
+                ownerName = scampGroupBudget.OwnerName,
                 unitsBudgeted = scampGroupBudget.unitsBudgeted,
                 defaultUserBudget = scampGroupBudget.DefaultUserAllocation,
                 expiryDate = scampGroupBudget.EndDate

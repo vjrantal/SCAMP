@@ -137,6 +137,7 @@ namespace ScampTypes.ViewModels
     public sealed class GroupBudget
     {
     public string ownerId { get; set; }
+    public string ownerName { get; set; }
     public long unitsBudgeted { get; set; }
     public long defaultUserBudget { get; set; }
     public DateTime expiryDate { get; set; }

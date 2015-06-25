@@ -48,11 +48,22 @@
                 <form id="group-summary-form" class="form-horizontal"
                   ng-submit="groupSummaryFormSubmitted()">
                   <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="owner" class="col-sm-3 control-label">
+                          Owner
+                        </label>
+                        <div class="col-sm-9">
+                          <input id="owner" type="text" class="form-control"
+                                 ng-model="selectedGroup.budget.ownerName" ng-disabled="true">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
                       <div class="form-group">
                         <div class="col-sm-2 col-sm-offset-10">
-                          <button type="submit" form="group-summary-form"
-                            class="form-control btn btn-primary pull-right">
+                          <button type="submit" form="group-summary-form" ng-show="!selectedGroup.disableEdit"
+                                  class="form-control btn btn-primary pull-right">
                             <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
                             Save
                           </button>
@@ -68,7 +79,7 @@
                         </label>
                         <div class="col-sm-9">
                           <input id="name" type="text" class="form-control"
-                            ng-model="selectedGroup.name" ng-required="true">
+                            ng-model="selectedGroup.name" ng-required="true" ng-disabled="selectedGroup.disableEdit">
                         </div>
                       </div>
                       <div class="form-group">
@@ -77,7 +88,7 @@
                         </label>
                         <div class="col-sm-9">
                           <textarea id="description" type="text" class="form-control"
-                            ng-model="selectedGroup.description">
+                            ng-model="selectedGroup.description" ng-disabled="selectedGroup.disableEdit">
                           </textarea>
                         </div>
                       </div>
@@ -90,10 +101,11 @@
                         <div class="col-sm-8">
                           <p class="input-group">
                             <input id="expiration-date" type="text" class="form-control" ng-model="selectedGroup.budget.expiryDate"
-                              datepicker-popup="shortDate" ng-required="true"
+                              datepicker-popup="shortDate" ng-required="true" ng-disabled="selectedGroup.disableEdit"
                               is-open="groupExpiryDateOpened" min-date="groupExpiryMinDate" />
                             <span class="input-group-btn">
-                              <button type="button" class="btn btn-default" ng-click="groupExpiryDateOpen($event)">
+                              <button type="button" class="btn btn-default" ng-click="groupExpiryDateOpen($event)"
+                                      ng-disabled="selectedGroup.disableEdit">
                                 <i class="glyphicon glyphicon-calendar"></i>
                               </button>
                             </span>
@@ -107,7 +119,7 @@
                         <div class="col-sm-8">
                           <div class="input-group">
                             <input id="group-budget" ng-model="selectedGroup.budget.unitsBudgeted"
-                              ng-required="true" ng-pattern="onlyNumbersPattern"
+                              ng-required="true" ng-pattern="onlyNumbersPattern" ng-disabled="selectedGroup.disableEdit"
                               type="number" class="form-control">
                             <span class="input-group-addon">Units</span>
                           </div>
@@ -120,7 +132,7 @@
                         <div class="col-sm-8">
                           <div class="input-group">
                             <input id="default-user-budget" ng-model="selectedGroup.budget.defaultUserBudget"
-                              ng-required="true" ng-pattern="onlyNumbersPattern"
+                              ng-required="true" ng-pattern="onlyNumbersPattern" ng-disabled="selectedGroup.disableEdit"
                               type="number" class="form-control">
                             <span class="input-group-addon">Units</span>
                           </div>
@@ -221,7 +233,7 @@
       </div>
       <div class="col-xs-3 panel-tabs" ng-show="!selectedGroupUnsaved">
           <ul class="nav nav-tabs" data-tabs="tabs">
-            <li ng-show="showSummary"><a id="summary-tab-link" data-target="#summary-tab" data-toggle="tab">Summary</a></li>
+            <li><a id="summary-tab-link" data-target="#summary-tab" data-toggle="tab">Summary</a></li>
             <li><a id="users-tab-link" data-target="#users-tab" data-toggle="tab">Users</a></li>
             <li><a id="templates-tab-link" data-target="#templates-tab" data-toggle="tab">Templates</a></li>
           </ul>
