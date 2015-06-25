@@ -64,8 +64,9 @@ namespace ScampApi.Controllers.Controllers
                         Id = group.Id,
                         Name = group.Name,
                         totUnitsUsed = groupBudget.UnitsUsed,
-                        totUnitsAllocated = groupBudget.UnitsAllocated,
-                        totUnitsBudgeted = groupBudget.UnitsBudgetted
+                        // be sure to handle user without a budget values
+                        totUnitsAllocated = (groupBudget == null ? 0 : groupBudget.UnitsAllocated),
+                        totUnitsBudgeted = (groupBudget == null ? 0 : groupBudget.UnitsBudgetted)
                     };
                     // add item to list
                     rtnView.Add(tmpGroupRef);
@@ -91,8 +92,9 @@ namespace ScampApi.Controllers.Controllers
                     {
                         Id = group.Id,
                         Name = group.Name,
-                        totUnitsUsedByUser = groupBudget.UnitsUsed,
-                        totUnitsRemainingForUser = (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed)
+                        // be sure to handle user without a budget values
+                        totUnitsUsedByUser = (groupBudget == null ? 0 : groupBudget.UnitsUsed),
+                        totUnitsRemainingForUser = (groupBudget == null ? 0 : (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed))
                     };
                     rtnView.Add(tmpGroupRef);
                 }

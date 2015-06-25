@@ -62,8 +62,9 @@ namespace ScampApi.Controllers
                     Id = userRef.Id,
                     Name = userRef.Name,
                     isManager = userRef.isManager,
-                    totUnitsUsed = groupBudget.UnitsUsed,
-                    totUnitsRemaining = (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed)
+                    // be sure to handle user without a budget values
+                    totUnitsUsed = (groupBudget == null ? 0 : groupBudget.UnitsUsed),
+                    totUnitsRemaining = (groupBudget == null ? 0 : (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed))
                 };
                 rtnView.Add(tmpSummary); // add item to list
             }
