@@ -95,8 +95,8 @@ namespace ScampApi.Controllers
 
             // make sure user isn't already in group
             IEnumerable<ScampUserGroupMbrship> userList = from ur in rscGroup.Members
-                where ur.Id == userId
-                select ur;
+                                                          where ur.Id == userId
+                                                          select ur;
             if (userList.Count() > 0) // user is already in the list
                 return new ObjectResult("designated user is already a member of specified group") { StatusCode = 400 };
 
@@ -144,8 +144,8 @@ namespace ScampApi.Controllers
 
             // make sure user is in group
             IEnumerable<ScampUserGroupMbrship> userList = from ur in rscGroup.Members
-                where ur.Id == newUserSummary.Id
-                select ur;
+                                                          where ur.Id == newUserSummary.Id
+                                                          select ur;
             if (userList.Count() == 0) // user is not in the list
                 return new ObjectResult("designated user is not in group") { StatusCode = 400 };
 
@@ -213,6 +213,7 @@ namespace ScampApi.Controllers
                 return new HttpStatusCodeResult(403); // Forbidden
 
             // get list of user resources in this group
+            IEnumerable<ScampUserGroupResources> resources = await _groupRepository.GetGroupMemberResources(groupId, userId);
 
             // remove the user from the group, flag resources for deletion
 
@@ -225,3 +226,4 @@ namespace ScampApi.Controllers
             return new ObjectResult(null) { StatusCode = 200 };
         }
     }
+}

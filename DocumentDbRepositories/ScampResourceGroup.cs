@@ -1,19 +1,19 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using Microsoft.Azure.Documents;
 
 namespace DocumentDbRepositories
 {
     /// <summary>
     /// This maps to the underlying document model for groups
     /// </summary>
-    public class ScampResourceGroup
+    public class ScampResourceGroup : Resource
     {
         public ScampResourceGroup()
         {
             Members = new List<ScampUserGroupMbrship>();
         }
-        [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
         [JsonProperty(PropertyName = "description")]

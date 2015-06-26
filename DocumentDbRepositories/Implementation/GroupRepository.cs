@@ -19,13 +19,13 @@ namespace DocumentDbRepositories.Implementation
             this.docdb = docdb;
         }
 
-        public async Task<ScampResourceGroup> GetGroup(string groupID)
+        public async Task<ScampResourceGroup> GetGroup(string groupId)
         {
             if (!(await docdb.IsInitialized))
                 return null;
 
             var query = from g in docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
-                             where g.Id == groupID && g.Type == "group"
+                             where g.Id == groupId && g.Type == "group"
                              select g;
             return await query.AsDocumentQuery().FirstOrDefaultAsync();
         }
@@ -134,7 +134,7 @@ namespace DocumentDbRepositories.Implementation
         }
 
         /// <summary>
-        /// Get resources for group member
+        /// Get resources for a specific group member
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="userId"></param>
@@ -142,15 +142,18 @@ namespace DocumentDbRepositories.Implementation
         public async Task<IEnumerable<ScampUserGroupResources>> GetGroupMemberResources(string groupId, string userId)
         {
             if (!(await docdb.IsInitialized))
-                return;
+                return null;
 
             try
             {
-                // get specified user by ID
-                var query = from u in docdb.Client.CreateDocumentQuery<ScampUserGroupResources>(docdb.Collection.SelfLink)
-                            where (u => u.GroupMembership.Any(g => g.groupId == groupId))
-                            select u;
-                return await query.AsDocumentQuery().FirstOrDefaultAsync();
+                // get resources for the specified user and group
+                var query = docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
+                            .Where(g => g.Id == groupId)
+                            .SelectMany(g => g.Members)
+                            .Where(m => m.Id == userId)
+                            .SelectMany(r => r.Resources);
+
+                return await query.AsDocumentQuery().ToListAsync();
             }
             catch (Exception ex)
             {
