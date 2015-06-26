@@ -127,28 +127,6 @@ angular.module('scamp')
         );
 	};
 
-	$scope.manageGroup = function (groupId) {
-		var modalInstance = $modal.open({
-			templateUrl: 'GroupUsers.html',
-			controller: 'GroupUsersModalCtrl',
-			size: 'lg',
-			resolve: {
-				groupSvc: function () {
-					return groupsSvc;
-				},
-				group: function () {
-					return groupsSvc.getItem(groupId);
-				},
-				users: function () {
-					return $scope.userList;
-				},
-				currentUser: function () {
-					return $scope.userProfile;
-				}
-			}
-		});
-	};
-
 	var callResourceService = function (item, action, duration, cb) {
 	    console.log("Attempting to " + action + " resource" + item.id + " in group " + item.groupId)
 	    resourcesSvc.sendAction(item.groupId, item.id, action, duration).success(function (results) {
@@ -261,79 +239,3 @@ angular.module('scamp')
 	};
 
 }]);
-
-angular.module('scamp')
-.controller('GroupUsersModalCtrl', function ($scope, $modalInstance, groupSvc, group, users, currentUser) {
-
-	$scope.group = group.data;
-
-	$scope.isGroupAdmin = userInArray(currentUser.id, $scope.group.admins);
-
-	$scope.currentUser = currentUser;
-
-	// TODO: load only if it's necessary
-	$scope.users = users;
-
-	$scope.done = function () {
-		$modalInstance.dismiss('done');
-	};
-
-	$scope.addAdmin = function (user) {
-		var newGroup = JSON.parse(JSON.stringify($scope.group)); // clone group
-
-		newGroup.admins.push(user);
-		groupSvc.putItem(newGroup.groupId, newGroup).success(function (result) {
-			if (!result) { // error
-				alert("An error occured");
-			}
-			else {
-				$scope.group = result;
-
-				if (user.userId == currentUser.id) // current user adds him-self 
-					$scope.isGroupAdmin = true;
-			}
-		});
-	};
-
-	$scope.removeAdmin = function (user) {
-		var newGroup = JSON.parse(JSON.stringify($scope.group)); // clone group
-
-		var index = $scope.group.admins.indexOf(user);
-		if (index > -1) {
-			newGroup.admins.splice(index, 1);
-		}
-
-		groupSvc.putItem(newGroup.groupId, newGroup).success(function (result) {
-			if (!result) { // error
-				alert("An error occured");
-			}
-			else {
-				$scope.group = result;
-
-				if (user.userId == currentUser.id) // current user removes him-self 
-					$scope.isGroupAdmin = false;
-			}
-		});
-	};
-})
-.filter('notAdmin', function () {
-	return function (users, admins) {
-		var filtered = [];
-		var a;
-		var found = false;
-		for (var u in users) {
-			if (!userInArray(u.userId, admins))
-				filtered.push(u);
-		}
-		return filtered;
-	};
-});
-
-function userInArray(userId, array) {
-	for (var u in array) {
-		if (userId == u.userId) {
-			return true;
-		}
-	}
-	return false;
-}
