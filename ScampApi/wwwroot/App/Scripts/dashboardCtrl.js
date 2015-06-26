@@ -47,13 +47,15 @@ angular.module('scamp')
               });
               $scope.selectedGroupId = data[0].id;
               $scope.selectedGroupName = data[0].name;
-              var summaryPanelType = 'usage';
 
+              var summaryPanelType;
               if ($scope.state.view == 'admin') {
                 $scope.loadUsers($scope.selectedGroupId);
                 summaryPanelType = 'budget';
-              } else
+              } else {
                 $scope.loadResources($scope.selectedGroupId, userGUID);
+                summaryPanelType = 'usage';
+              }
 
               $scope.updateSummaryPanel(userGUID, summaryPanelType);
               $scope.dashboardStatus = 'loaded';
@@ -88,7 +90,7 @@ angular.module('scamp')
 
                         return item;
                     });
-                    
+                    scampDashboard.setCurrentUser(data[0].id);
                     $scope.loadResources(groupId, data[0].id);
                 }
             },
@@ -116,7 +118,6 @@ angular.module('scamp')
 	    if (!groupId || !userId)
 	        throw new Error("Mandatory parameter groupId and userId need to be specified");
 
-	    scampDashboard.setCurrentUser(userId);
 	    userSvc.getResourceList(userId, groupId).then(
             function (data) {
                 scampDashboard.render(data);
