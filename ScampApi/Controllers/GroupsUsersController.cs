@@ -102,6 +102,9 @@ namespace ScampApi.Controllers
             if (userList.Count() > 0) // user is already in the list
                 return new ObjectResult("designated user is already a member of specified group") { StatusCode = 400 };
 
+            // create the user if they don't exist
+            //TODO: https://github.com/SimpleCloudManagerProject/SCAMP/issues/247
+
             //TODO: Issue #152
             // check to make sure enough remains in the group allocation to allow add of user
 
