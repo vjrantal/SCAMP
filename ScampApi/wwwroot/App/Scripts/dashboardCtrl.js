@@ -58,7 +58,8 @@ angular.module('scamp')
               $scope.updateSummaryPanel(userGUID, summaryPanelType);
               $scope.dashboardStatus = 'loaded';
             } else {
-              throw new Error("User " + userGUID + " doesnt have permission to any groups for " + $scope.state.view + " view");
+              $scope.groups = [];
+              console.log('User ' + userGUID + ' doesn\'t have permission to any groups for ' + $scope.state.view + ' view');
             }
           })
           .catch(function (statusCode) {
