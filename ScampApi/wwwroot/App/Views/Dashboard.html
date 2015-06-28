@@ -51,7 +51,8 @@
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-cloud"></i>&nbsp;Azure Resource Groups</h3>
                     </div>
-                    <div class="panel-body row">
+                    <div class="panel-body" ng-show="groups.length === 0"><h3>Not yet a member of any group</h3></div>
+                    <div class="panel-body row" ng-show="groups.length > 0">
                       <div class="col-md-3 dashboard-side-div">
                           <div class="list-group">
                               <a ng-repeat="group in groups" ng-click="loadUsers(group.id)" style="cursor: pointer;" ng-class="(group.id==selectedGroupId) ? 'active' : ''" class="list-group-item resource-group-item">
