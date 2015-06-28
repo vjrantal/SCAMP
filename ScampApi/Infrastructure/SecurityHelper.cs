@@ -81,16 +81,28 @@ namespace ScampApi.Infrastructure
         }
 
         /// <summary>
+        /// checks to see if the user is a group manager of any group they are a member of
+        /// </summary>
+         /// <returns>true if the user is</returns>
+        public async Task<bool> IsGroupManager()
+        {
+            var user = await GetCurrentUser();
+            // user is a manager of this group if they are in the group membership list and are flagged "isManager"
+            var checkMgr = user.GroupMembership.ToList().Any(q => q.isManager);
+            return checkMgr;
+        }
+
+        /// <summary>
         /// checks to see if the user is a group manager
         /// </summary>
         /// <param name="groupId">Id of group to be checked</param>
-        /// <returns>true is the user is</returns>
+        /// <returns>true if the user is</returns>
         public async Task<bool> IsGroupManager(string groupId)
         {
             var user = await GetCurrentUser();
             var grp = await _groupRepository.GetGroup(groupId);
             // user is a manager of this group if they are in the group membership list and are flagged "isManager"
-            var checkMgr = grp.Members.ToList().Any(q => q.Id == user.Id && q.isAdmin);
+            var checkMgr = grp.Members.ToList().Any(q => q.Id == user.Id && q.isManager);
             return checkMgr;
         }
 
@@ -115,8 +127,8 @@ namespace ScampApi.Infrastructure
         public async Task<bool> IsGroupAdmin()
         {
             var user = await GetCurrentUser();
-            // user is a group admin if they have a budget
-            var checkMgr = user.budget != null; 
+            // user is a group admin if they have a budget > 0
+            var checkMgr = user.budget != null && user.budget.unitsBudgeted > 0; 
             return checkMgr;
         }
 

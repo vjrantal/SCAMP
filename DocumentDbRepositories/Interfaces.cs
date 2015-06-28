@@ -19,9 +19,10 @@ namespace DocumentDbRepositories
         Task<IEnumerable<ScampResourceGroup>> GetGroupsByUser(ScampUserReference user);
         Task CreateGroup(ScampResourceGroup newGroup);
         Task UpdateGroup(string groupID, ScampResourceGroup group);
-        Task AddUserToGroup(string groupId, string userId);
-        Task UpdateUserInGroup(string groupId, string userId, bool isAdmin);
+        Task AddUserToGroup(string groupId, string userId, bool isManager);
+        Task UpdateUserInGroup(string groupId, string userId, bool isManager);
         Task<IEnumerable<ScampUserGroupResources>> GetGroupMemberResources(string groupId, string userId);
+        Task RemoveUserFromGroup(string groupId, string userId);
     }
 
     public interface IResourceRepository

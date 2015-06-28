@@ -61,8 +61,10 @@ namespace ScampApi.Controllers
                 {
                     Id = userRef.Id,
                     Name = userRef.Name,
-                    totUnitsUsed = groupBudget.UnitsUsed,
-                    totUnitsRemaining = (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed)
+                    isManager = userRef.isManager,
+                    // be sure to handle user without a budget values
+                    totUnitsUsed = (groupBudget == null ? 0 : groupBudget.UnitsUsed),
+                    totUnitsRemaining = (groupBudget == null ? 0 : (groupBudget.UnitsBudgetted - groupBudget.UnitsUsed))
                 };
                 rtnView.Add(tmpSummary); // add item to list
             }
@@ -76,11 +78,11 @@ namespace ScampApi.Controllers
         /// adds a user to a group
         /// </summary>
         /// <param name="groupId">Id of group to add user to</param>
-        /// <param name="userId">Id of user</param>
         /// <returns></returns>
-        [HttpPost("{userId}")]
-        public async Task<IActionResult> AddUserToGroup(string groupId, string userId)
+        [HttpPost()]
+        public async Task<IActionResult> AddUserToGroup(string groupId, [FromBody] UserSummary newUser)
         {
+            string userId = newUser.Id;
             //TODO: add in group admin/manager authorization check
             //if (!await CurrentUserCanViewGroup(group))
             //    return new HttpStatusCodeResult(403); // Forbidden
@@ -100,25 +102,31 @@ namespace ScampApi.Controllers
             if (userList.Count() > 0) // user is already in the list
                 return new ObjectResult("designated user is already a member of specified group") { StatusCode = 400 };
 
+            // create the user if they don't exist
+            //TODO: https://github.com/SimpleCloudManagerProject/SCAMP/issues/247
+
             //TODO: Issue #152
             // check to make sure enough remains in the group allocation to allow add of user
-
-            // create document updates
-            await _groupRepository.AddUserToGroup(groupId, userId);
 
             // create volatile storage budget entry for user
             var newBudget = new UserBudgetState(userId, groupId)
             {
+                //TODO: Take into account the budget potentially sent in POST body
                 UnitsBudgetted = rscGroup.Budget.DefaultUserAllocation,
                 UnitsUsed = 0
             };
             await _volatileStorageController.AddUserBudgetState(newBudget);
+            newUser.unitsBudgeted = newBudget.UnitsBudgetted;
+
+            // create document updates
+            await _groupRepository.AddUserToGroup(groupId, userId, false);
+
             //TODO: Issue #152
             // update group budget allocation to reflect addition of new user
 
 
             // return list
-            return new ObjectResult(null) { StatusCode = 200 };
+            return new ObjectResult(newUser) { StatusCode = 200 };
         }
 
         /// <summary>
@@ -153,10 +161,10 @@ namespace ScampApi.Controllers
             // check to make sure enough remains in the group allocation to handle the new allocation
 
             // update document
-            await _groupRepository.UpdateUserInGroup(groupId, newUserSummary.Id, newUserSummary.isAdmin);
+            await _groupRepository.UpdateUserInGroup(groupId, newUserSummary.Id, newUserSummary.isManager);
 
             // update volatile storage budget entry for user
-            await _volatileStorageController.UpdateUserBudgetAllocation(groupId, newUserSummary.Id, newUserSummary.budget.unitsBudgeted);
+            await _volatileStorageController.UpdateUserBudgetAllocation(newUserSummary.Id, groupId, newUserSummary.unitsBudgeted);
 
             return new ObjectResult(null) { StatusCode = 200 };
         }
@@ -214,11 +222,16 @@ namespace ScampApi.Controllers
 
             // get list of user resources in this group
             IEnumerable<ScampUserGroupResources> resources = await _groupRepository.GetGroupMemberResources(groupId, userId);
+            foreach(ScampUserGroupResources resource in resources)
+            {
+                // request deprovisioning of user resources
+                // this will delete the resource entries and update the group usage
+                // update document
+                //TODO: create the events and send to the queue
+            }
 
-            // remove the user from the group, flag resources for deletion
-
-            // send commands to clean up the resources (this will delete the resource entries and update the group usage)
-            //TODO: create the events and send to the queue
+            // remove the user from the group
+            await _groupRepository.RemoveUserFromGroup(groupId, userId);
 
             // remove the user's budget entry for the group from the volatile store
 

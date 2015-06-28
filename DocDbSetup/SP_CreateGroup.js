@@ -28,7 +28,7 @@ function (groupDoc) {
         var groupFrag = {
             "id": userDoc.id,
             "name": userDoc.name,
-            "isAdmin" : "true"
+            "isManager" : "true"
         };
         // if no empty group membership collection, add one
         if (groupDoc.members == null || typeof(groupDoc.members) == 'undefined' )
@@ -45,7 +45,8 @@ function (groupDoc) {
         // define group for group list
         var userFrag = {
             "id": groupDoc.id,
-            "name": groupDoc.name
+            "name": groupDoc.name,
+            "isManager" : "true"
         };
         // add the group to the user membership collection
         userDoc.groupmbrship.push(userFrag);

@@ -59,6 +59,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SP_RemoveUserFromGroup.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SP_UpdateUserInGroup.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -104,7 +104,7 @@ namespace DocumentDbRepositories.Implementation
 
         }
 
-        public async Task AddUserToGroup(string groupId, string userId)
+        public async Task AddUserToGroup(string groupId, string userId, bool isManager)
         {
             if (!(await docdb.IsInitialized))
                 return;
@@ -115,7 +115,7 @@ namespace DocumentDbRepositories.Implementation
             await docdb.Client.ExecuteStoredProcedureAsync<dynamic>(sproc.SelfLink, groupId, userId);
 
         }
-        public async Task UpdateUserInGroup(string groupId, string userId, bool isAdmin)
+        public async Task UpdateUserInGroup(string groupId, string userId, bool isManager)
         {
             if (!(await docdb.IsInitialized))
                 return;
@@ -125,7 +125,25 @@ namespace DocumentDbRepositories.Implementation
                 StoredProcedure sproc = docdb.Client.CreateStoredProcedureQuery(docdb.Collection.SelfLink)
                     .Where(s => s.Id == "UpdateUserInGroup").AsEnumerable().FirstOrDefault();
 
-                await docdb.Client.ExecuteStoredProcedureAsync<dynamic>(sproc.SelfLink, groupId, userId, isAdmin);
+                StoredProcedureResponse<dynamic> response = await docdb.Client.ExecuteStoredProcedureAsync<dynamic>(sproc.SelfLink, groupId, userId, isManager);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task RemoveUserFromGroup(string groupId, string userId)
+        {
+            if (!(await docdb.IsInitialized))
+                return;
+
+            try
+            {
+                StoredProcedure sproc = docdb.Client.CreateStoredProcedureQuery(docdb.Collection.SelfLink)
+                    .Where(s => s.Id == "RemoveUserFromGroup").AsEnumerable().FirstOrDefault();
+
+                StoredProcedureResponse<dynamic> response = await docdb.Client.ExecuteStoredProcedureAsync<dynamic>(sproc.SelfLink, groupId, userId);
             }
             catch (Exception ex)
             {
@@ -147,12 +165,27 @@ namespace DocumentDbRepositories.Implementation
             try
             {
                 // get resources for the specified user and group
-                var query = docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
-                            .Where(g => g.Id == groupId)
-                            .SelectMany(g => g.Members)
-                            .Where(m => m.Id == userId)
-                            .SelectMany(r => r.Resources);
+                //var query = docdb.Client.CreateDocumentQuery<ScampResourceGroup>(docdb.Collection.SelfLink)
+                //            .Select(g => g.Members
+                //                .Where(group => group.Id == groupId)
+                //            .Select(mbrs => mbrs.Resources
+                //                .Where(members => members.Id == userId)
+                //                .SelectMany(resources => mbrs.Resources)));
 
+                var sql = new SqlQuerySpec
+                {
+                    QueryText = "SELECT value rcs from groups" +
+                        " JOIN mbrs in groups.members" +
+                        " JOIN rcs in mbrs.resources" +
+                        " where groups.id = @groupId" +
+                        " and mbrs.id = @userId",
+                    Parameters = new SqlParameterCollection
+                    {
+                       new SqlParameter { Name = "@groupId", Value = groupId },
+                       new SqlParameter { Name = "@userId", Value = userId }
+                    }
+                };
+                var query = docdb.Client.CreateDocumentQuery<ScampUserGroupResources>(docdb.Collection.SelfLink, sql);
                 return await query.AsDocumentQuery().ToListAsync();
             }
             catch (Exception ex)

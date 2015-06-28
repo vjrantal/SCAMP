@@ -28,8 +28,11 @@ namespace ScampApi.Controllers
       _graphAPIProvider = graphAPIProvider;
     }
 
-    // retrieves the current user
-    // GET: api/user
+    /// <summary>
+    /// retrieves current user
+    /// GET: api/user
+    /// </summary>
+    /// <returns></returns>
     [HttpGet(Name = "User.CurrentUser")]
     public async Task<User> Get()
     {
@@ -46,7 +49,9 @@ namespace ScampApi.Controllers
         Id = tmpUser.Id,
         Name = tmpUser.Name,
         Email = tmpUser.Email,
-        IsSystemAdmin = tmpUser.IsSystemAdmin
+        isSystemAdmin = await _securityHelper.IsSysAdmin(),
+        isGroupAdmin = await _securityHelper.IsGroupAdmin(),
+        isGroupManager = await _securityHelper.IsGroupManager()
       };
 
       return user;

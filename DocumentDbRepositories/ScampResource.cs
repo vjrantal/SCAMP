@@ -37,6 +37,8 @@ namespace DocumentDbRepositories
 
         [JsonProperty(PropertyName = "owners")]
         public List<ScampUserReference> Owners { get; set; }
+        [JsonProperty(PropertyName = "deleted")]
+        public bool Deleted { get; set; }
 
         [JsonProperty(PropertyName = "type")]
         public string Type { get { return "resource"; } }

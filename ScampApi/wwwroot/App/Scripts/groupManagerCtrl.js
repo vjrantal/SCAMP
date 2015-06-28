@@ -35,6 +35,8 @@ angular.module('scamp')
         groupsSvc.getGroup(group.id)
         .then(function (response) {
             $scope.selectedGroup = response;
+            $scope.selectedGroup.disableEdit = ($scope.selectedGroup.budget.ownerId != $scope.userProfile.id);
+            $('#summary-tab-link').tab('show');
         })
         .finally(function () {
             $scope.groupDetailsLoading = false;
@@ -84,13 +86,20 @@ angular.module('scamp')
 
     $scope.addGroup = function () {
         $scope.selectedGroupUnsaved = true;
-        $scope.selectedGroup = { 'id': 'temporary-id-of-unsaved-group' };
+        $scope.selectedGroup = {
+            'id': 'temporary-id-of-unsaved-group',
+            'budget': {
+                'ownerName': $scope.userProfile.name
+            }
+        };
+        $('#summary-tab-link').tab('show');
     };
 
     $scope.removeGroup = function () {
         if ($scope.selectedGroupUnsaved) {
             if ($scope.groups.length > 0) {
                 $scope.selectedGroup = $scope.groups[0];
+                loadGroupDetails($scope.groups[0]);
             } else {
                 $scope.selectedGroup = null;
             }
