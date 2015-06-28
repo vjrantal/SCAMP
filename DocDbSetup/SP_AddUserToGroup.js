@@ -46,7 +46,11 @@ function (groupId, userId) {
         };
 
         // update documents
+        if (typeof(groupDoc.members) == 'undefined' || groupDoc.members == null)
+            groupDoc.member = [];
         groupDoc.members.push(userFrag);
+        if (typeof(userDoc.members) == 'undefined' || userDoc.members == null)
+            userDoc.groupmbrship = [];
         userDoc.groupmbrship.push(groupFrag);
 
         // perform updates

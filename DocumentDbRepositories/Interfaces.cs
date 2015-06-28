@@ -9,6 +9,7 @@ namespace DocumentDbRepositories
         Task CreateUser(ScampUser newUser);
         Task<ScampUser> GetUserbyId(string userId);
         Task UpdateUser(ScampUser user);
+        Task<bool> UserExists(string userId);
     }
 
     public interface IGroupRepository

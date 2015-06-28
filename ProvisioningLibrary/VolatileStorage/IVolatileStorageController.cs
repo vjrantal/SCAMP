@@ -24,5 +24,6 @@ namespace ProvisioningLibrary
         Task UpdateUserBudgetAllocation(string userId, string groupId, long newBudgetAllocation);
         Task AddUserBudgetState(UserBudgetState budget);
         Task AddGroupBudgetState(GroupBudgetState budget);
+        Task DeleteUserBudgetState(string userId, string groupId);
     }
 }

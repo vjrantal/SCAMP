@@ -19,13 +19,15 @@ namespace ScampApi.Controllers
         private readonly IUserRepository _userRepository;
         private readonly ISecurityHelper _securityHelper;
         private static IVolatileStorageController _volatileStorageController = null;
+        private IWebJobController _webJobController;
 
-        public GroupsUsersController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController)
+        public GroupsUsersController(ISecurityHelper securityHelper, IGroupRepository groupRepository, IUserRepository userRepository, IVolatileStorageController volatileStorageController, IWebJobController webJobController)
         {
             _groupRepository = groupRepository;
             _userRepository = userRepository;
             _securityHelper = securityHelper;
             _volatileStorageController = volatileStorageController;
+            _webJobController = webJobController;
         }
 
         /// <summary>
@@ -104,6 +106,14 @@ namespace ScampApi.Controllers
 
             // create the user if they don't exist
             //TODO: https://github.com/SimpleCloudManagerProject/SCAMP/issues/247
+            if (!(await _userRepository.UserExists(userId)))
+            {
+                // build user object
+                var tmpUser = new ScampUser(newUser);
+
+                // insert into database   
+                await _userRepository.CreateUser(tmpUser);
+            }
 
             //TODO: Issue #152
             // check to make sure enough remains in the group allocation to allow add of user
@@ -146,9 +156,7 @@ namespace ScampApi.Controllers
             // get group details
             var rscGroup = await _groupRepository.GetGroup(groupId);
             if (rscGroup == null)
-            {
                 return new ObjectResult("designated group does not exist") { StatusCode = 400 };
-            }
 
             // make sure user is in group
             IEnumerable<ScampUserGroupMbrship> userList = from ur in rscGroup.Members
@@ -216,9 +224,17 @@ namespace ScampApi.Controllers
         [HttpDelete("{userId}")]
         public async Task<IActionResult> RemoveUserFromGroup(string groupId, string userId)
         {
+            var requestingUser = await _securityHelper.GetCurrentUser();
             // only system admins can access this functionality
             if (!await _securityHelper.IsGroupManager(groupId))
                 return new HttpStatusCodeResult(403); // Forbidden
+
+            // don't allow user to remove themselves
+            if (requestingUser.Id == userId)
+                return new ObjectResult("User cannot remove themselves") { StatusCode = 403 };
+
+            // remove the user from the group
+            await _groupRepository.RemoveUserFromGroup(groupId, userId);
 
             // get list of user resources in this group
             IEnumerable<ScampUserGroupResources> resources = await _groupRepository.GetGroupMemberResources(groupId, userId);
@@ -226,15 +242,11 @@ namespace ScampApi.Controllers
             {
                 // request deprovisioning of user resources
                 // this will delete the resource entries and update the group usage
-                // update document
-                //TODO: create the events and send to the queue
+                _webJobController.SubmitActionInQueue(resource.Id, ResourceAction.Delete);
             }
 
-            // remove the user from the group
-            await _groupRepository.RemoveUserFromGroup(groupId, userId);
-
             // remove the user's budget entry for the group from the volatile store
-
+            await _volatileStorageController.DeleteUserBudgetState(userId, groupId);
 
             return new ObjectResult(null) { StatusCode = 200 };
         }

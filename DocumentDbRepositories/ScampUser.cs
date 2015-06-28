@@ -17,6 +17,12 @@ namespace DocumentDbRepositories
             GroupMembership = new List<ScampUserGroupMbrship>();
         }
 
+        public ScampUser(UserSummary user) : base()
+        {
+            Id = user.Id;
+            Name = user.Name;
+        }
+
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
