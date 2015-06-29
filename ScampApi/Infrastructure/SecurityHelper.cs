@@ -138,5 +138,15 @@ namespace ScampApi.Infrastructure
 
             return user.IsSystemAdmin;
         }
+        public async Task<bool> CurrentUserCanViewGroup(string groupId)
+        {
+            var currentUser = await GetCurrentUser();
+            var group = await _groupRepository.GetGroup(groupId);
+            // Groups can be viewed by system and group admins and the managers
+            // of the group to be viewed.
+            return await IsSysAdmin() ||
+                   await IsGroupAdmin() ||
+                   group.Members.Any(u => u.Id == currentUser.Id && u.isManager);
+        }
     }
 }

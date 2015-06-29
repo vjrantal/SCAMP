@@ -14,5 +14,6 @@ namespace ScampApi.Infrastructure
         Task<bool> IsGroupAdmin(string groupId);
         Task<bool> IsGroupAdmin();
         Task<bool> IsSysAdmin();
+        Task<bool> CurrentUserCanViewGroup(string groupId);
     }
 }
