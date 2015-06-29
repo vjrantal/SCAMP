@@ -45,15 +45,14 @@ angular.module('scamp')
               $scope.groups = data.map(function (item) {
                 return scampDashboard.computeUsagePercentages(item);
               });
-              $scope.selectedGroupId = data[0].id;
-              $scope.selectedGroupName = data[0].name;
+              $scope.selectedGroup = $scope.selectedGroup || data[0];
 
               var summaryPanelType;
               if ($scope.state.view == 'admin') {
-                $scope.loadUsers($scope.selectedGroupId);
+                $scope.loadUsers($scope.selectedGroup.id);
                 summaryPanelType = 'budget';
               } else {
-                $scope.loadResources($scope.selectedGroupId, userGUID);
+                $scope.loadResources($scope.selectedGroup.id, userGUID);
                 summaryPanelType = 'usage';
               }
 
@@ -81,6 +80,13 @@ angular.module('scamp')
 	    if (!groupId)
 	        throw new Error("Mandatory paramter groupId needs to be specified");
 
+        // Find the given group from the local groups list
+        // and assign it to the currently selected group.
+        for (var i = 0; i < $scope.groups.length; i++) {
+            if ($scope.groups[i].id === groupId) {
+                $scope.selectedGroup = $scope.groups[i];
+            }
+        }
 	    groupsSvc.getUsers(groupId).then(
             function (data) {
                 if (data && data.length > 0) {
@@ -182,7 +188,7 @@ angular.module('scamp')
 
 	    if (actionSelection.action == "Connect")
 	    {
-	        var groupId = $scope.selectedGroupId,
+	        var groupId = $scope.selectedGroup.id,
                 resourceId = rsc.id,		
                 contentType = "application/rdp; charset=utf-8",		
                 fileName = "service.rdp"		
