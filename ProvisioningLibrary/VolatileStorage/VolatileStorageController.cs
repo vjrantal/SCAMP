@@ -236,5 +236,13 @@ namespace ProvisioningLibrary
             return;
         }
 
+        public async Task DeleteUserBudgetState(string userId, string groupId)
+        {
+            var budget = await GetUserBudgetState(userId, groupId);
+            TableOperation operation = TableOperation.Delete(budget);
+            TableResult retrievedResult = await _StateUpdateTable.ExecuteAsync(operation);
+            return;
+        }
+
     }
 }

@@ -9,6 +9,7 @@ namespace DocumentDbRepositories
         Task CreateUser(ScampUser newUser);
         Task<ScampUser> GetUserbyId(string userId);
         Task UpdateUser(ScampUser user);
+        Task<bool> UserExists(string userId);
     }
 
     public interface IGroupRepository
@@ -21,6 +22,8 @@ namespace DocumentDbRepositories
         Task UpdateGroup(string groupID, ScampResourceGroup group);
         Task AddUserToGroup(string groupId, string userId, bool isManager);
         Task UpdateUserInGroup(string groupId, string userId, bool isManager);
+        Task<IEnumerable<ScampUserGroupResources>> GetGroupMemberResources(string groupId, string userId);
+        Task RemoveUserFromGroup(string groupId, string userId);
     }
 
     public interface IResourceRepository
