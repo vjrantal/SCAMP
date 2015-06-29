@@ -84,11 +84,11 @@ namespace ScampApi.Controllers
         [HttpPost()]
         public async Task<IActionResult> AddUserToGroup(string groupId, [FromBody] UserSummary newUser)
         {
+            if (!await _securityHelper.CurrentUserCanManageGroup(groupId)) {
+                return new HttpStatusCodeResult(403); // Forbidden
+            }
+
             string userId = newUser.Id;
-            //TODO: add in group admin/manager authorization check
-            //if (!await CurrentUserCanViewGroup(group))
-            //    return new HttpStatusCodeResult(403); // Forbidden
-            //}
 
             // get group details
             var rscGroup = await _groupRepository.GetGroup(groupId);
@@ -148,10 +148,9 @@ namespace ScampApi.Controllers
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUserInGroup(string groupId, [FromBody] UserSummary newUserSummary)
         {
-            //TODO: add in group admin/manager authorization check
-            //if (!await CurrentUserCanViewGroup(group))
-            //    return new HttpStatusCodeResult(403); // Forbidden
-            //}
+            if (!await _securityHelper.CurrentUserCanEditGroupUsers()) {
+                return new HttpStatusCodeResult(403); // Forbidden
+            }
 
             // get group details
             var rscGroup = await _groupRepository.GetGroup(groupId);
@@ -224,11 +223,12 @@ namespace ScampApi.Controllers
         [HttpDelete("{userId}")]
         public async Task<IActionResult> RemoveUserFromGroup(string groupId, string userId)
         {
-            var requestingUser = await _securityHelper.GetCurrentUser();
-            // only system admins can access this functionality
-            if (!await _securityHelper.IsGroupManager(groupId))
+            if (!await _securityHelper.CurrentUserCanManageGroup(groupId))
+            {
                 return new HttpStatusCodeResult(403); // Forbidden
+            }
 
+            var requestingUser = await _securityHelper.GetCurrentUser();
             // don't allow user to remove themselves
             if (requestingUser.Id == userId)
                 return new ObjectResult("User cannot remove themselves") { StatusCode = 403 };

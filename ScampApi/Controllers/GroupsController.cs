@@ -60,7 +60,7 @@ namespace ScampApi.Controllers
             {
                 return HttpNotFound();
             }
-            bool userCanViewGroup = await CurrentUserCanViewGroup(group);
+            bool userCanViewGroup = await _securityHelper.CurrentUserCanManageGroup(group.Id);
             if (!userCanViewGroup)
             {
                 return new HttpStatusCodeResult(403); // Forbidden
@@ -173,13 +173,6 @@ namespace ScampApi.Controllers
             {
                 return new HttpStatusCodeResult(403);
             }
-        }
-
-        private async Task<bool> CurrentUserCanViewGroup(ScampResourceGroup group)
-        {
-            var currentUser = await _securityHelper.GetCurrentUser();
-            return currentUser.IsSystemAdmin                       // sys admin
-                || group.Members.Any(u => u.Id == currentUser.Id && u.isManager); // group member
         }
 
         #region Mapping Functions

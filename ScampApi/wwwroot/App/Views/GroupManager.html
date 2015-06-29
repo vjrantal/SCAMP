@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <div class="col-sm-2 col-sm-offset-10">
+                        <div class="col-sm-4 col-sm-offset-8">
                           <button type="submit" form="group-summary-form" ng-show="!selectedGroup.disableEdit"
                                   class="form-control btn btn-primary pull-right">
                             <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
@@ -201,16 +201,19 @@
                         <div class="form-control">{{ user.name }}</div>
                       </td>
                       <td>
-                        <input type="checkbox" ng-model="user.isManager">
+                        <input type="checkbox" ng-model="user.isManager"
+                               ng-disabled="!(userProfile.isGroupAdmin || userProfile.isSystemAdmin)">
                       </td>
                       <td>
                         <input type="number" class="form-control"
-                          ng-model="user.unitsBudgeted">
+                               ng-model="user.unitsBudgeted"
+                               ng-disabled="!(userProfile.isGroupAdmin || userProfile.isSystemAdmin)">
                       </td>
                       <td>
                         <button type="button" class="btn btn-default btn-md"
                           ng-click="updateUser(user)"
-                          ng-show="!user.loading">
+                          ng-show="!user.loading"
+                          ng-disabled="!(userProfile.isGroupAdmin || userProfile.isSystemAdmin)">
                           <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
                         </button>
                         <button type="button" class="btn btn-default btn-md"

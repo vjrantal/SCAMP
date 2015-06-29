@@ -55,6 +55,8 @@ namespace ScampApi.Controllers.Controllers
                 // build return view
                 foreach (ScampUserGroupMbrship group in userDoc.GroupMembership)
                 {
+                    if (!(await _securityHelper.CurrentUserCanManageGroup(group.Id))) continue;
+
                     // get group budget
                     var groupBudget = await _volatileStorageController.GetGroupBudgetState(group.Id);
 
