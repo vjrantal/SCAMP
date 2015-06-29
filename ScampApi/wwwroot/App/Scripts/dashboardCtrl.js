@@ -45,7 +45,7 @@ angular.module('scamp')
               $scope.groups = data.map(function (item) {
                 return scampDashboard.computeUsagePercentages(item);
               });
-              $scope.selectedGroup = data[0];
+              $scope.selectedGroup = $scope.selectedGroup || data[0];
 
               var summaryPanelType;
               if ($scope.state.view == 'admin') {
