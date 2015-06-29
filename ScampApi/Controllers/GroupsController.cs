@@ -60,7 +60,7 @@ namespace ScampApi.Controllers
             {
                 return HttpNotFound();
             }
-            bool userCanViewGroup = await _securityHelper.CurrentUserCanViewGroup(group.Id);
+            bool userCanViewGroup = await _securityHelper.CurrentUserCanManageGroup(group.Id);
             if (!userCanViewGroup)
             {
                 return new HttpStatusCodeResult(403); // Forbidden
