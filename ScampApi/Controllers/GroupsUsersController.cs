@@ -148,10 +148,9 @@ namespace ScampApi.Controllers
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUserInGroup(string groupId, [FromBody] UserSummary newUserSummary)
         {
-            //TODO: add in group admin/manager authorization check
-            //if (!await CurrentUserCanViewGroup(group))
-            //    return new HttpStatusCodeResult(403); // Forbidden
-            //}
+            if (!await _securityHelper.CurrentUserCanEditGroupUsers()) {
+                return new HttpStatusCodeResult(403); // Forbidden
+            }
 
             // get group details
             var rscGroup = await _groupRepository.GetGroup(groupId);

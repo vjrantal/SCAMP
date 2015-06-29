@@ -12,7 +12,7 @@ using ProvisioningLibrary;
 
 namespace ScampApi.Infrastructure
 {
-    
+
     public class SecurityHelper : ISecurityHelper
     {
         private readonly HttpContext Context;
@@ -29,8 +29,8 @@ namespace ScampApi.Infrastructure
 
         public async Task<ScampUserReference> GetUserReference()
         {
-            return  Mapper.Map<ScampUserReference>(await GetCurrentUser());
-        } 
+            return Mapper.Map<ScampUserReference>(await GetCurrentUser());
+        }
 
         // retrieves the current user
         public async Task<ScampUser> GetCurrentUser()
@@ -41,7 +41,7 @@ namespace ScampApi.Infrastructure
             // if user object isn't already in object, save to reduced DB hits
             if (cachedCurrentUser == null || cachedCurrentUser.Id != userId)
                 cachedCurrentUser = await GetUserById(userId);
-            
+
             // return object to call
             return cachedCurrentUser;
         }
@@ -83,7 +83,7 @@ namespace ScampApi.Infrastructure
         /// <summary>
         /// checks to see if the user is a group manager of any group they are a member of
         /// </summary>
-         /// <returns>true if the user is</returns>
+        /// <returns>true if the user is</returns>
         public async Task<bool> IsGroupManager()
         {
             var user = await GetCurrentUser();
@@ -128,7 +128,7 @@ namespace ScampApi.Infrastructure
         {
             var user = await GetCurrentUser();
             // user is a group admin if they have a budget > 0
-            var checkMgr = user.budget != null && user.budget.unitsBudgeted > 0; 
+            var checkMgr = user.budget != null && user.budget.unitsBudgeted > 0;
             return checkMgr;
         }
 
@@ -147,6 +147,11 @@ namespace ScampApi.Infrastructure
             return await IsSysAdmin() ||
                    await IsGroupAdmin() ||
                    group.Members.Any(u => u.Id == currentUser.Id && u.isManager);
+        }
+
+        public async Task<bool> CurrentUserCanEditGroupUsers()
+        {
+            return await IsSysAdmin() || await IsGroupAdmin();
         }
     }
 }
