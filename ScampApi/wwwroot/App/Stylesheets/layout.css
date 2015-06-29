@@ -145,14 +145,23 @@ body{
     cursor: pointer;
 }
 
+/* Sticky footer styles */
 .footer{
     height: 40px; 
     background-color: #191919;
-    margin-top: 6px;
     position: absolute;
     bottom: 0;
     width: 100%;
     border-top: 2px solid #444543;
+}
+html {
+    /* To always place footer below content */
+    position: relative;
+    min-height: 100%;
+}
+body > div {
+    /* Margin bottom by footer height */
+    margin-bottom: 40px;
 }
 
 .footer-link{
