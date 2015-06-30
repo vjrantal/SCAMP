@@ -7,7 +7,7 @@
   "licenseUrl": "",
 
   "dependencies": {
-    "Microsoft.KeyVault.Client": "1.0.0-*",
+    "Microsoft.Azure.KeyVault": "1.0.0",
     "Microsoft.IdentityModel.Clients.ActiveDirectory": "2.14.201151115",
     "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
     "Microsoft.Framework.DependencyInjection": "1.0.0-beta4"
@@ -16,4 +16,4 @@
   "frameworks": {
     "dnx451": { }
   }
-} }
+}
