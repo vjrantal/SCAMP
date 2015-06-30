@@ -49,7 +49,7 @@ function (groupId, userId) {
         if (typeof(groupDoc.members) == 'undefined' || groupDoc.members == null)
             groupDoc.member = [];
         groupDoc.members.push(userFrag);
-        if (typeof(userDoc.members) == 'undefined' || userDoc.members == null)
+        if (typeof(userDoc.groupmbrship) == 'undefined' || userDoc.groupmbrship == null)
             userDoc.groupmbrship = [];
         userDoc.groupmbrship.push(groupFrag);
 
