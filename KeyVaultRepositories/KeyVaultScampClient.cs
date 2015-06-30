@@ -1,15 +1,16 @@
 ﻿using Microsoft.Framework.ConfigurationModel;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.KeyVault.Client;
+using Microsoft.Azure.KeyVault;
 using System;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace KeyVaultRepositories
 {
     public class KeyVaultScampClient
     {
-        private readonly IConfiguration _configuration;
+        private static IConfiguration _configuration;
         private readonly KeyVaultClient _keyVaultClient;
         private readonly string _keyVaultUrl;
 
@@ -25,7 +26,7 @@ namespace KeyVaultRepositories
 
 #if DEBUG
             //This should be used only during development
-            _keyVaultClient = new KeyVaultClient(GetAccessToken, setRequestUriCallback: SetRequestUri);
+            _keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(GetAccessToken));
 #else
             //This use certificate service in Azure platform and doesn't need shared keys
             _keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(GetAccessToken));
@@ -57,35 +58,18 @@ namespace KeyVaultRepositories
         }
 #endif
 
-        public string GetAccessToken(string authority, string resource, string scope)
+        public static async Task<string> GetAccessToken(string authority, string resource, string scope)
         {
             var clientId = _configuration["KeyVault:AuthClientId"];
             var clientSecret = _configuration["KeyVault:AuthClientSecret"];
 
             var clientCredential = new ClientCredential(clientId, clientSecret);
             var context = new AuthenticationContext(authority, null);
-            var result = context.AcquireToken(resource, clientCredential);
+            var result = await context.AcquireTokenAsync(resource, clientCredential);
 
             return result.AccessToken;
         }
-        public Uri SetRequestUri(Uri requestUri, HttpClient httpClient)
-        {
-            var targetUri = requestUri;
 
-            // NOTE: The KmsNetworkUrl setting is purely for development testing on the
-            //       Microsoft Azure Development Fabric and should not be used outside that environment.
-            string networkUrl = _configuration["KmsNetworkUrl"];
-
-            if (!string.IsNullOrEmpty(networkUrl))
-            {
-                var authority = targetUri.Authority;
-                targetUri = new Uri(new Uri(networkUrl), targetUri.PathAndQuery);
-
-                httpClient.DefaultRequestHeaders.Add("Host", authority);
-            }
-
-            return targetUri;
-        }
         public static X509Certificate2 FindCertificateByThumbprint(string findValue)
         {
             X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);

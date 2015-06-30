@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.KeyVault.Client;
+using Microsoft.Azure.KeyVault;
 using System.Threading.Tasks;
 
 namespace KeyVaultRepositories.Implementation
@@ -22,14 +22,14 @@ namespace KeyVaultRepositories.Implementation
             var secretKey = SecretKey(resourceId, key);
             var client = _keyVaultClient.GetClient();
             var secret = await client.GetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey);
-            return secret.SecureValue.ConvertToString();
+            return secret.Value;
         }
 
         public async Task UpsertSecret(string resourceId, string key, string value)
         {
             var secretKey = SecretKey(resourceId, key);
             var client = _keyVaultClient.GetClient();
-            await client.SetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey, value.ConvertToSecureString());
+            await client.SetSecretAsync(_keyVaultClient.GetKeyVaultUrl(), secretKey, value);
         }
 
 
