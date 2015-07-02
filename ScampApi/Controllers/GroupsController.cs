@@ -32,19 +32,18 @@ namespace ScampApi.Controllers
         }
 
         [HttpGet(Name = "Groups.GetAll")]
-        public async Task<IEnumerable<GroupSummary>> Get()
+        public async Task<IActionResult> Get()
         {
-            IEnumerable<ScampResourceGroup> groups;
-            //LINKED TO UI
-            if (await _securityHelper.IsSysAdmin())
+            ScampUser currentUser = await _securityHelper.GetOrCreateCurrentUser();
+            List<GroupSummary> groupSummaries = new List<GroupSummary>();
+            foreach (ScampUserGroupMbrship group in currentUser.GroupMembership)
             {
-                groups = await _groupRepository.GetGroups();
+                if (await _securityHelper.CurrentUserCanManageGroup(group.Id))
+                {
+                    groupSummaries.Add(MapToGroupSummary(group));
+                }
             }
-            else
-            {
-                groups = await _groupRepository.GetGroupsByUser((await _securityHelper.GetOrCreateCurrentUser()).Id);
-            }
-            return groups.Select(MapToSummary);
+            return new ObjectResult(groupSummaries) { StatusCode = 200 };
         }
 
         /// <summary>
@@ -176,12 +175,12 @@ namespace ScampApi.Controllers
         }
 
         #region Mapping Functions
-        private GroupSummary MapToSummary(ScampResourceGroup docDbGroup)
+        private GroupSummary MapToGroupSummary(ScampUserGroupMbrship groupMembership)
         {
             return new GroupSummary
             {
-                Id = docDbGroup.Id,
-                Name = docDbGroup.Name,
+                Id = groupMembership.Id,
+                Name = groupMembership.Name,
             };
         }
 
