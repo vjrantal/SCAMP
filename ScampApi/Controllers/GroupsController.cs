@@ -42,7 +42,7 @@ namespace ScampApi.Controllers
             }
             else
             {
-                groups = await _groupRepository.GetGroupsByUser(await _securityHelper.GetUserReference());
+                groups = await _groupRepository.GetGroupsByUser((await _securityHelper.GetOrCreateCurrentUser()).Id);
             }
             return groups.Select(MapToSummary);
         }
@@ -92,7 +92,7 @@ namespace ScampApi.Controllers
             //TODO: group parameter validation 
 
             // get current user
-            var currentUser = await _securityHelper.GetCurrentUser();
+            var currentUser = await _securityHelper.GetOrCreateCurrentUser();
 
             // build the resource group object
             var group = new ScampResourceGroup()
@@ -141,7 +141,7 @@ namespace ScampApi.Controllers
         [HttpPut("{groupId}")]
         public async Task<IActionResult> Put(string groupId, [FromBody]Group value)
         {
-            ScampUser currentUser = await _securityHelper.GetCurrentUser();
+            ScampUser currentUser = await _securityHelper.GetOrCreateCurrentUser();
             ScampResourceGroup group = await _groupRepository.GetGroup(groupId);
             // Only the group budget owner can edit the group information
             if (group.Budget.OwnerId == currentUser.Id)
